@@ -64,7 +64,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 900));
 
     // S1 · splash gates everything on first run.
-    expect(find.text('Apps you tend, not apps you build.'), findsOneWidget);
+    expect(find.text('Fed by your life, tending it back.'), findsOneWidget);
     await tester.tap(find.text('Plant your first seed'));
     await tester.pump(const Duration(milliseconds: 100));
     await tester.pump(const Duration(milliseconds: 500));

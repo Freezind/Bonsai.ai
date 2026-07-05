@@ -55,7 +55,7 @@ class _SplashPageState extends State<SplashPage>
                             style: Aurora.display.copyWith(
                                 fontSize: 40, color: Aurora.primaryLight)),
                         const SizedBox(height: Aurora.s2),
-                        const Text('Apps you tend, not apps you build.',
+                        const Text('Fed by your life, tending it back.',
                             textAlign: TextAlign.center, style: Aurora.body),
                       ],
                     ),

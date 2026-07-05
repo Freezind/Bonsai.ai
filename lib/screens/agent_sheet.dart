@@ -137,15 +137,25 @@ class _AgentSheetState extends State<_AgentSheet> {
                   ),
                   const SizedBox(width: 8),
                   const Text('Bonsai Gardener', style: Aurora.title),
-                  const Spacer(),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Aurora.accentTint,
-                      borderRadius: BorderRadius.circular(Aurora.rFull),
+                  const SizedBox(width: 8),
+                  // Long goal slugs must ellipsize, never overflow the row.
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Aurora.accentTint,
+                          borderRadius: BorderRadius.circular(Aurora.rFull),
+                        ),
+                        child: Text('Editing: $scope',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: Aurora.label
+                                .copyWith(color: Aurora.primaryLight)),
+                      ),
                     ),
-                    child: Text('Editing: $scope',
-                        style: Aurora.label.copyWith(color: Aurora.primaryLight)),
                   ),
                 ],
               ),
