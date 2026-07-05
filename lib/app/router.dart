@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:go_router/go_router.dart';
 
+import '../goals/goal.dart';
+import '../onboarding/seed_flow_state.dart';
+import '../onboarding/ui/conversation_page.dart';
+import '../onboarding/ui/growing_page.dart';
+import '../onboarding/ui/splash_page.dart';
+import '../state/app_prefs.dart';
 import 'shell_scaffold.dart';
 import 'tab_root_page.dart';
 
@@ -84,27 +90,61 @@ class DepthObserver extends NavigatorObserver {
 
 AppTab currentTab() => AppTab.values[appShell.currentIndex];
 
-final GoRouter appRouter = GoRouter(
-  initialLocation: AppTab.home.path,
-  routes: [
-    StatefulShellRoute.indexedStack(
-      builder: (context, state, shell) {
-        appShell = shell;
-        return ShellScaffold(shell: shell);
+/// Built per app instance (tests get a fresh router each pump).
+GoRouter createAppRouter() => GoRouter(
+      initialLocation: AppTab.home.path,
+      // First-run gate: until the first goal is classified, everything
+      // funnels to the splash. The flag flips exactly once; in-flow
+      // transitions are explicit context.go calls, so no refreshListenable.
+      redirect: (context, state) {
+        final p = state.uri.path;
+        final inFlow = p.startsWith('/onboarding') || p.startsWith('/seed');
+        if (!AppPrefs.instance.firstRunComplete && !inFlow) {
+          return '/onboarding/splash';
+        }
+        return null;
       },
-      branches: [
-        for (final tab in AppTab.values)
-          StatefulShellBranch(
-            observers: [DepthObserver(tab.index)],
-            routes: [
-              GoRoute(
-                path: tab.path,
-                name: tab.name,
-                builder: (context, state) => TabRootPage(tab: tab),
-              ),
-            ],
+      routes: [
+        GoRoute(
+          path: '/onboarding/splash',
+          name: 'splash',
+          builder: (context, state) => const SplashPage(),
+        ),
+        GoRoute(
+          path: '/seed',
+          name: 'seed',
+          builder: (context, state) => ConversationPage(
+            entry: state.uri.queryParameters['entry'] == 'area'
+                ? SeedEntry.area
+                : SeedEntry.project,
           ),
+          routes: [
+            GoRoute(
+              path: 'growing',
+              name: 'growing',
+              builder: (context, state) =>
+                  GrowingPage(goal: state.extra! as Goal),
+            ),
+          ],
+        ),
+        StatefulShellRoute.indexedStack(
+          builder: (context, state, shell) {
+            appShell = shell;
+            return ShellScaffold(shell: shell);
+          },
+          branches: [
+            for (final tab in AppTab.values)
+              StatefulShellBranch(
+                observers: [DepthObserver(tab.index)],
+                routes: [
+                  GoRoute(
+                    path: tab.path,
+                    name: tab.name,
+                    builder: (context, state) => TabRootPage(tab: tab),
+                  ),
+                ],
+              ),
+          ],
+        ),
       ],
-    ),
-  ],
-);
+    );

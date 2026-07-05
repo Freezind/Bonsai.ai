@@ -3,12 +3,18 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'app/router.dart';
 import 'bridge/bridge_client.dart';
 import 'ds/aurora_tokens.dart';
+import 'state/app_prefs.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // Prefs load BEFORE runApp so the router's first-run redirect reads them
+  // synchronously (same boot order as the DSL cache restore later on).
+  await AppPrefs.instance.init();
   runApp(const BonsaiApp());
   // Fire-and-forget connectivity probe; the shell surfaces the result.
   BridgeClient.instance.pingAndReport();
@@ -27,6 +33,7 @@ class _BonsaiAppState extends State<BonsaiApp> {
   /// Lives at the ROOT (not the shell) so onboarding — which runs before the
   /// shell exists — is covered too.
   Timer? _keepAlive;
+  late final GoRouter _router = createAppRouter();
 
   @override
   void initState() {
@@ -59,7 +66,7 @@ class _BonsaiAppState extends State<BonsaiApp> {
         fontFamily: 'Nunito',
         dividerColor: Aurora.divider,
       ),
-      routerConfig: appRouter,
+      routerConfig: _router,
     );
   }
 }
