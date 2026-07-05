@@ -1,0 +1,775 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bonsai · Design System</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&family=Patrick+Hand&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+/* page chrome only — components/tokens live in styles.css */
+body{font-family:var(--font-body);color:var(--on-surface);background:var(--bg);display:flex}
+nav.side{position:sticky;top:0;align-self:flex-start;height:100vh;width:224px;flex:0 0 224px;background:var(--surface);border-right:2px solid var(--border);padding:20px 14px;overflow:auto}
+nav.side .brand{display:flex;align-items:center;gap:8px;font:800 22px var(--font-display);color:var(--primary);margin-bottom:4px}
+nav.side .tag{font:400 15px var(--font-hand);color:var(--secondary);margin:0 0 14px 2px}
+nav.side a{display:block;padding:5px 10px;border-radius:8px;font-size:13px;font-weight:700;color:var(--muted);text-decoration:none}
+nav.side a:hover{background:var(--bg);color:var(--primary)}
+nav.side a.concept-link{margin:0 0 8px;padding:11px 12px;font-weight:800;color:var(--on-primary);background:var(--primary);border:2px solid var(--ink);box-shadow:var(--elev-pop-sm);border-radius:12px;display:flex;align-items:center;gap:8px}
+nav.side a.concept-link:hover{filter:brightness(.96);color:var(--on-primary)}
+nav.side .grp{font:800 10px var(--font-body);letter-spacing:.9px;text-transform:uppercase;color:var(--subtle);margin:16px 0 5px 10px}
+main{flex:1;padding:34px 44px 140px;max-width:1080px}
+section{margin-bottom:52px;scroll-margin-top:20px}
+h2.sec{font:800 24px var(--font-display);color:var(--primary);margin-bottom:6px;display:flex;align-items:center;flex-wrap:wrap}
+.sec-desc{color:var(--muted);font-size:14px;margin-bottom:18px;max-width:700px;line-height:1.6}
+.stage{background:var(--surface);border:2px solid var(--border);border-radius:var(--r-lg);padding:26px;display:flex;flex-wrap:wrap;gap:26px;align-items:center}
+.stage.col{flex-direction:column;align-items:flex-start}
+.cell{display:flex;flex-direction:column;align-items:center;gap:8px}
+.spec{font:600 11px var(--font-mono);color:var(--subtle)}
+.colors{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:12px}
+.sw{border:2px solid var(--border);border-radius:var(--r-md);overflow:hidden;background:var(--surface)}
+.sw .c{height:56px;border-bottom:2px solid var(--border)}.sw .m{padding:8px 10px}.sw .n{font-size:12px;font-weight:800}.sw .v{font:11px var(--font-mono);color:var(--subtle)}
+.typerow{display:flex;align-items:baseline;gap:18px;padding:12px 0;border-bottom:2px solid var(--border-faint)}
+.typerow .tk{width:150px;flex:0 0 150px;font:11px var(--font-mono);color:var(--subtle)}
+.sprow{display:flex;align-items:center;gap:12px;margin-bottom:7px}
+.sprow .bar{background:var(--primary);height:14px;border-radius:4px;border:2px solid var(--ink)}.sprow .lbl{width:150px;font:12px var(--font-mono);color:var(--muted)}
+.radrow{display:flex;gap:16px;flex-wrap:wrap}
+.radrow .rr{display:flex;flex-direction:column;align-items:center;gap:6px}
+.radrow .box{width:74px;height:74px;background:var(--primary-container);border:2px solid var(--ink)}
+.elevrow{display:flex;gap:26px;flex-wrap:wrap}
+.elevrow .eb{width:120px;height:74px;border-radius:var(--r-md);background:var(--surface-2);display:flex;align-items:center;justify-content:center;font:700 12px var(--font-mono);color:var(--muted)}
+.iconGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px}
+.iconGrid .it{background:var(--surface);border:2px solid var(--border);border-radius:var(--r-md);padding:14px 6px 8px;display:flex;flex-direction:column;align-items:center;gap:7px;color:var(--on-surface)}
+.iconGrid .it .nm{font:11px var(--font-mono);color:var(--subtle)}
+.brandcard{display:flex;gap:26px;align-items:center;flex-wrap:wrap;background:var(--wash);border:2px solid var(--ink);box-shadow:var(--elev-pop);border-radius:var(--r-lg);padding:24px 28px}
+.growth{display:flex;align-items:flex-end;gap:14px}
+.growth .g{display:flex;flex-direction:column;align-items:center;gap:6px}
+.growth .g .cap{font:400 16px var(--font-hand);color:var(--secondary)}
+.growth .arw{color:var(--subtle);margin-bottom:22px}
+
+/* top controls + Dev Mode + Inspector + Copy-as-prompt */
+#topctl{position:fixed;top:14px;right:18px;z-index:50;display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+#langSel,#themeSel{font:700 12px var(--font-body);border:2px solid var(--border);border-radius:10px;padding:8px 10px;background:var(--surface);color:var(--muted)}
+.ds-btn{font:800 12px var(--font-body);background:var(--surface);border:2px solid var(--primary);color:var(--primary);border-radius:10px;padding:8px 12px;cursor:pointer}
+.ds-btn:hover{background:color-mix(in srgb,var(--primary) 10%,transparent)}
+#devToggle{font:800 13px var(--font-body);background:var(--surface);border:2px solid var(--border);border-radius:10px;padding:8px 14px;cursor:pointer;color:var(--muted)}
+#devToggle.on{background:var(--primary);border-color:var(--ink);color:var(--on-primary)}
+.sec-prompt{font:800 11px var(--font-body);border:2px solid var(--primary);background:var(--surface);color:var(--primary);border-radius:8px;padding:4px 10px;margin-left:12px;cursor:pointer;vertical-align:middle}
+body.dev [data-insp]:hover{outline:2px dashed var(--accent);outline-offset:3px;cursor:pointer}
+.insp-sel{outline:3px solid var(--primary)!important;outline-offset:3px}
+#inspector{position:fixed;top:0;right:0;width:344px;height:100vh;background:var(--surface-2);border-left:2.5px solid var(--ink);box-shadow:-8px 0 24px rgb(44 42 34 / .12);transform:translateX(100%);transition:transform .28s var(--ease);z-index:49;overflow:auto;padding:58px 20px 40px}
+body.inspecting #inspector{transform:translateX(0)}
+body.inspecting main{margin-right:344px}
+#inspector .iclose{position:absolute;top:16px;right:16px;border:none;background:none;font-size:20px;color:var(--muted);cursor:pointer}
+#inspector .nm{font:800 21px var(--font-display);color:var(--primary)}
+#inspector .file{font:12px var(--font-mono);color:var(--subtle);margin-top:2px}
+#inspector .desc{font-size:13px;color:var(--muted);line-height:1.6;margin-top:10px}
+#inspector h4{font:800 11px var(--font-body);letter-spacing:.6px;text-transform:uppercase;color:var(--subtle);margin:20px 0 8px}
+.prop{padding:8px 0;border-bottom:2px solid var(--border-faint)}.prop .pn{font:800 13px var(--font-mono)}.prop .pt{font:11px var(--font-mono);color:var(--secondary)}.prop .pdef{font:11px var(--font-mono);color:var(--subtle)}.prop .pd{font-size:12px;color:var(--muted);margin-top:3px}
+.tok{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:8px;cursor:pointer}.tok:hover{background:var(--bg)}
+.tok .tsw{width:22px;height:22px;border-radius:6px;border:2px solid var(--border);flex:0 0 22px}.tok .tn{font:800 12px var(--font-mono)}.tok .tr{font-size:11px;color:var(--muted)}.tok .tv{margin-left:auto;font:11px var(--font-mono);color:var(--subtle)}
+.metric{display:flex;justify-content:space-between;font:12px var(--font-mono);padding:5px 0;border-bottom:2px dashed var(--border-faint)}.metric .mk{color:var(--muted)}
+.copyprompt{width:100%;margin-top:16px;font:800 13px var(--font-body);background:var(--primary);color:var(--on-primary);border:2px solid var(--ink);border-radius:12px;padding:11px;cursor:pointer;box-shadow:var(--elev-pop-sm)}
+.copied{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--surface-2);font-size:12px;font-weight:700;padding:9px 16px;border-radius:10px;opacity:0;transition:.2s;z-index:60;pointer-events:none}.copied.show{opacity:.97}
+</style>
+</head>
+<body>
+
+<!-- ICON SPRITE — copied from icons.html so index.html is self-contained under file://. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10l9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 13a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2V21a2 2 0 0 1-4 0v-.2A1.7 1.7 0 0 0 7 19.4a1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.7 1.7 0 0 0 2.6 14a2 2 0 0 1 0-4h.2a1.7 1.7 0 0 0 1.2-2.9l-.1-.1A2 2 0 1 1 6.7 4.2l.1.1A1.7 1.7 0 0 0 10 3.6 2 2 0 0 1 14 3.6a1.7 1.7 0 0 0 2.9 1.2l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1H21a2 2 0 0 1 0 4h-.2a1.7 1.7 0 0 0-1.4.9z"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></symbol>
+  <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+  <symbol id="i-chevron-up" viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 1 0-7.8 7.8L12 21.2l8.8-8.8a5.5 5.5 0 0 0 0-7.8z"/></symbol>
+  <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+  <symbol id="i-more-h" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.6" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-more-v" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.6" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6M14 11v6"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></symbol>
+  <symbol id="i-filter" viewBox="0 0 24 24"><path d="M22 3H2l8 9.5V19l4 2v-8.5z"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="M22 6l-10 7L2 6"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="3"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 4 13c0-6 6-9 16-10 0 8-3 15-9 17z"/><path d="M8 18c2.5-4 5-6 9-8"/></symbol>
+  <symbol id="i-sprout" viewBox="0 0 24 24"><path d="M12 20v-8"/><path d="M12 12C12 8 9 6 4 6c0 5 3 7 8 6z"/><path d="M12 13c0-3 2-5 6-5 0 4-3 6-6 5z"/></symbol>
+  <symbol id="i-water" viewBox="0 0 24 24"><path d="M12 3c3 4 5 6.5 5 9a5 5 0 0 1-10 0c0-2.5 2-5 5-9z"/></symbol>
+  <symbol id="i-watering-can" viewBox="0 0 24 24"><path d="M3 11h9v6a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z"/><path d="M12 13l6-4 3 2"/><path d="M12 11c0-2 1.5-3 3-3"/><path d="M20 6l1 2"/></symbol>
+  <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 15l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/></symbol>
+  <symbol id="i-wand" viewBox="0 0 24 24"><path d="M15 4V2M15 10V8M12 7h-2M20 7h-2"/><path d="M17 5l2-2"/><path d="M5 21L16 10l-2-2L3 19a1.4 1.4 0 0 0 2 2z"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.6 6.6 0 0 0 9.8 9.8z"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></symbol>
+  <symbol id="i-flower" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.6"/><path d="M12 9.4C12 6 10 4 12 2c2 2 0 4 0 7.4M12 14.6c0 3.4-2 5.4 0 7.4 2-2 0-4 0-7.4M9.4 12C6 12 4 14 2 12c2-2 4 0 7.4 0M14.6 12c3.4 0 5.4-2 7.4 0-2 2-4 0-7.4 0"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19a2 2 0 0 1 2-2h13"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l3-4 3 3 5-7"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 2l9 5-9 5-9-5z"/><path d="M3 12l9 5 9-5M3 17l9 5 9-5"/></symbol>
+  <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></symbol>
+  <symbol id="m-seed" viewBox="0 0 300 300">
+    <path d="M150 182 V142" fill="none" stroke="var(--m-ink)" stroke-width="6" stroke-linecap="round"/>
+    <path d="M150 148 C135 148 122 138 119 121 C136 122 148 133 150 148 Z" fill="var(--m-leaf)" stroke="var(--m-ink)" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M150 139 C164 138 176 127 179 111 C163 112 151 124 150 139 Z" fill="var(--m-leaf)" stroke="var(--m-ink)" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M104 201 L111.5 252 Q112.3 257 117.5 257 L182.5 257 Q187.7 257 188.5 252 L196 201 Z" fill="var(--m-pot)" stroke="var(--m-ink)" stroke-width="5" stroke-linejoin="round"/>
+    <rect x="90" y="179" width="120" height="22" rx="9" fill="var(--m-pot)" stroke="var(--m-ink)" stroke-width="5"/>
+    <path d="M129 225 Q135 231 141 225 M159 225 Q165 231 171 225" fill="none" stroke="var(--m-ink)" stroke-width="5" stroke-linecap="round"/>
+    <ellipse cx="116" cy="234" rx="7" ry="4.5" fill="var(--m-cheek)"/><ellipse cx="184" cy="234" rx="7" ry="4.5" fill="var(--m-cheek)"/>
+  </symbol>
+  <symbol id="m-sprout" viewBox="0 0 300 300">
+    <path d="M150 182 V126" fill="none" stroke="var(--m-ink)" stroke-width="6" stroke-linecap="round"/>
+    <path d="M150 140 C132 140 116 128 113 108 C132 109 147 121 150 140 Z" fill="var(--m-leaf)" stroke="var(--m-ink)" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M150 128 C167 127 182 114 186 94 C167 95 152 109 150 128 Z" fill="var(--m-leaf)" stroke="var(--m-ink)" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M104 201 L111.5 252 Q112.3 257 117.5 257 L182.5 257 Q187.7 257 188.5 252 L196 201 Z" fill="var(--m-pot)" stroke="var(--m-ink)" stroke-width="5" stroke-linejoin="round"/>
+    <rect x="90" y="179" width="120" height="22" rx="9" fill="var(--m-pot)" stroke="var(--m-ink)" stroke-width="5"/>
+    <circle cx="135" cy="226" r="4.5" fill="var(--m-ink)"/><circle cx="165" cy="226" r="4.5" fill="var(--m-ink)"/>
+    <path d="M142 234 C147 240 153 240 158 234" fill="none" stroke="var(--m-ink)" stroke-width="5" stroke-linecap="round"/>
+    <ellipse cx="119" cy="234" rx="7" ry="4.5" fill="var(--m-cheek)"/><ellipse cx="181" cy="234" rx="7" ry="4.5" fill="var(--m-cheek)"/>
+  </symbol>
+  <symbol id="m-bonsai" viewBox="0 0 300 300">
+    <path d="M150 205 V152" fill="none" stroke="var(--m-ink)" stroke-width="7" stroke-linecap="round"/>
+    <path d="M150 30 C185 30 205 50 205 67.5 C230 72.5 242.5 95 232.5 115 C245 135 225 155 205 150 C195 165 165 170 150 160 C135 170 105 165 95 150 C75 155 55 135 67.5 115 C57.5 95 70 72.5 95 67.5 C95 50 115 30 150 30 Z" fill="var(--m-leaf)" stroke="var(--m-ink)" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M125 106 Q132 98 139 106 M161 106 Q168 98 175 106" fill="none" stroke="var(--m-ink)" stroke-width="5" stroke-linecap="round"/>
+    <path d="M141 119 C147 126 153 126 159 119" fill="none" stroke="var(--m-ink)" stroke-width="5" stroke-linecap="round"/>
+    <ellipse cx="119" cy="118" rx="7.5" ry="5" fill="var(--m-cheek)"/><ellipse cx="181" cy="118" rx="7.5" ry="5" fill="var(--m-cheek)"/>
+    <circle cx="206" cy="60" r="6.5" fill="var(--m-bud)" stroke="var(--m-ink)" stroke-width="4"/>
+    <path d="M104 201 L111.5 252 Q112.3 257 117.5 257 L182.5 257 Q187.7 257 188.5 252 L196 201 Z" fill="var(--m-pot)" stroke="var(--m-ink)" stroke-width="5" stroke-linejoin="round"/>
+    <rect x="90" y="179" width="120" height="22" rx="9" fill="var(--m-pot)" stroke="var(--m-ink)" stroke-width="5"/>
+  </symbol>
+</svg>
+
+<div id="topctl">
+  <button class="ds-btn" onclick="copyFullSystem()" title="Copy a prompt to install or update the whole design system">⤓ Install design system</button>
+  <select id="themeSel" title="Preview a theme"></select>
+  <select id="langSel" title="Copy-as-prompt target"></select>
+  <button id="devToggle" onclick="toggleDev()">◧ Dev Mode</button>
+</div>
+<aside id="inspector"><button class="iclose" onclick="closeInspector()">✕</button><div id="inspectorBody"></div></aside>
+<div class="copied" id="copied">Copied</div>
+
+<nav class="side">
+  <div class="brand"><svg class="art art--sm"><use href="#m-bonsai"/></svg>Bonsai</div>
+  <div class="tag">grows as you water it</div>
+  <a class="concept-link" href="concept.html"><svg class="ico ico--sm"><use href="#i-sparkle"/></svg>Concept preview →</a>
+  <a class="concept-link" href="mascot.html" style="background:var(--secondary);color:var(--on-secondary)"><svg class="ico ico--sm"><use href="#i-sprout"/></svg>Mascot states →</a>
+  <div class="grp">Foundations</div>
+  <a href="#colors">Colors</a><a href="#type">Typography scale</a><a href="#spacing">Spacing</a><a href="#radius">Radius</a><a href="#elevation">Elevation</a><a href="#brand">Mascot &amp; brand</a><a href="#icons">Icons</a>
+  <div class="grp">Inputs</div>
+  <a href="#button">Button</a><a href="#buttongroup">Button group</a><a href="#iconbutton">Icon button</a><a href="#fab">FAB</a><a href="#checkbox">Checkbox</a><a href="#radio">Radio group</a><a href="#switch">Switch</a><a href="#select">Select</a><a href="#autocomplete">Autocomplete</a><a href="#slider">Slider</a><a href="#textfield">Text field</a><a href="#togglebutton">Toggle button</a><a href="#rating">Rating</a>
+  <div class="grp">Data display</div>
+  <a href="#avatar">Avatar</a><a href="#badge">Badge</a><a href="#chip">Chip</a><a href="#divider">Divider</a><a href="#list">List</a><a href="#table">Table</a><a href="#tooltip">Tooltip</a><a href="#typography">Typography</a><a href="#icon">Icon</a>
+  <div class="grp">Feedback</div>
+  <a href="#alert">Alert</a><a href="#dialog">Dialog</a><a href="#snackbar">Snackbar</a><a href="#progress">Progress</a><a href="#skeleton">Skeleton</a><a href="#backdrop">Backdrop</a>
+  <div class="grp">Surfaces</div>
+  <a href="#appbar">App bar</a><a href="#card">Card</a><a href="#paper">Paper</a><a href="#accordion">Accordion</a>
+  <div class="grp">Navigation</div>
+  <a href="#bottomnav">Bottom navigation</a><a href="#drawer">Drawer</a><a href="#tabs">Tabs</a><a href="#menu">Menu</a><a href="#link">Link</a><a href="#stepper">Stepper</a><a href="#speeddial">Speed dial</a>
+</nav>
+
+<main>
+  <header style="margin-bottom:36px">
+    <div class="t-display">Bonsai Design System</div>
+    <p class="sec-desc" style="margin-top:8px">A token-first, self-growing UI kit. The reference guideline is <b>Material tokens + MUI components</b> (cross-platform). Source of truth: <code>styles.css</code>. Toggle <b>Dev Mode</b> to inspect any component; use <b>Copy as prompt</b> to build it in any language (Flutter first). Switch the <b>theme</b> top-right — only <code>:root</code> tokens change, every component follows.</p>
+  </header>
+
+  <!-- ══════════════ FOUNDATIONS ══════════════ -->
+  <section id="colors"><h2 class="sec">Colors</h2><p class="sec-desc">Semantic roles — every fill is paired with its <code>--on-*</code> foreground (WCAG-checked by math). Neutrals are tinted warm toward paper; status colors are storybook pops.</p><div class="colors" id="colorGrid"></div></section>
+
+  <section id="type"><h2 class="sec">Typography scale</h2><p class="sec-desc">Baloo 2 display × Nunito body × Patrick Hand accent. ~1.25 modular scale, tracking tightened as size grows.</p><div id="typeList"></div></section>
+
+  <section id="spacing"><h2 class="sec">Spacing</h2><p class="sec-desc">One 4px-based scale used everywhere. No ad-hoc pixels.</p><div id="spacingList"></div></section>
+
+  <section id="radius"><h2 class="sec">Radius</h2><p class="sec-desc">Soft, generous rounding for the hand-drawn feel.</p>
+    <div class="stage"><div class="radrow" id="radiusList"></div></div></section>
+
+  <section id="elevation"><h2 class="sec">Elevation</h2><p class="sec-desc">Soft ink-tinted ambient shadows, plus the signature hard offset (<code>--elev-pop</code>) — the picture-book cut-out that collapses on press.</p>
+    <div class="stage"><div class="elevrow">
+      <div class="cell"><div class="eb" style="box-shadow:var(--elev-1)">elev-1</div></div>
+      <div class="cell"><div class="eb" style="box-shadow:var(--elev-2)">elev-2</div></div>
+      <div class="cell"><div class="eb" style="box-shadow:var(--elev-3)">elev-3</div></div>
+      <div class="cell"><div class="eb" style="box-shadow:var(--elev-pop);border:2px solid var(--ink)">elev-pop</div></div>
+    </div></div></section>
+
+  <section id="brand"><h2 class="sec">Mascot &amp; brand</h2><p class="sec-desc">Bonsai’s mascot is an original hand-drawn sprout with a cheeky little face (幼齿但清新、贱萌). Watered with your context, it matures seed → sprout → bonsai → bloom → fruit, and reacts with moods (thirsty, wilting, sleeping, celebrating). Fully themeable (fills read <code>--leaf</code>/<code>--pot</code>/<code>--bloom</code>). See the full <a class="link" href="mascot.html">state sheet</a> + the <a class="link" href="motion-lottie.md">Lottie motion spec</a>.</p>
+    <div class="brandcard">
+      <svg class="art art--xl"><use href="#m-bonsai"/></svg>
+      <div>
+        <div class="t-hand" style="font-size:26px">“a screen that grows into you”</div>
+        <div class="growth" style="margin-top:14px">
+          <div class="g"><svg class="art"><use href="#m-seed"/></svg><span class="cap">day 1</span></div>
+          <svg class="ico arw"><use href="#i-arrow-right"/></svg>
+          <div class="g"><svg class="art"><use href="#m-sprout"/></svg><span class="cap">watered</span></div>
+          <svg class="ico arw"><use href="#i-arrow-right"/></svg>
+          <div class="g"><svg class="art"><use href="#m-bonsai"/></svg><span class="cap">flourishing</span></div>
+        </div>
+      </div>
+    </div></section>
+
+  <section id="icons"><h2 class="sec">Icons</h2>
+    <p class="sec-desc">Token-driven inline SVG sprite — <code>stroke:currentColor; stroke-width:var(--icon-stroke)</code>, so the whole set reskins with the theme. Full sprite + mascots live in <code>icons.html</code>. Never emoji.</p>
+    <div class="iconGrid" id="iconGrid"></div></section>
+
+  <!-- ══════════════ INPUTS ══════════════ -->
+  <section id="button"><h2 class="sec">Button</h2><p class="sec-desc">Primary action. Variants <code>contained / outlined / text</code>, colors, sizes. Contained primary carries the signature ink outline + hard shadow that collapses on press.</p>
+    <div class="stage">
+      <div class="cell"><button class="btn btn-contained" data-insp="button">Plant it</button><div class="spec">contained · primary</div></div>
+      <div class="cell"><button class="btn btn-contained btn--secondary" data-insp="button">Water</button><div class="spec">contained · secondary</div></div>
+      <div class="cell"><button class="btn btn-outlined" data-insp="button">Later</button><div class="spec">outlined</div></div>
+      <div class="cell"><button class="btn btn-text" data-insp="button">Skip</button><div class="spec">text</div></div>
+      <div class="cell"><button class="btn btn-contained is-disabled" data-insp="button">Disabled</button><div class="spec">disabled</div></div>
+      <div class="cell"><button class="btn btn-contained btn--sm" data-insp="button">Small</button><div class="spec">size sm</div></div>
+      <div class="cell"><button class="btn btn-contained btn--lg" data-insp="button">Large</button><div class="spec">size lg</div></div>
+    </div></section>
+
+  <section id="buttongroup"><h2 class="sec">Button group</h2><p class="sec-desc">Segmented set of related actions sharing one ink frame.</p>
+    <div class="stage"><div class="btn-group" data-insp="buttongroup">
+      <button class="btn btn-text is-active">Day</button><button class="btn btn-text">Week</button><button class="btn btn-text">Month</button>
+    </div></div></section>
+
+  <section id="iconbutton"><h2 class="sec">Icon button</h2><p class="sec-desc">Icon-only action, 48px target. Variants standard / filled / outlined + toggle.</p>
+    <div class="stage">
+      <div class="cell"><button class="icon-btn" data-insp="iconbutton"><svg class="ico"><use href="#i-bell"/></svg></button><div class="spec">standard</div></div>
+      <div class="cell"><button class="icon-btn icon-btn--filled" data-insp="iconbutton"><svg class="ico"><use href="#i-water"/></svg></button><div class="spec">filled</div></div>
+      <div class="cell"><button class="icon-btn icon-btn--outlined" data-insp="iconbutton"><svg class="ico"><use href="#i-share"/></svg></button><div class="spec">outlined</div></div>
+      <div class="cell"><button class="icon-btn is-active" data-insp="iconbutton"><svg class="ico ico--filled"><use href="#i-heart"/></svg></button><div class="spec">toggle · on</div></div>
+    </div></section>
+
+  <section id="fab"><h2 class="sec">Floating action button</h2><p class="sec-desc">Primary screen action, elevated with the signature hard shadow.</p>
+    <div class="stage">
+      <div class="cell"><button class="fab" data-insp="fab"><svg class="ico"><use href="#i-plus"/></svg></button><div class="spec">regular</div></div>
+      <div class="cell"><button class="fab fab--sm" data-insp="fab"><svg class="ico"><use href="#i-plus"/></svg></button><div class="spec">small</div></div>
+      <div class="cell"><button class="fab fab--extended" data-insp="fab"><svg class="ico"><use href="#i-watering-can"/></svg>Water plant</button><div class="spec">extended</div></div>
+    </div></section>
+
+  <section id="checkbox"><h2 class="sec">Checkbox</h2><p class="sec-desc">Multi-select. States: unchecked / checked / indeterminate / disabled.</p>
+    <div class="stage">
+      <label class="check" data-insp="checkbox"><span class="box"><svg class="ico"><use href="#i-check"/></svg></span>Read my calendar</label>
+      <label class="check is-checked" data-insp="checkbox"><span class="box"><svg class="ico"><use href="#i-check"/></svg></span>Read my notes</label>
+      <label class="check is-indeterminate" data-insp="checkbox"><span class="box"><svg class="ico"><use href="#i-minus"/></svg></span>Some sources</label>
+      <label class="check is-disabled" data-insp="checkbox"><span class="box"><svg class="ico"><use href="#i-check"/></svg></span>Disabled</label>
+    </div></section>
+
+  <section id="radio"><h2 class="sec">Radio group</h2><p class="sec-desc">Single choice within a set.</p>
+    <div class="stage col">
+      <label class="check is-checked" data-insp="radio"><span class="box radio"><span class="dot"></span></span>Calm — fewer widgets</label>
+      <label class="check" data-insp="radio"><span class="box radio"><span class="dot"></span></span>Balanced</label>
+      <label class="check" data-insp="radio"><span class="box radio"><span class="dot"></span></span>Dense — everything at a glance</label>
+    </div></section>
+
+  <section id="switch"><h2 class="sec">Switch</h2><p class="sec-desc">Immediate on/off toggle.</p>
+    <div class="stage">
+      <div class="cell"><span class="switch" data-insp="switch"><span class="track"><span class="thumb"></span></span></span><div class="spec">off</div></div>
+      <div class="cell"><span class="switch is-on" data-insp="switch"><span class="track"><span class="thumb"></span></span></span><div class="spec">on</div></div>
+      <div class="cell"><span class="switch is-on is-disabled" data-insp="switch"><span class="track"><span class="thumb"></span></span></span><div class="spec">disabled</div></div>
+    </div></section>
+
+  <section id="select"><h2 class="sec">Select</h2><p class="sec-desc">Choose one from a menu; reuses the text-field frame + a popover list.</p>
+    <div class="stage col">
+      <div class="field select" data-insp="select" style="width:280px"><span class="lab">Life area to grow first</span>
+        <div class="ctl"><span>Focus &amp; deep work</span><svg class="ico"><use href="#i-chevron-down"/></svg></div></div>
+      <div class="menu-pop" style="width:280px">
+        <div class="opt is-selected"><svg class="ico ico--sm"><use href="#i-target"/></svg>Focus &amp; deep work</div>
+        <div class="opt"><svg class="ico ico--sm"><use href="#i-book"/></svg>Reading &amp; learning</div>
+        <div class="opt"><svg class="ico ico--sm"><use href="#i-sun"/></svg>Health &amp; routine</div>
+      </div>
+    </div></section>
+
+  <section id="autocomplete"><h2 class="sec">Autocomplete</h2><p class="sec-desc">Text field with a filtered suggestion list and removable input chips.</p>
+    <div class="stage col">
+      <div class="field" data-insp="autocomplete" style="width:300px"><span class="lab">What matters to you?</span>
+        <div class="ctl"><span class="chip chip--input" style="height:26px">mornings<span class="x"><svg class="ico ico--sm"><use href="#i-close"/></svg></span></span><input placeholder="type to add…" value="foc"></div></div>
+      <div class="menu-pop" style="width:300px">
+        <div class="opt"><svg class="ico ico--sm"><use href="#i-target"/></svg><b>foc</b>us blocks</div>
+        <div class="opt"><svg class="ico ico--sm"><use href="#i-leaf"/></svg><b>foc</b>used reading</div>
+      </div>
+    </div></section>
+
+  <section id="slider"><h2 class="sec">Slider</h2><p class="sec-desc">Select from a range; continuous or discrete.</p>
+    <div class="stage col">
+      <div class="slider" data-insp="slider"><div class="rail"><div class="fill" style="width:62%"></div></div><div class="knob" data-val="62%" style="left:62%"></div></div>
+      <span class="t-body-sm">How much should Bonsai auto-arrange? — <b>62%</b></span>
+    </div></section>
+
+  <section id="textfield"><h2 class="sec">Text field</h2><p class="sec-desc">Variants <code>outlined / filled / standard</code>. States: empty / focused / filled / error / disabled, with label + helper.</p>
+    <div class="stage">
+      <div class="field" data-insp="textfield"><span class="lab">Your name</span><div class="ctl"><svg class="ico"><use href="#i-user"/></svg><input placeholder="e.g. Rowan"></div><span class="help">Bonsai greets you by this.</span></div>
+      <div class="field is-focused" data-insp="textfield"><span class="lab">Your name</span><div class="ctl"><svg class="ico"><use href="#i-user"/></svg><input value="Rowan"></div><span class="help">Focused</span></div>
+      <div class="field field--filled" data-insp="textfield"><span class="lab">Goal</span><div class="ctl"><input value="Write every morning"></div><span class="help">Filled variant</span></div>
+      <div class="field is-error" data-insp="textfield"><span class="lab">Email</span><div class="ctl"><svg class="ico"><use href="#i-mail"/></svg><input value="rowan@"></div><span class="help">Enter a valid email.</span></div>
+      <div class="field is-disabled" data-insp="textfield"><span class="lab">Locked</span><div class="ctl"><svg class="ico"><use href="#i-lock"/></svg><input value="Disabled"></div></div>
+    </div></section>
+
+  <section id="togglebutton"><h2 class="sec">Toggle button</h2><p class="sec-desc">Multi- or single-select from a compact set.</p>
+    <div class="stage"><div class="toggle-group" data-insp="togglebutton">
+      <button class="toggle-btn is-active"><svg class="ico"><use href="#i-sun"/></svg>Morning</button>
+      <button class="toggle-btn"><svg class="ico"><use href="#i-compass"/></svg>Midday</button>
+      <button class="toggle-btn"><svg class="ico"><use href="#i-moon"/></svg>Evening</button>
+    </div></div></section>
+
+  <section id="rating"><h2 class="sec">Rating</h2><p class="sec-desc">Star input / display.</p>
+    <div class="stage"><div class="rating" data-insp="rating">
+      <svg class="ico on"><use href="#i-star"/></svg><svg class="ico on"><use href="#i-star"/></svg><svg class="ico on"><use href="#i-star"/></svg><svg class="ico on"><use href="#i-star"/></svg><svg class="ico"><use href="#i-star"/></svg>
+    </div></div></section>
+
+  <!-- ══════════════ DATA DISPLAY ══════════════ -->
+  <section id="avatar"><h2 class="sec">Avatar</h2><p class="sec-desc">User / entity identity. Sizes + circle/square.</p>
+    <div class="stage">
+      <div class="cell"><span class="avatar avatar--sm" data-insp="avatar">RO</span><div class="spec">sm</div></div>
+      <div class="cell"><span class="avatar" data-insp="avatar">RO</span><div class="spec">md</div></div>
+      <div class="cell"><span class="avatar avatar--lg" data-insp="avatar"><svg class="ico ico--lg"><use href="#i-user"/></svg></span><div class="spec">lg · icon</div></div>
+      <div class="cell"><span class="avatar avatar--square" data-insp="avatar">🌱</span><div class="spec">square</div></div>
+    </div></section>
+
+  <section id="badge"><h2 class="sec">Badge</h2><p class="sec-desc">Count or status marker anchored to another element.</p>
+    <div class="stage">
+      <div class="cell"><span class="badge-anchor" data-insp="badge"><button class="icon-btn"><svg class="ico"><use href="#i-bell"/></svg></button><span class="badge">3</span></span><div class="spec">number</div></div>
+      <div class="cell"><span class="badge-anchor" data-insp="badge"><button class="icon-btn"><svg class="ico"><use href="#i-leaf"/></svg></button><span class="badge badge--dot"></span></span><div class="spec">dot</div></div>
+      <div class="cell"><span class="badge" data-insp="badge" style="position:static;background:var(--success);color:var(--on-success)">New</span><div class="spec">label</div></div>
+    </div></section>
+
+  <section id="chip"><h2 class="sec">Chip</h2><p class="sec-desc">Compact descriptor / filter. Variants <code>assist / filter / input / suggestion</code>.</p>
+    <div class="stage">
+      <div class="cell"><span class="chip chip--assist" data-insp="chip"><svg class="ico ico--sm"><use href="#i-sparkle"/></svg>Suggested widget</span><div class="spec">assist</div></div>
+      <div class="cell"><span class="chip chip--filter is-selected" data-insp="chip"><svg class="ico ico--sm"><use href="#i-check"/></svg>Focus</span><div class="spec">filter · selected</div></div>
+      <div class="cell"><span class="chip chip--filter" data-insp="chip">Reading</span><div class="spec">filter</div></div>
+      <div class="cell"><span class="chip chip--input" data-insp="chip">mornings<span class="x"><svg class="ico ico--sm"><use href="#i-close"/></svg></span></span><div class="spec">input</div></div>
+      <div class="cell"><span class="chip chip--suggestion" data-insp="chip">+ Add area</span><div class="spec">suggestion</div></div>
+    </div></section>
+
+  <section id="divider"><h2 class="sec">Divider</h2><p class="sec-desc">Full-width and inset separators.</p>
+    <div class="stage col" style="align-items:stretch">
+      <span class="t-body-sm">Above</span><hr class="divider" data-insp="divider"><span class="t-body-sm">Full</span>
+      <hr class="divider divider--inset" data-insp="divider"><span class="t-body-sm" style="margin-left:48px">Inset</span>
+    </div></section>
+
+  <section id="list"><h2 class="sec">List</h2><p class="sec-desc">One/two-line rows with leading + trailing slots.</p>
+    <div class="stage col" style="align-items:stretch"><div class="list" data-insp="list" style="border:2px solid var(--border)">
+      <div class="list-item"><span class="avatar avatar--sm"><svg class="ico ico--sm"><use href="#i-target"/></svg></span><div class="li-body"><div class="li-title">Focus block</div><div class="li-sub">Every weekday · 9:00–11:00</div></div><span class="li-trail"><svg class="ico"><use href="#i-chevron-right"/></svg></span></div>
+      <div class="list-item"><span class="avatar avatar--sm"><svg class="ico ico--sm"><use href="#i-book"/></svg></span><div class="li-body"><div class="li-title">Reading list</div><div class="li-sub">4 unread from your notes</div></div><span class="li-trail"><span class="badge" style="position:static">4</span></span></div>
+      <div class="list-item"><span class="avatar avatar--sm"><svg class="ico ico--sm"><use href="#i-sun"/></svg></span><div class="li-body"><div class="li-title">Morning ritual</div><div class="li-sub">3 of 5 steps done today</div></div><span class="li-trail"><span class="switch is-on"><span class="track"><span class="thumb"></span></span></span></span></div>
+    </div></div></section>
+
+  <section id="table"><h2 class="sec">Table</h2><p class="sec-desc">Dense tabular data with a tinted header.</p>
+    <div class="stage col" style="align-items:stretch"><table class="table" data-insp="table">
+      <thead><tr><th>Widget</th><th>Source</th><th class="num">Waterings</th></tr></thead>
+      <tbody>
+        <tr><td>Focus timer</td><td>Calendar</td><td class="num">128</td></tr>
+        <tr><td>Reading queue</td><td>Notes · gbrain</td><td class="num">54</td></tr>
+        <tr><td>Habit garden</td><td>Health</td><td class="num">31</td></tr>
+      </tbody>
+    </table></div></section>
+
+  <section id="tooltip"><h2 class="sec">Tooltip</h2><p class="sec-desc">Plain + rich hover hint (always shown here for the catalogue).</p>
+    <div class="stage" style="padding-top:56px">
+      <div class="cell"><span class="tooltip" data-insp="tooltip"><span class="tip">Water = feed it context</span><button class="icon-btn"><svg class="ico"><use href="#i-water"/></svg></button></span><div class="spec">plain</div></div>
+      <div class="cell" style="margin-left:60px"><span class="tooltip" data-insp="tooltip"><span class="tip tip--rich">Bonsai reads your gbrain memory to grow widgets you’ll actually use.</span><button class="icon-btn"><svg class="ico"><use href="#i-sparkle"/></svg></button></span><div class="spec">rich</div></div>
+    </div></section>
+
+  <section id="typography"><h2 class="sec">Typography</h2><p class="sec-desc">The text component — renders any scale token. See the full scale in <a class="link" href="#type">Typography scale</a>.</p>
+    <div class="stage col">
+      <div class="t-h1" data-insp="typography">Your garden, today</div>
+      <div class="t-title" data-insp="typography">Morning ritual</div>
+      <div class="t-body" data-insp="typography">Semantic tokens turn a pile of hexes into a language you can grow.</div>
+      <div class="t-hand" data-insp="typography">watered 3 days in a row ✿</div>
+    </div></section>
+
+  <section id="icon"><h2 class="sec">Icon</h2><p class="sec-desc">The icon primitive — token-driven size + stroke. Full set in <a class="link" href="icons.html">icons.html</a>.</p>
+    <div class="stage">
+      <div class="cell"><svg class="ico ico--sm" data-insp="icon"><use href="#i-leaf"/></svg><div class="spec">sm 18</div></div>
+      <div class="cell"><svg class="ico" data-insp="icon"><use href="#i-leaf"/></svg><div class="spec">md 24</div></div>
+      <div class="cell"><svg class="ico ico--lg" data-insp="icon"><use href="#i-leaf"/></svg><div class="spec">lg 30</div></div>
+      <div class="cell" style="color:var(--secondary)"><svg class="ico ico--lg ico--filled" data-insp="icon"><use href="#i-flower"/></svg><div class="spec">filled</div></div>
+    </div></section>
+
+  <!-- ══════════════ FEEDBACK ══════════════ -->
+  <section id="alert"><h2 class="sec">Alert</h2><p class="sec-desc">Inline status message. Severities success / info / warning / error; filled or outlined.</p>
+    <div class="stage col" style="align-items:stretch;gap:14px">
+      <div class="alert alert--success" data-insp="alert"><svg class="ico"><use href="#i-check"/></svg><div><div class="a-title">Sprouted!</div><div class="a-body">Your first three widgets are growing.</div></div></div>
+      <div class="alert" data-insp="alert"><svg class="ico"><use href="#i-sparkle"/></svg><div><div class="a-title">Generating your layout</div><div class="a-body">Bonsai is arranging your home from your context.</div></div></div>
+      <div class="alert alert--warning" data-insp="alert"><svg class="ico"><use href="#i-water"/></svg><div><div class="a-title">Thirsty</div><div class="a-body">Add more context to unlock richer widgets.</div></div></div>
+      <div class="alert alert--error alert--outlined" data-insp="alert"><svg class="ico"><use href="#i-close"/></svg><div><div class="a-title">Couldn’t reach gbrain</div><div class="a-body">Check your connection and retry.</div></div></div>
+    </div></section>
+
+  <section id="dialog"><h2 class="sec">Dialog</h2><p class="sec-desc">Modal decision surface.</p>
+    <div class="stage"><div class="dialog" data-insp="dialog">
+      <div class="d-body"><div class="d-title">Re-grow your home?</div><div class="d-text">Bonsai will rearrange your widgets from your latest context. Your data stays.</div></div>
+      <div class="d-actions"><button class="btn btn-text">Cancel</button><button class="btn btn-contained btn--sm">Re-grow</button></div>
+    </div></div></section>
+
+  <section id="snackbar"><h2 class="sec">Snackbar</h2><p class="sec-desc">Transient confirmation, optional action.</p>
+    <div class="stage col">
+      <div class="snackbar" data-insp="snackbar"><span>Widget added to your garden</span><span class="sb-action">Undo</span></div>
+      <div class="snackbar" data-insp="snackbar"><span>Context watered · +2 new widgets</span></div>
+    </div></section>
+
+  <section id="progress"><h2 class="sec">Progress</h2><p class="sec-desc">Linear + circular; determinate or indeterminate.</p>
+    <div class="stage">
+      <div class="cell" style="width:240px"><div class="progress" data-insp="progress"><div class="bar" style="width:70%"></div></div><div class="spec">linear · 70%</div></div>
+      <div class="cell" style="width:240px"><div class="progress progress--striped" data-insp="progress"><div class="bar" style="width:40%"></div></div><div class="spec">linear · striped</div></div>
+      <div class="cell"><div class="spinner" data-insp="progress"></div><div class="spec">circular</div></div>
+    </div></section>
+
+  <section id="skeleton"><h2 class="sec">Skeleton</h2><p class="sec-desc">Loading placeholder while widgets generate.</p>
+    <div class="stage col" style="align-items:stretch"><div class="card card--outlined" style="width:100%" data-insp="skeleton">
+      <div class="row"><div class="skel skel--circle" style="width:44px;height:44px"></div><div style="flex:1"><div class="skel skel--text" style="width:50%"></div><div class="skel skel--text" style="width:75%;margin-top:8px"></div></div></div>
+      <div class="skel" style="height:96px;margin-top:14px"></div>
+    </div></div></section>
+
+  <section id="backdrop"><h2 class="sec">Backdrop</h2><p class="sec-desc">Dimming layer behind modals / while the AI generates the UI (the splash step).</p>
+    <div class="stage" style="padding:0;overflow:hidden"><div style="position:relative;width:100%;height:220px;background:var(--wash)">
+      <div class="backdrop" data-insp="backdrop"><div style="text-align:center;color:var(--surface-2)"><div class="spinner" style="margin:0 auto;border-color:rgb(255 255 255 / .3);border-top-color:var(--on-primary)"></div><div class="t-hand" style="color:var(--surface-2);margin-top:12px">growing your home…</div></div></div>
+    </div></div></section>
+
+  <!-- ══════════════ SURFACES ══════════════ -->
+  <section id="appbar"><h2 class="sec">App bar</h2><p class="sec-desc">Top bar; center-aligned + transparent variants.</p>
+    <div class="stage col" style="align-items:stretch;gap:14px">
+      <div class="appbar appbar--center" data-insp="appbar" style="border:2px solid var(--border);border-radius:var(--r-md)"><button class="icon-btn"><svg class="ico"><use href="#i-menu"/></svg></button><span class="ttl">Your garden</span><button class="icon-btn"><svg class="ico"><use href="#i-bell"/></svg></button></div>
+      <div class="appbar" data-insp="appbar" style="border:2px solid var(--border);border-radius:var(--r-md)"><button class="icon-btn"><svg class="ico"><use href="#i-back"/></svg></button><span class="ttl">Morning ritual</span><button class="icon-btn"><svg class="ico"><use href="#i-more-v"/></svg></button></div>
+    </div></section>
+
+  <section id="card"><h2 class="sec">Card</h2><p class="sec-desc">Surface container. Variants elevated / outlined / filled / <b>pop</b> (signature cut-out).</p>
+    <div class="stage">
+      <div class="card card--pop" data-insp="card" style="width:260px"><div class="card__media"><svg class="art art--xl" style="position:absolute;right:6px;bottom:-8px"><use href="#m-sprout"/></svg></div><span class="chip chip--filter is-selected" style="height:26px">Growing</span><div class="t-title" style="margin-top:10px">Habit garden</div><div class="t-body-sm" style="margin-top:4px">3 of 5 watered today.</div></div>
+      <div class="card card--outlined" data-insp="card" style="width:220px"><div class="t-subtitle">Outlined</div><div class="t-body" style="margin-top:6px">A quieter container for secondary content.</div></div>
+      <div class="card card--filled" data-insp="card" style="width:220px"><div class="t-subtitle">Filled</div><div class="t-body" style="margin-top:6px">Tonal fill, no shadow.</div></div>
+    </div></section>
+
+  <section id="paper"><h2 class="sec">Paper</h2><p class="sec-desc">The base surface primitive at elevations 0 / 1 / 2.</p>
+    <div class="stage">
+      <div class="paper paper--0" data-insp="paper" style="width:160px"><div class="t-subtitle">paper 0</div></div>
+      <div class="paper paper--1" data-insp="paper" style="width:160px"><div class="t-subtitle">paper 1</div></div>
+      <div class="paper paper--2" data-insp="paper" style="width:160px"><div class="t-subtitle">paper 2</div></div>
+    </div></section>
+
+  <section id="accordion"><h2 class="sec">Accordion</h2><p class="sec-desc">Expandable disclosure sections.</p>
+    <div class="stage col" style="align-items:stretch"><div class="accordion" data-insp="accordion" style="width:100%">
+      <div class="ac-item is-open"><div class="ac-head">What can Bonsai water?<svg class="ico"><use href="#i-chevron-down"/></svg></div><div class="ac-panel">Calendar, notes, and your gbrain memory — with your permission, per source.</div></div>
+      <div class="ac-item"><div class="ac-head">Can I edit the generated layout?<svg class="ico"><use href="#i-chevron-down"/></svg></div></div>
+      <div class="ac-item"><div class="ac-head">Where does my data live?<svg class="ico"><use href="#i-chevron-down"/></svg></div></div>
+    </div></div></section>
+
+  <!-- ══════════════ NAVIGATION ══════════════ -->
+  <section id="bottomnav"><h2 class="sec">Bottom navigation</h2><p class="sec-desc">Primary destinations, ink top-border, active pill.</p>
+    <div class="stage col" style="align-items:stretch"><div class="bottomnav" data-insp="bottomnav" style="border-radius:var(--r-md);border:2px solid var(--ink);overflow:hidden">
+      <div class="ni is-active"><span class="pill"></span><svg class="ico"><use href="#i-home"/></svg>Garden</div>
+      <div class="ni"><svg class="ico"><use href="#i-grid"/></svg>Widgets</div>
+      <div class="ni"><svg class="ico"><use href="#i-water"/></svg>Water</div>
+      <div class="ni"><svg class="ico"><use href="#i-user"/></svg>You</div>
+    </div></div></section>
+
+  <section id="drawer"><h2 class="sec">Drawer</h2><p class="sec-desc">Slide-in navigation / settings panel.</p>
+    <div class="stage"><div class="drawer" data-insp="drawer" style="border-radius:var(--r-md);border:2px solid var(--ink)">
+      <div class="d-item is-active"><svg class="ico"><use href="#i-home"/></svg>Your garden</div>
+      <div class="d-item"><svg class="ico"><use href="#i-grid"/></svg>All widgets</div>
+      <div class="d-item"><svg class="ico"><use href="#i-water"/></svg>Context sources</div>
+      <div class="d-item"><svg class="ico"><use href="#i-settings"/></svg>Settings</div>
+    </div></div></section>
+
+  <section id="tabs"><h2 class="sec">Tabs</h2><p class="sec-desc">Underline tabs + segmented pill variant.</p>
+    <div class="stage col" style="align-items:stretch;gap:18px">
+      <div class="tabs" data-insp="tabs"><div class="tab is-active">Today</div><div class="tab">Upcoming</div><div class="tab">Grown</div></div>
+      <div class="segment" data-insp="tabs" style="align-self:flex-start"><div class="seg is-active">Day</div><div class="seg">Week</div><div class="seg">Month</div></div>
+    </div></section>
+
+  <section id="menu"><h2 class="sec">Menu</h2><p class="sec-desc">Dropdown of actions from a trigger.</p>
+    <div class="stage"><div class="menu-pop" data-insp="menu">
+      <div class="opt"><svg class="ico ico--sm"><use href="#i-edit"/></svg>Edit widget</div>
+      <div class="opt"><svg class="ico ico--sm"><use href="#i-share"/></svg>Share</div>
+      <div class="opt"><svg class="ico ico--sm"><use href="#i-water"/></svg>Water now</div>
+      <hr class="divider" style="margin:4px 6px">
+      <div class="opt" style="color:var(--error)"><svg class="ico ico--sm"><use href="#i-trash"/></svg>Remove</div>
+    </div></div></section>
+
+  <section id="link"><h2 class="sec">Link</h2><p class="sec-desc">Inline navigation within text.</p>
+    <div class="stage"><span class="t-body">Read how <a class="link" data-insp="link">Bonsai grows widgets</a> from your context.</span></div></section>
+
+  <section id="stepper"><h2 class="sec">Stepper</h2><p class="sec-desc">Progress through the onboarding flow.</p>
+    <div class="stage"><div class="stepper" data-insp="stepper">
+      <div class="step is-done"><span class="dot"><svg class="ico ico--sm"><use href="#i-check"/></svg></span>About you</div>
+      <div class="connector"></div>
+      <div class="step is-active"><span class="dot">2</span>Sources</div>
+      <div class="connector"></div>
+      <div class="step"><span class="dot">3</span>Grow</div>
+    </div></div></section>
+
+  <section id="speeddial"><h2 class="sec">Speed dial</h2><p class="sec-desc">A FAB that fans out contextual mini-actions.</p>
+    <div class="stage"><div class="speeddial" data-insp="speeddial">
+      <div class="sd-mini"><svg class="ico ico--sm"><use href="#i-book"/></svg></div>
+      <div class="sd-mini"><svg class="ico ico--sm"><use href="#i-target"/></svg></div>
+      <div class="sd-mini"><svg class="ico ico--sm"><use href="#i-sun"/></svg></div>
+      <button class="fab"><svg class="ico"><use href="#i-plus"/></svg></button>
+    </div></div></section>
+
+</main>
+
+<script>
+/* ===== Foundations data ===== */
+const COLORS=[
+ ['primary','#2C8248'],['on-primary','#FFFFFF'],['primary-container','#D4EDD6'],['on-primary-container','#123A1E'],
+ ['secondary','#2F7BB4'],['on-secondary','#FFFFFF'],['secondary-container','#D6E6F3'],
+ ['accent','#F4B63C'],['bloom','#E86A80'],['ink','#26302A'],
+ ['bg','#F6F4E9'],['surface','#FCFBF4'],['surface-2','#FFFFFF'],['surface-sunken','#ECEADB'],
+ ['muted-surface','#EDF2E5'],['on-surface','#26302A'],['muted','#5E6A56'],['subtle','#97A088'],
+ ['border','#DCE2CE'],['success','#2E7D46'],['error','#D24338'],['warning','#F4B63C'],['info','#2F7BB4']];
+const TYPE=[['t-display','Baloo2 800 / 37'],['t-h1','Baloo2 800 / 29'],['t-h2','Baloo2 700 / 23'],['t-title','Nunito 700 / 19'],['t-subtitle','Nunito 700 / 15'],['t-body','Nunito 400 / 15'],['t-body-sm','Nunito 400 / 13'],['t-label','Nunito 700 / 12 caps'],['t-hand','Patrick Hand / 22']];
+const SPACING=[['sp-2',2],['sp-4',4],['sp-8',8],['sp-12',12],['sp-16',16],['sp-20',20],['sp-24',24],['sp-32',32],['sp-48',48],['sp-64',64]];
+const RADIUS=[['r-xs',8],['r-sm',12],['r-md',16],['r-lg',22],['r-xl',30],['r-full',999]];
+colorGrid.innerHTML=COLORS.map(([n,h])=>`<div class="sw"><div class="c" style="background:${h}"></div><div class="m"><div class="n">${n}</div><div class="v">${h}</div></div></div>`).join('');
+typeList.innerHTML=TYPE.map(([n,m])=>`<div class="typerow"><div class="tk">${n}<br>${m}</div><div class="${n}">Bonsai grows on you</div></div>`).join('');
+spacingList.innerHTML=SPACING.map(([n,v])=>`<div class="sprow"><div class="lbl">${n} · ${v}px</div><div class="bar" style="width:${Math.max(v,1)}px"></div></div>`).join('');
+radiusList.innerHTML=RADIUS.map(([n,v])=>`<div class="rr"><div class="box" style="border-radius:${v>100?'999px':v+'px'}"></div><div class="spec">${n} · ${v>100?'full':v}</div></div>`).join('');
+const ICONS=['home','grid','leaf','sprout','water','watering-can','sparkle','wand','sun','moon','flower','book','target','chart','compass','user','bell','calendar','clock','heart','bookmark','star','search','settings','plus','check'];
+iconGrid.innerHTML=ICONS.map(n=>`<div class="it"><svg class="ico ico--lg"><use href="#i-${n}"/></svg><div class="nm">i-${n}</div></div>`).join('');
+
+/* ===== SPECS: one entry per component (drives Inspector + Copy-as-prompt) ===== */
+const SPECS={
+ button:{name:'Button',file:'lib/ds/components/button.dart',desc:'Primary action. Variants contained/outlined/text × colors (primary/secondary/success/error) × sizes (sm/md/lg). Contained-primary carries the signature ink outline + hard offset shadow that collapses on press.',
+  props:[{n:'label',t:'String'},{n:'onPressed',t:'VoidCallback?'},{n:'variant',t:'contained|outlined|text',def:'contained'},{n:'color',t:'primary|secondary|success|error',def:'primary'},{n:'size',t:'sm|md|lg',def:'md'},{n:'leadingIcon',t:'IconData?'},{n:'disabled',t:'bool',def:'false'}],
+  tokens:[{r:'fill (contained)',n:'--primary',v:'#2C8248',c:'#2C8248'},{r:'label',n:'--on-primary',v:'#FFFFFF',c:'#FFFFFF'},{r:'outline + shadow',n:'--ink',v:'#26302A',c:'#26302A'},{r:'signature shadow',n:'--elev-pop',v:'3px 3px 0 var(--ink)'},{r:'shape',n:'--r-full',v:'999px'},{r:'label type',n:'font-body 800/15'}],
+  metrics:[['minHeight','48 (sm 38 · lg 56)'],['radius','--r-full'],['border','2px ink'],['padding','h 24'],['press','translate 2px, shadow→pop-sm']]},
+ buttongroup:{name:'ButtonGroup',file:'lib/ds/components/button_group.dart',desc:'Segmented set of related actions sharing one ink frame; one active.',
+  props:[{n:'items',t:'List<String>'},{n:'activeIndex',t:'int',def:'0'},{n:'onChange',t:'ValueChanged<int>'}],
+  tokens:[{r:'frame',n:'--ink',v:'#26302A',c:'#26302A'},{r:'active fill',n:'--primary',v:'#2C8248',c:'#2C8248'},{r:'divider',n:'--ink',v:'#26302A',c:'#26302A'}],
+  metrics:[['minHeight','44'],['radius','--r-full'],['border','2px ink']]},
+ iconbutton:{name:'IconButton',file:'lib/ds/components/icon_button.dart',desc:'Icon-only action at a 48px target. Variants standard/filled/outlined + toggle (active).',
+  props:[{n:'icon',t:'IconData'},{n:'variant',t:'standard|filled|outlined',def:'standard'},{n:'selected',t:'bool',def:'false'},{n:'onPressed',t:'VoidCallback?'}],
+  tokens:[{r:'hover bg',n:'--muted-surface',v:'#EDF2E5',c:'#EDF2E5'},{r:'filled bg',n:'--primary',v:'#2C8248',c:'#2C8248'},{r:'active ink',n:'--secondary',v:'#2F7BB4',c:'#2F7BB4'}],
+  metrics:[['size','48×48'],['radius','--r-full'],['icon','24'],['press','scale .92']]},
+ fab:{name:'Fab',file:'lib/ds/components/fab.dart',desc:'Floating primary action; elevated with the signature hard shadow. regular/small/extended.',
+  props:[{n:'icon',t:'IconData'},{n:'label',t:'String?'},{n:'variant',t:'regular|small|extended',def:'regular'},{n:'onPressed',t:'VoidCallback'}],
+  tokens:[{r:'fill',n:'--secondary',v:'#2F7BB4',c:'#2F7BB4'},{r:'on',n:'--on-secondary',v:'#FFFFFF',c:'#FFFFFF'},{r:'outline',n:'--ink',v:'#26302A',c:'#26302A'},{r:'shadow',n:'--elev-pop',v:'3px 3px 0 var(--ink)'}],
+  metrics:[['size','60 (sm 44)'],['radius','--r-xl / full'],['border','2.5px ink']]},
+ checkbox:{name:'Checkbox',file:'lib/ds/components/checkbox.dart',desc:'Multi-select box. States unchecked/checked/indeterminate/disabled; spring-in check.',
+  props:[{n:'value',t:'bool?'},{n:'onChanged',t:'ValueChanged<bool>'},{n:'label',t:'String?'},{n:'indeterminate',t:'bool',def:'false'}],
+  tokens:[{r:'outline',n:'--ink',v:'#26302A',c:'#26302A'},{r:'checked fill',n:'--primary',v:'#2C8248',c:'#2C8248'},{r:'tick',n:'--on-primary',v:'#FFFFFF',c:'#FFFFFF'}],
+  metrics:[['box','24'],['radius','--r-xs'],['border','2.5px'],['target','44']]},
+ radio:{name:'Radio',file:'lib/ds/components/radio.dart',desc:'Single choice in a group; spring-in dot.',
+  props:[{n:'value',t:'T'},{n:'groupValue',t:'T'},{n:'onChanged',t:'ValueChanged<T>'},{n:'label',t:'String?'}],
+  tokens:[{r:'outline',n:'--ink',v:'#26302A',c:'#26302A'},{r:'selected fill',n:'--primary',v:'#2C8248',c:'#2C8248'},{r:'dot',n:'--on-primary',v:'#FFFFFF',c:'#FFFFFF'}],
+  metrics:[['box','24'],['radius','full'],['dot','12'],['target','44']]},
+ switch:{name:'Switch',file:'lib/ds/components/switch.dart',desc:'Immediate on/off toggle; spring thumb.',
+  props:[{n:'value',t:'bool'},{n:'onChanged',t:'ValueChanged<bool>'},{n:'disabled',t:'bool',def:'false'}],
+  tokens:[{r:'track off',n:'--surface-sunken',v:'#ECEADB',c:'#ECEADB'},{r:'track on',n:'--primary',v:'#2C8248',c:'#2C8248'},{r:'outline',n:'--ink',v:'#26302A',c:'#26302A'}],
+  metrics:[['track','52×30'],['thumb','22'],['border','2.5px']]},
+ select:{name:'Select',file:'lib/ds/components/select.dart',desc:'Choose one value from a popover menu; reuses the text-field frame.',
+  props:[{n:'label',t:'String'},{n:'value',t:'T'},{n:'options',t:'List<Option<T>>'},{n:'onChanged',t:'ValueChanged<T>'}],
+  tokens:[{r:'field bg',n:'--surface',v:'#FCFBF4',c:'#FCFBF4'},{r:'border',n:'--border',v:'#DCE2CE',c:'#DCE2CE'},{r:'selected opt',n:'--primary-container',v:'#D4EDD6',c:'#D4EDD6'}],
+  metrics:[['minHeight','52'],['radius','--r-md'],['border','2px']]},
+ autocomplete:{name:'Autocomplete',file:'lib/ds/components/autocomplete.dart',desc:'Text field with filtered suggestions and removable input chips.',
+  props:[{n:'value',t:'List<String>'},{n:'suggestions',t:'List<String>'},{n:'onChanged',t:'ValueChanged'},{n:'multiple',t:'bool',def:'true'}],
+  tokens:[{r:'chip',n:'--secondary-container',v:'#D6E6F3',c:'#D6E6F3'},{r:'focus ring',n:'--ring',v:'rgb(53 129 74/.45)'},{r:'popover',n:'--surface-2',v:'#FFFFFF',c:'#FFFFFF'}],
+  metrics:[['minHeight','52'],['radius','--r-md']]},
+ slider:{name:'Slider',file:'lib/ds/components/slider.dart',desc:'Range selection, continuous/discrete, with a value bubble.',
+  props:[{n:'value',t:'double'},{n:'min',t:'double',def:'0'},{n:'max',t:'double',def:'100'},{n:'onChanged',t:'ValueChanged<double>'}],
+  tokens:[{r:'rail',n:'--surface-sunken',v:'#ECEADB',c:'#ECEADB'},{r:'fill',n:'--primary',v:'#2C8248',c:'#2C8248'},{r:'knob outline',n:'--ink',v:'#26302A',c:'#26302A'},{r:'bubble',n:'--accent',v:'#F4B63C',c:'#F4B63C'}],
+  metrics:[['rail','8'],['knob','26'],['border','3px ink']]},
+ textfield:{name:'TextField',file:'lib/ds/components/text_field.dart',desc:'Text input. Variants outlined/filled/standard; states empty/focused/filled/error/disabled; label + helper + leading/trailing.',
+  props:[{n:'label',t:'String'},{n:'value',t:'String'},{n:'onChanged',t:'ValueChanged<String>'},{n:'variant',t:'outlined|filled|standard',def:'outlined'},{n:'helper',t:'String?'},{n:'error',t:'String?'},{n:'leadingIcon',t:'IconData?'},{n:'disabled',t:'bool',def:'false'}],
+  tokens:[{r:'bg',n:'--surface',v:'#FCFBF4',c:'#FCFBF4'},{r:'border',n:'--border',v:'#DCE2CE',c:'#DCE2CE'},{r:'focus',n:'--primary',v:'#2C8248',c:'#2C8248'},{r:'error',n:'--error',v:'#D24338',c:'#D24338'},{r:'focus ring',n:'--ring',v:'rgb(53 129 74/.45)'}],
+  metrics:[['minHeight','52'],['radius','--r-md'],['border','2px'],['focus','+3px ring']]},
+ togglebutton:{name:'ToggleButton',file:'lib/ds/components/toggle_button.dart',desc:'Compact multi/single-select from a set of pills.',
+  props:[{n:'items',t:'List<ToggleItem>'},{n:'selected',t:'Set<int>'},{n:'multiple',t:'bool',def:'false'},{n:'onChange',t:'ValueChanged'}],
+  tokens:[{r:'idle border',n:'--border',v:'#DCE2CE',c:'#DCE2CE'},{r:'active fill',n:'--primary-container',v:'#D4EDD6',c:'#D4EDD6'},{r:'active border',n:'--ink',v:'#26302A',c:'#26302A'}],
+  metrics:[['minHeight','44'],['radius','--r-full'],['border','2px']]},
+ rating:{name:'Rating',file:'lib/ds/components/rating.dart',desc:'Star rating input/display.',
+  props:[{n:'value',t:'double'},{n:'max',t:'int',def:'5'},{n:'onChanged',t:'ValueChanged<double>?'},{n:'readOnly',t:'bool',def:'false'}],
+  tokens:[{r:'on',n:'--accent',v:'#F4B63C',c:'#F4B63C'},{r:'outline',n:'--ink',v:'#26302A',c:'#26302A'},{r:'off',n:'--border',v:'#DCE2CE',c:'#DCE2CE'}],
+  metrics:[['star','26'],['gap','--sp-4']]},
+ avatar:{name:'Avatar',file:'lib/ds/components/avatar.dart',desc:'Identity token — initials/icon/image, circle or square.',
+  props:[{n:'label',t:'String?'},{n:'icon',t:'IconData?'},{n:'image',t:'ImageProvider?'},{n:'size',t:'sm|md|lg',def:'md'},{n:'square',t:'bool',def:'false'}],
+  tokens:[{r:'bg',n:'--primary-container',v:'#D4EDD6',c:'#D4EDD6'},{r:'on',n:'--on-primary-container',v:'#123A1E',c:'#123A1E'},{r:'outline',n:'--ink',v:'#26302A',c:'#26302A'}],
+  metrics:[['sizes','32 / 44 / 64'],['radius','full / --r-md'],['border','2px']]},
+ badge:{name:'Badge',file:'lib/ds/components/badge.dart',desc:'Count / dot / label marker anchored to a host.',
+  props:[{n:'content',t:'String?'},{n:'dot',t:'bool',def:'false'},{n:'color',t:'error|success|primary',def:'error'}],
+  tokens:[{r:'fill',n:'--error',v:'#D24338',c:'#D24338'},{r:'on',n:'--on-error',v:'#FFFFFF',c:'#FFFFFF'},{r:'ring',n:'--surface',v:'#FCFBF4',c:'#FCFBF4'}],
+  metrics:[['height','20 (dot 12)'],['radius','full'],['border','2px surface']]},
+ chip:{name:'Chip',file:'lib/ds/components/chip.dart',desc:'Compact descriptor/filter. Variants assist/filter/input/suggestion; filter has selected.',
+  props:[{n:'label',t:'String'},{n:'variant',t:'assist|filter|input|suggestion',def:'assist'},{n:'selected',t:'bool',def:'false'},{n:'onDelete',t:'VoidCallback?'}],
+  tokens:[{r:'bg',n:'--muted-surface',v:'#EDF2E5',c:'#EDF2E5'},{r:'selected bg',n:'--primary-container',v:'#D4EDD6',c:'#D4EDD6'},{r:'input bg',n:'--secondary-container',v:'#D6E6F3',c:'#D6E6F3'}],
+  metrics:[['height','34'],['radius','full'],['border','2px']]},
+ divider:{name:'Divider',file:'lib/ds/components/divider.dart',desc:'Hairline separator; full or inset, horizontal/vertical.',
+  props:[{n:'inset',t:'bool',def:'false'},{n:'vertical',t:'bool',def:'false'}],
+  tokens:[{r:'line',n:'--border-faint',v:'#EBEEDF',c:'#EBEEDF'}],
+  metrics:[['weight','2px'],['inset','--sp-48']]},
+ list:{name:'List',file:'lib/ds/components/list.dart',desc:'Rows with leading + body (title/subtitle) + trailing slots; one/two-line.',
+  props:[{n:'items',t:'List<ListItemData>'},{n:'onTap',t:'ValueChanged<int>?'}],
+  tokens:[{r:'surface',n:'--surface',v:'#FCFBF4',c:'#FCFBF4'},{r:'row divider',n:'--border-faint',v:'#EBEEDF',c:'#EBEEDF'},{r:'hover',n:'--muted-surface',v:'#EDF2E5',c:'#EDF2E5'}],
+  metrics:[['minHeight','60'],['padding','v12 h16'],['radius','--r-lg']]},
+ table:{name:'Table',file:'lib/ds/components/table.dart',desc:'Tabular data with a tinted uppercase header and hover rows.',
+  props:[{n:'columns',t:'List<Column>'},{n:'rows',t:'List<Row>'}],
+  tokens:[{r:'header bg',n:'--muted-surface',v:'#EDF2E5',c:'#EDF2E5'},{r:'row border',n:'--border-faint',v:'#EBEEDF',c:'#EBEEDF'},{r:'frame',n:'--border',v:'#DCE2CE',c:'#DCE2CE'}],
+  metrics:[['cell','v12 h16'],['radius','--r-lg'],['border','2px']]},
+ tooltip:{name:'Tooltip',file:'lib/ds/components/tooltip.dart',desc:'Hover/long-press hint; plain or rich (wrapped).',
+  props:[{n:'message',t:'String'},{n:'rich',t:'bool',def:'false'},{n:'child',t:'Widget'}],
+  tokens:[{r:'bg',n:'--ink',v:'#26302A',c:'#26302A'},{r:'text',n:'--surface-2',v:'#FFFFFF',c:'#FFFFFF'}],
+  metrics:[['padding','6×10'],['radius','--r-sm'],['rich w','200']]},
+ typography:{name:'Typography',file:'lib/ds/components/text.dart',desc:'Renders a text style token. Display=Baloo 2, body=Nunito, hand=Patrick Hand.',
+  props:[{n:'style',t:'display|h1|h2|title|subtitle|body|body-sm|label|caption|hand'},{n:'text',t:'String'},{n:'color',t:'Color?'}],
+  tokens:[{r:'display',n:'--font-display',v:'Baloo 2'},{r:'body',n:'--font-body',v:'Nunito'},{r:'hand',n:'--font-hand',v:'Patrick Hand'},{r:'ink',n:'--on-surface',v:'#26302A',c:'#26302A'}],
+  metrics:[['scale','~1.25 modular'],['sizes','12→37']]},
+ icon:{name:'Icon',file:'lib/ds/components/icon.dart',desc:'Token-driven icon primitive; size + stroke from tokens, filled variant.',
+  props:[{n:'name',t:'IconName'},{n:'size',t:'sm|md|lg',def:'md'},{n:'filled',t:'bool',def:'false'},{n:'color',t:'Color?'}],
+  tokens:[{r:'size',n:'--icon-size',v:'24'},{r:'stroke',n:'--icon-stroke',v:'2'},{r:'color',n:'currentColor'}],
+  metrics:[['sizes','18 / 24 / 30'],['stroke','2']]},
+ alert:{name:'Alert',file:'lib/ds/components/alert.dart',desc:'Inline status banner. Severity success/info/warning/error; filled or outlined; ink-outlined.',
+  props:[{n:'title',t:'String'},{n:'body',t:'String?'},{n:'severity',t:'success|info|warning|error',def:'info'},{n:'variant',t:'filled|outlined',def:'filled'}],
+  tokens:[{r:'info bg',n:'--info-container',v:'#D6E6F3',c:'#D6E6F3'},{r:'success bg',n:'--success-container',v:'#D4EDD6',c:'#D4EDD6'},{r:'warning bg',n:'--warning-container',v:'#F8E4B8',c:'#F8E4B8'},{r:'error bg',n:'--error-container',v:'#F7D8D3',c:'#F7D8D3'},{r:'outline',n:'--ink',v:'#26302A',c:'#26302A'}],
+  metrics:[['padding','v12 h16'],['radius','--r-md'],['border','2px ink']]},
+ dialog:{name:'Dialog',file:'lib/ds/components/dialog.dart',desc:'Modal decision surface with title, text, and actions.',
+  props:[{n:'title',t:'String'},{n:'text',t:'String?'},{n:'actions',t:'List<Widget>'}],
+  tokens:[{r:'surface',n:'--surface-2',v:'#FFFFFF',c:'#FFFFFF'},{r:'outline',n:'--ink',v:'#26302A',c:'#26302A'},{r:'shadow',n:'--elev-3',v:'layered'}],
+  metrics:[['width','320'],['radius','--r-lg'],['border','2.5px ink']]},
+ snackbar:{name:'Snackbar',file:'lib/ds/components/snackbar.dart',desc:'Transient message on the ink surface, optional action.',
+  props:[{n:'message',t:'String'},{n:'actionLabel',t:'String?'},{n:'onAction',t:'VoidCallback?'}],
+  tokens:[{r:'bg',n:'--ink',v:'#26302A',c:'#26302A'},{r:'text',n:'--surface-2',v:'#FFFFFF',c:'#FFFFFF'},{r:'action',n:'--leaf-2',v:'#63C878',c:'#63C878'}],
+  metrics:[['padding','v12 h16'],['radius','--r-md']]},
+ progress:{name:'Progress',file:'lib/ds/components/progress.dart',desc:'Linear (determinate/striped) + circular spinner.',
+  props:[{n:'value',t:'double?'},{n:'variant',t:'linear|circular',def:'linear'},{n:'striped',t:'bool',def:'false'}],
+  tokens:[{r:'track',n:'--surface-sunken',v:'#ECEADB',c:'#ECEADB'},{r:'bar',n:'--primary',v:'#2C8248',c:'#2C8248'},{r:'outline',n:'--ink',v:'#26302A',c:'#26302A'}],
+  metrics:[['linear h','12'],['spinner','40'],['border','2px']]},
+ skeleton:{name:'Skeleton',file:'lib/ds/components/skeleton.dart',desc:'Shimmering loading placeholder — text/circle/block.',
+  props:[{n:'shape',t:'text|circle|block',def:'text'},{n:'width',t:'double?'},{n:'height',t:'double?'}],
+  tokens:[{r:'base',n:'--surface-sunken',v:'#ECEADB',c:'#ECEADB'},{r:'sheen',n:'--muted-surface',v:'#EDF2E5',c:'#EDF2E5'}],
+  metrics:[['anim','1.3s shimmer'],['radius','--r-sm']]},
+ backdrop:{name:'Backdrop',file:'lib/ds/components/backdrop.dart',desc:'Dimming layer behind modals / the AI-generation splash.',
+  props:[{n:'open',t:'bool'},{n:'child',t:'Widget?'}],
+  tokens:[{r:'scrim',n:'ink @48%',v:'rgb(44 42 34/.48)'},{r:'on-scrim',n:'--surface-2',v:'#FFFFFF',c:'#FFFFFF'}],
+  metrics:[['opacity','.48']]},
+ appbar:{name:'AppBar',file:'lib/ds/components/app_bar.dart',desc:'Top bar; center-aligned + transparent variants, leading/trailing icon slots.',
+  props:[{n:'title',t:'String'},{n:'center',t:'bool',def:'false'},{n:'transparent',t:'bool',def:'false'},{n:'leading',t:'Widget?'},{n:'actions',t:'List<Widget>'}],
+  tokens:[{r:'bg',n:'--surface',v:'#FCFBF4',c:'#FCFBF4'},{r:'title',n:'--on-surface',v:'#26302A',c:'#26302A'},{r:'title type',n:'font-display 800/20'}],
+  metrics:[['height','60'],['icon target','48']]},
+ card:{name:'Card',file:'lib/ds/components/card.dart',desc:'Surface container. Variants elevated/outlined/filled/pop (signature cut-out). Optional media header.',
+  props:[{n:'child',t:'Widget'},{n:'variant',t:'default|elevated|outlined|filled|pop',def:'default'},{n:'onTap',t:'VoidCallback?'}],
+  tokens:[{r:'surface',n:'--surface',v:'#FCFBF4',c:'#FCFBF4'},{r:'pop surface',n:'--surface-2',v:'#FFFFFF',c:'#FFFFFF'},{r:'pop outline',n:'--ink',v:'#26302A',c:'#26302A'},{r:'shadow',n:'--elev-pop',v:'3px 3px 0 var(--ink)'}],
+  metrics:[['radius','--r-lg (22)'],['padding','--sp-16'],['media h','150']]},
+ paper:{name:'Paper',file:'lib/ds/components/paper.dart',desc:'Base surface primitive at elevation 0/1/2.',
+  props:[{n:'child',t:'Widget'},{n:'elevation',t:'0|1|2',def:'1'}],
+  tokens:[{r:'surface',n:'--surface',v:'#FCFBF4',c:'#FCFBF4'},{r:'elev-1',n:'--elev-1',v:'soft'},{r:'elev-2',n:'--elev-2',v:'soft'}],
+  metrics:[['radius','--r-lg'],['padding','--sp-16']]},
+ accordion:{name:'Accordion',file:'lib/ds/components/accordion.dart',desc:'Expandable disclosure sections with a rotating chevron.',
+  props:[{n:'items',t:'List<AccordionItem>'},{n:'multi',t:'bool',def:'false'}],
+  tokens:[{r:'surface',n:'--surface',v:'#FCFBF4',c:'#FCFBF4'},{r:'border',n:'--border',v:'#DCE2CE',c:'#DCE2CE'},{r:'divider',n:'--border-faint',v:'#EBEEDF',c:'#EBEEDF'}],
+  metrics:[['head','v16 h16'],['radius','--r-md'],['border','2px']]},
+ bottomnav:{name:'BottomNav',file:'lib/ds/components/bottom_nav.dart',desc:'Primary destinations with an ink top border and an active pill.',
+  props:[{n:'items',t:'List<NavItem>'},{n:'activeIndex',t:'int'},{n:'onChange',t:'ValueChanged<int>'}],
+  tokens:[{r:'surface',n:'--surface-2',v:'#FFFFFF',c:'#FFFFFF'},{r:'top border',n:'--ink',v:'#26302A',c:'#26302A'},{r:'active',n:'--primary',v:'#2C8248',c:'#2C8248'},{r:'pill',n:'--primary-container',v:'#D4EDD6',c:'#D4EDD6'}],
+  metrics:[['height','66'],['border','2px ink top'],['icon','24']]},
+ drawer:{name:'Drawer',file:'lib/ds/components/drawer.dart',desc:'Slide-in navigation / settings panel with active row.',
+  props:[{n:'items',t:'List<NavItem>'},{n:'activeIndex',t:'int'},{n:'onChange',t:'ValueChanged<int>'}],
+  tokens:[{r:'surface',n:'--surface-2',v:'#FFFFFF',c:'#FFFFFF'},{r:'active bg',n:'--primary-container',v:'#D4EDD6',c:'#D4EDD6'},{r:'edge',n:'--ink',v:'#26302A',c:'#26302A'}],
+  metrics:[['width','280'],['item','v12 h12'],['border','2.5px']]},
+ tabs:{name:'Tabs',file:'lib/ds/components/tabs.dart',desc:'Underline tabs + a segmented pill variant.',
+  props:[{n:'items',t:'List<String>'},{n:'activeIndex',t:'int'},{n:'variant',t:'underline|segment',def:'underline'},{n:'onChange',t:'ValueChanged<int>'}],
+  tokens:[{r:'active',n:'--primary',v:'#2C8248',c:'#2C8248'},{r:'inactive',n:'--muted',v:'#5E6A56',c:'#5E6A56'},{r:'segment bg',n:'--muted-surface',v:'#EDF2E5',c:'#EDF2E5'}],
+  metrics:[['tab','v12 h16'],['indicator','3px'],['segment radius','full']]},
+ menu:{name:'Menu',file:'lib/ds/components/menu.dart',desc:'Dropdown of actions, ink-outlined popover; supports a destructive item.',
+  props:[{n:'items',t:'List<MenuItem>'},{n:'onSelect',t:'ValueChanged<int>'}],
+  tokens:[{r:'surface',n:'--surface-2',v:'#FFFFFF',c:'#FFFFFF'},{r:'outline',n:'--ink',v:'#26302A',c:'#26302A'},{r:'hover',n:'--muted-surface',v:'#EDF2E5',c:'#EDF2E5'},{r:'danger',n:'--error',v:'#D24338',c:'#D24338'}],
+  metrics:[['item','v8 h12'],['radius','--r-md'],['border','2px ink']]},
+ link:{name:'Link',file:'lib/ds/components/link.dart',desc:'Inline text navigation with an underline that fills on hover.',
+  props:[{n:'label',t:'String'},{n:'onTap',t:'VoidCallback'}],
+  tokens:[{r:'ink',n:'--link',v:'#2F7BB4',c:'#2F7BB4'},{r:'underline',n:'link @40%',v:'rgb(184 86 50/.4)'}],
+  metrics:[['weight','700'],['underline','2px']]},
+ stepper:{name:'Stepper',file:'lib/ds/components/stepper.dart',desc:'Multi-step progress (onboarding). States done/active/upcoming.',
+  props:[{n:'steps',t:'List<String>'},{n:'current',t:'int'}],
+  tokens:[{r:'active dot',n:'--primary',v:'#2C8248',c:'#2C8248'},{r:'done dot',n:'--primary-container',v:'#D4EDD6',c:'#D4EDD6'},{r:'connector',n:'--border',v:'#DCE2CE',c:'#DCE2CE'}],
+  metrics:[['dot','30'],['connector','2px'],['border','2.5px']]},
+ speeddial:{name:'SpeedDial',file:'lib/ds/components/speed_dial.dart',desc:'A FAB that fans out mini contextual actions.',
+  props:[{n:'icon',t:'IconData',def:'plus'},{n:'actions',t:'List<SpeedAction>'},{n:'open',t:'bool',def:'false'}],
+  tokens:[{r:'fab',n:'--secondary',v:'#2F7BB4',c:'#2F7BB4'},{r:'mini bg',n:'--surface-2',v:'#FFFFFF',c:'#FFFFFF'},{r:'mini ink',n:'--secondary',v:'#2F7BB4',c:'#2F7BB4'}],
+  metrics:[['fab','60'],['mini','44'],['gap','--sp-12']]},
+};
+
+/* ===== Copy-as-prompt — Flutter surfaced FIRST (user's stated target) ===== */
+const LANGS=['Flutter (Dart)','React (TypeScript + CSS)','SwiftUI','Jetpack Compose (Kotlin)','React Native','HTML + CSS'];
+let promptLang=LANGS[0];
+langSel.innerHTML=LANGS.map(l=>`<option${l===promptLang?' selected':''}>${l}</option>`).join('');
+langSel.onchange=()=>promptLang=langSel.value;
+
+/* ===== Live theme switcher — only :root tokens change ===== */
+const THEMES=[['','Fresh Matcha'],['sage','Sage & Clay'],['grove','Bright Grove'],['dusk','Dusk Garden']];
+themeSel.innerHTML=THEMES.map(([v,l])=>`<option value="${v}">🎨 ${l}</option>`).join('');
+themeSel.onchange=()=>{if(themeSel.value)document.documentElement.dataset.theme=themeSel.value;else document.documentElement.removeAttribute('data-theme');};
+
+/* token groups → values read LIVE from :root */
+const TOKEN_GROUPS={
+ 'Color roles (keep every fill paired with its --on-*)':['--primary','--on-primary','--primary-strong','--primary-container','--on-primary-container','--secondary','--on-secondary','--secondary-container','--on-secondary-container','--accent','--on-accent','--bloom','--ink','--bg','--on-bg','--surface','--on-surface','--surface-2','--surface-sunken','--muted-surface','--on-muted-surface','--muted','--subtle','--border','--border-faint','--hairline','--success','--on-success','--error','--on-error','--warning','--on-warning','--info','--on-info','--link','--leaf','--leaf-2','--pot'],
+ 'Spacing':['--sp-2','--sp-4','--sp-8','--sp-12','--sp-16','--sp-20','--sp-24','--sp-32','--sp-48','--sp-64','--opt-1','--opt-3'],
+ 'Radius':['--r-none','--r-xs','--r-sm','--r-md','--r-lg','--r-xl','--r-full'],
+ 'Elevation':['--elev-0','--elev-1','--elev-2','--elev-3','--elev-pop','--elev-pop-sm'],
+ 'Craft & expression':['--ring','--focus-ring','--signature','--wash'],
+ 'Type families':['--font-display','--font-body','--font-hand','--font-mono'],
+ 'Motion':['--dur-fast','--dur-base','--dur-slow','--ease','--ease-spring'],
+ 'Icons':['--icon-size','--icon-stroke']};
+function tokenLines(){const cs=getComputedStyle(document.documentElement);const out=[];
+ for(const[grp,names]of Object.entries(TOKEN_GROUPS)){const rows=names.map(n=>{const v=cs.getPropertyValue(n).trim();return v?`- ${n} = ${v}`:null;}).filter(Boolean);
+  if(rows.length)out.push(`### ${grp}`,...rows,'');}
+ return out;}
+function foundationsBody(){const L=[`## Foundations — design tokens (single source of truth)`,`Define every token below as a named constant in ONE theme/config file, idiomatic to ${promptLang} (ThemeData / theme object / asset catalog / CSS :root…). Components reference tokens by name — never inline raw values.`,'',...tokenLines(),`### Type scale (text styles)`];
+ (typeof TYPE!=='undefined'?TYPE:[]).forEach(([n,m])=>L.push(`- ${n}: ${m}`));
+ L.push('',`### Rules`,`- Every fill stays paired with its --on-* foreground; pairs are WCAG-checked (body ≥ 4.5:1). Don't break a pair.`,`- Neutrals are intentionally tinted WARM (paper/olive) — preserve the tint; soft shadows are ink-tinted, not flat grey.`,`- Signature look: a 2–2.5px --ink outline + a hard --elev-pop offset shadow on primary buttons/pop cards/FAB, collapsing to --elev-pop-sm on press. Keep it.`,`- Type: Baloo 2 display, Nunito body, Patrick Hand for occasional captions.`);
+ return L.join('\n');}
+function buildPrompt(key){const s=SPECS[key];const L=[
+  `# Add or update the \`${s.name}\` component — ${promptLang}`,'',
+  `A component from the Bonsai design system. You are most likely inside a codebase that already uses it: if a component with this role ALREADY EXISTS, modify it IN PLACE to match the spec below (this spec is the source of truth) — don't duplicate, and note any breaking prop/token change. If it doesn't exist yet, create it, reusing existing tokens/atoms and the project's file layout & naming.`,'',
+  `## What it is`,s.desc,'',`## Props`];
+  s.props.forEach(p=>L.push(`- \`${p.n}\`: ${p.t}${p.def?` (default ${p.def})`:''}${p.d?` — ${p.d}`:''}`));
+  L.push('',`## Design tokens (define/extend in the foundation layer; never inline)`);
+  s.tokens.forEach(t=>L.push(`- ${t.n} = ${t.v}   // ${t.r}`));
+  L.push('',`## Metrics`); s.metrics.forEach(([k,v])=>L.push(`- ${k}: ${v}`));
+  L.push('',`## Requirements`,`- Implement every variant/state listed.`,`- Reference tokens by name; keep each fill paired with its --on-* foreground (WCAG ≥ 4.5:1).`,`- Preserve the signature ink outline + hard offset shadow where this component uses it.`,`- Output complete, compilable ${promptLang} code + a short usage example.`);
+  return L.join('\n');}
+function copyPrompt(key){copyText(buildPrompt(key));toast(`Copied: ${SPECS[key].name} → ${promptLang}`);}
+function fullSystemPrompt(){const keys=Object.keys(SPECS);const L=[
+ `# Install or update the ENTIRE Bonsai design system — ${promptLang}`,'',
+ `Set up this design system in ${promptLang}. If it doesn't exist yet, scaffold from scratch; if parts exist, update them IN PLACE to match this spec (the source of truth) — modify, don't duplicate; collect breaking changes with migration notes.`,'',
+ `## Build order`,`1. Implement the **foundation token layer** below as the single source of truth.`,`2. Then build the components. They're independent — you may split them across parallel workers — but **every component imports the shared token layer from step 1**; never redefine colors/sizes locally, or the set drifts. Keep naming & states consistent.`,`3. Reconcile: one components barrel + a pass confirming every component references only named tokens.`,'','---','',foundationsBody(),'','---','',`## Components (${keys.length})`];
+ keys.forEach(k=>{const s=SPECS[k];L.push('',`### ${s.name} — \`${s.file}\``,s.desc,`- props: ${s.props.map(p=>p.n+':'+p.t).join(', ')}`,`- tokens: ${s.tokens.map(t=>t.n).join(', ')}`,`- metrics: ${s.metrics.map(m=>m[0]+' '+m[1]).join(', ')}`);});
+ L.push('','## Rules',`- One source of truth for tokens; components reference them by name, never inline.`,`- Keep every fill/--on-* pair (WCAG ≥ 4.5:1); preserve WARM tinted neutrals & the ink outline + hard offset shadow signature.`,`- Output: the token file, then each component, each with a short usage example.`);
+ return L.join('\n');}
+function copyFullSystem(){copyText(fullSystemPrompt());toast(`Copied: Install design system (${Object.keys(SPECS).length} components) → ${promptLang}`);}
+function copyText(t){navigator.clipboard&&navigator.clipboard.writeText(t);}
+
+/* auto-inject a "Copy as prompt" button on every SPECS-backed section */
+document.querySelectorAll('main section[id]').forEach(sec=>{const key=sec.id;if(!SPECS[key])return;
+  const h=sec.querySelector('h2.sec');if(!h||h.querySelector('.sec-prompt'))return;
+  const b=document.createElement('button');b.className='sec-prompt';b.type='button';b.textContent='Copy as prompt';
+  b.addEventListener('click',()=>copyPrompt(key));h.appendChild(b);});
+
+/* ===== Dev Mode + Inspector ===== */
+function toggleDev(){const on=document.body.classList.toggle('dev');devToggle.classList.toggle('on',on);devToggle.textContent=on?'◧ Dev Mode · ON':'◧ Dev Mode';if(!on)closeInspector();}
+function closeInspector(){document.body.classList.remove('inspecting');document.querySelectorAll('.insp-sel').forEach(e=>e.classList.remove('insp-sel'));}
+document.addEventListener('click',e=>{
+  if(e.target.closest('#inspector')||e.target.closest('#topctl'))return;
+  if(!document.body.classList.contains('dev'))return;
+  const el=e.target.closest('[data-insp]'); if(el&&SPECS[el.dataset.insp]){e.preventDefault();selectComp(el,el.dataset.insp);}
+});
+function selectComp(el,key){
+  document.querySelectorAll('.insp-sel').forEach(x=>x.classList.remove('insp-sel'));el.classList.add('insp-sel');
+  document.body.classList.add('inspecting');const s=SPECS[key];
+  const props=s.props.map(p=>`<div class="prop"><span class="pn">${p.n}</span> <span class="pt">${p.t}</span>${p.def?` <span class="pdef">= ${p.def}</span>`:''}${p.d?`<div class="pd">${p.d}</div>`:''}</div>`).join('');
+  const toks=s.tokens.map(t=>`<div class="tok" onclick="copyVal('${t.v}')"><div class="tsw" style="background:${t.c||'var(--bg)'}"></div><div><div class="tn">${t.n}</div><div class="tr">${t.r}</div></div><div class="tv">${t.v}</div></div>`).join('');
+  const mets=s.metrics.map(([k,v])=>`<div class="metric"><span class="mk">${k}</span><span>${v}</span></div>`).join('');
+  inspectorBody.innerHTML=`<div class="nm">${s.name}</div><div class="file">${s.file}</div><div class="desc">${s.desc}</div><h4>Properties</h4>${props}<h4>Design tokens · click to copy</h4>${toks}<h4>Metrics</h4>${mets}<button class="copyprompt" onclick="copyPrompt('${key}')">📋 Copy as prompt</button>`;
+}
+function copyVal(v){navigator.clipboard&&navigator.clipboard.writeText(v);toast('Copied '+v);}
+function toast(msg){const c=document.getElementById('copied');c.textContent=msg;c.classList.add('show');setTimeout(()=>c.classList.remove('show'),1300);}
+</script>
+</body>
+</html>

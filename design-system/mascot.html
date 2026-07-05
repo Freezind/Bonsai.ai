@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bonsai · Mascot states</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&family=Patrick+Hand&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+body{font-family:var(--font-body);color:var(--on-surface);background:var(--bg);padding:34px 28px 90px;max-width:1000px;margin:0 auto}
+h1{font:800 32px var(--font-display);color:var(--primary)}
+.lede{color:var(--muted);font-size:14px;margin:8px 0 20px;line-height:1.7;max-width:720px}
+.lede code{font:12px var(--font-mono);background:var(--border-faint);padding:1px 5px;border-radius:4px}
+.backlink{display:inline-flex;align-items:center;gap:6px;font:800 13px var(--font-body);text-decoration:none;color:var(--primary);
+  background:var(--surface);border:2px solid var(--ink);border-radius:999px;padding:8px 14px;box-shadow:var(--elev-pop-sm);margin-bottom:18px}
+.controls{display:flex;gap:12px;align-items:center;margin:6px 0 26px;flex-wrap:wrap}
+#themeSel{font:700 12px var(--font-body);border:2px solid var(--ink);border-radius:12px;padding:9px 12px;background:var(--surface);color:var(--muted)}
+.note{font:800 11px var(--font-mono);color:var(--secondary);text-transform:uppercase;letter-spacing:.6px;margin:30px 0 12px}
+.sheet{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px}
+.pose{background:var(--surface-2);border:2px solid var(--ink);box-shadow:var(--elev-pop);border-radius:var(--r-lg);
+  padding:18px 12px 12px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.pose:hover{transform:translate(-1px,-1px)}
+.pose .cap{font:400 19px var(--font-hand);color:var(--secondary);line-height:1.1}
+.pose .lot{font:700 10px var(--font-mono);color:var(--subtle)}
+.pose .lbox{width:120px;height:120px}
+.lottie-tbl{width:100%;border-collapse:separate;border-spacing:0;margin-top:12px}
+.lottie-tbl th{font:800 11px var(--font-body);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);text-align:left;background:var(--muted-surface);padding:10px 12px}
+.lottie-tbl td{font:500 13px var(--font-body);padding:10px 12px;border-top:2px solid var(--border-faint);color:var(--on-surface)}
+.lottie-tbl tr td:first-child{font:700 12px var(--font-mono);color:var(--secondary)}
+.wrap{background:var(--surface);border:2px solid var(--border);border-radius:var(--r-lg);overflow:hidden}
+.ship{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:999px;background:var(--primary-container);color:var(--on-primary-container);font:800 10px var(--font-body)}
+</style>
+</head>
+<body>
+
+<a class="backlink" href="index.html"><svg class="ico ico--sm"><use href="#i-back"/></svg> Back to style guide</a>
+
+<!-- =========================================================================
+     BONSAI MASCOT — canonical sprite, redrawn 1:1 from the shipped Lottie
+     files (lottie/bonsai-*.json, 300×300): clean thin ink outline (#33302B,
+     w5 / stem w7), FLAT fills only, minimal face (dot eyes · tiny smile ·
+     blush). Fills read the --m-* tokens, which are pinned to the exact Lottie
+     hexes so static art and animation never drift.
+     Copy any <symbol> into a page's sprite block to use it.
+     ========================================================================= -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" id="mascot-sprite">
+  <symbol id="i-back" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M12 19l-7-7 7-7"/></symbol>
+
+  <!-- ░ SEED — tiny sprout, sleepy face on the pot ░ -->
+  <symbol id="m-seed" viewBox="0 0 300 300">
+    <path d="M150 182 V142" fill="none" stroke="var(--m-ink)" stroke-width="6" stroke-linecap="round"/>
+    <path d="M150 148 C135 148 122 138 119 121 C136 122 148 133 150 148 Z" fill="var(--m-leaf)" stroke="var(--m-ink)" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M150 139 C164 138 176 127 179 111 C163 112 151 124 150 139 Z" fill="var(--m-leaf)" stroke="var(--m-ink)" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M104 201 L111.5 252 Q112.3 257 117.5 257 L182.5 257 Q187.7 257 188.5 252 L196 201 Z" fill="var(--m-pot)" stroke="var(--m-ink)" stroke-width="5" stroke-linejoin="round"/>
+    <rect x="90" y="179" width="120" height="22" rx="9" fill="var(--m-pot)" stroke="var(--m-ink)" stroke-width="5"/>
+    <path d="M129 225 Q135 231 141 225 M159 225 Q165 231 171 225" fill="none" stroke="var(--m-ink)" stroke-width="5" stroke-linecap="round"/>
+    <ellipse cx="116" cy="234" rx="7" ry="4.5" fill="var(--m-cheek)"/><ellipse cx="184" cy="234" rx="7" ry="4.5" fill="var(--m-cheek)"/>
+  </symbol>
+
+  <!-- ░ SPROUT — taller shoot, happy face on the pot ░ -->
+  <symbol id="m-sprout" viewBox="0 0 300 300">
+    <path d="M150 182 V126" fill="none" stroke="var(--m-ink)" stroke-width="6" stroke-linecap="round"/>
+    <path d="M150 140 C132 140 116 128 113 108 C132 109 147 121 150 140 Z" fill="var(--m-leaf)" stroke="var(--m-ink)" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M150 128 C167 127 182 114 186 94 C167 95 152 109 150 128 Z" fill="var(--m-leaf)" stroke="var(--m-ink)" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M104 201 L111.5 252 Q112.3 257 117.5 257 L182.5 257 Q187.7 257 188.5 252 L196 201 Z" fill="var(--m-pot)" stroke="var(--m-ink)" stroke-width="5" stroke-linejoin="round"/>
+    <rect x="90" y="179" width="120" height="22" rx="9" fill="var(--m-pot)" stroke="var(--m-ink)" stroke-width="5"/>
+    <circle cx="135" cy="226" r="4.5" fill="var(--m-ink)"/><circle cx="165" cy="226" r="4.5" fill="var(--m-ink)"/>
+    <path d="M142 234 C147 240 153 240 158 234" fill="none" stroke="var(--m-ink)" stroke-width="5" stroke-linecap="round"/>
+    <ellipse cx="119" cy="234" rx="7" ry="4.5" fill="var(--m-cheek)"/><ellipse cx="181" cy="234" rx="7" ry="4.5" fill="var(--m-cheek)"/>
+  </symbol>
+
+  <!-- ░ BONSAI (flourishing) — full crown, content closed eyes, one bud ░ -->
+  <symbol id="m-bonsai" viewBox="0 0 300 300">
+    <path d="M150 205 V152" fill="none" stroke="var(--m-ink)" stroke-width="7" stroke-linecap="round"/>
+    <path d="M150 30 C185 30 205 50 205 67.5 C230 72.5 242.5 95 232.5 115 C245 135 225 155 205 150 C195 165 165 170 150 160 C135 170 105 165 95 150 C75 155 55 135 67.5 115 C57.5 95 70 72.5 95 67.5 C95 50 115 30 150 30 Z" fill="var(--m-leaf)" stroke="var(--m-ink)" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M125 106 Q132 98 139 106 M161 106 Q168 98 175 106" fill="none" stroke="var(--m-ink)" stroke-width="5" stroke-linecap="round"/>
+    <path d="M141 119 C147 126 153 126 159 119" fill="none" stroke="var(--m-ink)" stroke-width="5" stroke-linecap="round"/>
+    <ellipse cx="119" cy="118" rx="7.5" ry="5" fill="var(--m-cheek)"/><ellipse cx="181" cy="118" rx="7.5" ry="5" fill="var(--m-cheek)"/>
+    <circle cx="206" cy="60" r="6.5" fill="var(--m-bud)" stroke="var(--m-ink)" stroke-width="4"/>
+    <path d="M104 201 L111.5 252 Q112.3 257 117.5 257 L182.5 257 Q187.7 257 188.5 252 L196 201 Z" fill="var(--m-pot)" stroke="var(--m-ink)" stroke-width="5" stroke-linejoin="round"/>
+    <rect x="90" y="179" width="120" height="22" rx="9" fill="var(--m-pot)" stroke="var(--m-ink)" stroke-width="5"/>
+  </symbol>
+
+  <!-- ░ BLOOM — buds open along the crown top ░ -->
+  <symbol id="m-bloom" viewBox="0 0 300 300">
+    <path d="M150 205 V152" fill="none" stroke="var(--m-ink)" stroke-width="7" stroke-linecap="round"/>
+    <path d="M150 30 C185 30 205 50 205 67.5 C230 72.5 242.5 95 232.5 115 C245 135 225 155 205 150 C195 165 165 170 150 160 C135 170 105 165 95 150 C75 155 55 135 67.5 115 C57.5 95 70 72.5 95 67.5 C95 50 115 30 150 30 Z" fill="var(--m-leaf)" stroke="var(--m-ink)" stroke-width="5" stroke-linejoin="round"/>
+    <circle cx="112" cy="52" r="7.5" fill="var(--m-bud)" stroke="var(--m-ink)" stroke-width="4"/>
+    <circle cx="150" cy="27" r="7.5" fill="var(--m-bud)" stroke="var(--m-ink)" stroke-width="4"/>
+    <circle cx="189" cy="50" r="7.5" fill="var(--m-bud)" stroke="var(--m-ink)" stroke-width="4"/>
+    <path d="M125 106 Q132 98 139 106 M161 106 Q168 98 175 106" fill="none" stroke="var(--m-ink)" stroke-width="5" stroke-linecap="round"/>
+    <path d="M141 119 C147 126 153 126 159 119" fill="none" stroke="var(--m-ink)" stroke-width="5" stroke-linecap="round"/>
+    <ellipse cx="119" cy="118" rx="7.5" ry="5" fill="var(--m-cheek)"/><ellipse cx="181" cy="118" rx="7.5" ry="5" fill="var(--m-cheek)"/>
+    <path d="M104 201 L111.5 252 Q112.3 257 117.5 257 L182.5 257 Q187.7 257 188.5 252 L196 201 Z" fill="var(--m-pot)" stroke="var(--m-ink)" stroke-width="5" stroke-linejoin="round"/>
+    <rect x="90" y="179" width="120" height="22" rx="9" fill="var(--m-pot)" stroke="var(--m-ink)" stroke-width="5"/>
+  </symbol>
+
+  <!-- ░ FRUIT — open eyes, berries in the crown ░ -->
+  <symbol id="m-fruit" viewBox="0 0 300 300">
+    <path d="M150 205 V152" fill="none" stroke="var(--m-ink)" stroke-width="7" stroke-linecap="round"/>
+    <path d="M150 30 C185 30 205 50 205 67.5 C230 72.5 242.5 95 232.5 115 C245 135 225 155 205 150 C195 165 165 170 150 160 C135 170 105 165 95 150 C75 155 55 135 67.5 115 C57.5 95 70 72.5 95 67.5 C95 50 115 30 150 30 Z" fill="var(--m-leaf)" stroke="var(--m-ink)" stroke-width="5" stroke-linejoin="round"/>
+    <circle cx="103" cy="88" r="8" fill="var(--m-fruit)" stroke="var(--m-ink)" stroke-width="4"/>
+    <circle cx="196" cy="76" r="8" fill="var(--m-fruit)" stroke="var(--m-ink)" stroke-width="4"/>
+    <circle cx="212" cy="114" r="6.5" fill="var(--m-spark)" stroke="var(--m-ink)" stroke-width="4"/>
+    <circle cx="132" cy="105" r="4.5" fill="var(--m-ink)"/><circle cx="168" cy="105" r="4.5" fill="var(--m-ink)"/>
+    <path d="M139 120 C146 129 154 129 161 120" fill="none" stroke="var(--m-ink)" stroke-width="5" stroke-linecap="round"/>
+    <ellipse cx="119" cy="119" rx="7.5" ry="5" fill="var(--m-cheek)"/><ellipse cx="181" cy="119" rx="7.5" ry="5" fill="var(--m-cheek)"/>
+    <path d="M104 201 L111.5 252 Q112.3 257 117.5 257 L182.5 257 Q187.7 257 188.5 252 L196 201 Z" fill="var(--m-pot)" stroke="var(--m-ink)" stroke-width="5" stroke-linejoin="round"/>
+    <rect x="90" y="179" width="120" height="22" rx="9" fill="var(--m-pot)" stroke="var(--m-ink)" stroke-width="5"/>
+  </symbol>
+
+  <!-- ░ THIRSTY — worried dots + frown + falling drop ░ -->
+  <symbol id="m-thirsty" viewBox="0 0 300 300">
+    <path d="M150 205 V152" fill="none" stroke="var(--m-ink)" stroke-width="7" stroke-linecap="round"/>
+    <path d="M150 30 C185 30 205 50 205 67.5 C230 72.5 242.5 95 232.5 115 C245 135 225 155 205 150 C195 165 165 170 150 160 C135 170 105 165 95 150 C75 155 55 135 67.5 115 C57.5 95 70 72.5 95 67.5 C95 50 115 30 150 30 Z" fill="var(--m-leaf)" stroke="var(--m-ink)" stroke-width="5" stroke-linejoin="round"/>
+    <circle cx="132" cy="105" r="4.5" fill="var(--m-ink)"/><circle cx="168" cy="105" r="4.5" fill="var(--m-ink)"/>
+    <path d="M141 126 C147 119 153 119 159 126" fill="none" stroke="var(--m-ink)" stroke-width="5" stroke-linecap="round"/>
+    <path d="M240 84 C247 96 251 103 251 110 A11.5 11.5 0 0 1 228 110 C228 103 232 96 240 84 Z" fill="var(--m-drop)" stroke="var(--m-ink)" stroke-width="4"/>
+    <path d="M104 201 L111.5 252 Q112.3 257 117.5 257 L182.5 257 Q187.7 257 188.5 252 L196 201 Z" fill="var(--m-pot)" stroke="var(--m-ink)" stroke-width="5" stroke-linejoin="round"/>
+    <rect x="90" y="179" width="120" height="22" rx="9" fill="var(--m-pot)" stroke="var(--m-ink)" stroke-width="5"/>
+  </symbol>
+
+  <!-- ░ WITHER — grey sagging crown, drooping eyes, a tear ░ -->
+  <symbol id="m-wither" viewBox="0 0 300 300">
+    <path d="M150 205 V168" fill="none" stroke="var(--m-ink)" stroke-width="7" stroke-linecap="round"/>
+    <g transform="translate(0 16)">
+      <path d="M150 30 C185 30 205 50 205 67.5 C230 72.5 242.5 95 232.5 115 C245 135 225 155 205 150 C195 165 165 170 150 160 C135 170 105 165 95 150 C75 155 55 135 67.5 115 C57.5 95 70 72.5 95 67.5 C95 50 115 30 150 30 Z" fill="var(--m-withered)" stroke="var(--m-ink)" stroke-width="5" stroke-linejoin="round"/>
+      <path d="M125 100 L139 106 M175 100 L161 106" fill="none" stroke="var(--m-ink)" stroke-width="5" stroke-linecap="round"/>
+      <path d="M141 124 C147 118 153 118 159 124" fill="none" stroke="var(--m-ink)" stroke-width="5" stroke-linecap="round"/>
+    </g>
+    <path d="M228 138 C233 146 236 151 236 156 A8.5 8.5 0 0 1 219 156 C219 151 222 146 228 138 Z" fill="var(--m-drop)" stroke="var(--m-ink)" stroke-width="3.5"/>
+    <path d="M104 201 L111.5 252 Q112.3 257 117.5 257 L182.5 257 Q187.7 257 188.5 252 L196 201 Z" fill="var(--m-pot)" stroke="var(--m-ink)" stroke-width="5" stroke-linejoin="round"/>
+    <rect x="90" y="179" width="120" height="22" rx="9" fill="var(--m-pot)" stroke="var(--m-ink)" stroke-width="5"/>
+  </symbol>
+
+  <!-- ░ CHEER — star eyes, open mouth, sparks ░ -->
+  <symbol id="m-cheer" viewBox="0 0 300 300">
+    <path d="M150 205 V152" fill="none" stroke="var(--m-ink)" stroke-width="7" stroke-linecap="round"/>
+    <path d="M150 30 C185 30 205 50 205 67.5 C230 72.5 242.5 95 232.5 115 C245 135 225 155 205 150 C195 165 165 170 150 160 C135 170 105 165 95 150 C75 155 55 135 67.5 115 C57.5 95 70 72.5 95 67.5 C95 50 115 30 150 30 Z" fill="var(--m-leaf)" stroke="var(--m-ink)" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M132 95 L134.2 100.8 L140 103 L134.2 105.2 L132 111 L129.8 105.2 L124 103 L129.8 100.8 Z" fill="var(--m-spark)" stroke="var(--m-ink)" stroke-width="3.5" stroke-linejoin="round"/>
+    <path d="M168 95 L170.2 100.8 L176 103 L170.2 105.2 L168 111 L165.8 105.2 L160 103 L165.8 100.8 Z" fill="var(--m-spark)" stroke="var(--m-ink)" stroke-width="3.5" stroke-linejoin="round"/>
+    <path d="M142 119 C144 128 156 128 158 119 Z" fill="var(--m-ink)"/>
+    <ellipse cx="119" cy="118" rx="7.5" ry="5" fill="var(--m-cheek)"/><ellipse cx="181" cy="118" rx="7.5" ry="5" fill="var(--m-cheek)"/>
+    <path d="M58 40 L61 49 L70 52 L61 55 L58 64 L55 55 L46 52 L55 49 Z" fill="var(--m-spark)" stroke="var(--m-ink)" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M243 56 L245.5 63.5 L253 66 L245.5 68.5 L243 76 L240.5 68.5 L233 66 L240.5 63.5 Z" fill="var(--m-spark)" stroke="var(--m-ink)" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M104 201 L111.5 252 Q112.3 257 117.5 257 L182.5 257 Q187.7 257 188.5 252 L196 201 Z" fill="var(--m-pot)" stroke="var(--m-ink)" stroke-width="5" stroke-linejoin="round"/>
+    <rect x="90" y="179" width="120" height="22" rx="9" fill="var(--m-pot)" stroke="var(--m-ink)" stroke-width="5"/>
+  </symbol>
+
+  <!-- ░ SLEEP — closed eyes, Z Z ░ -->
+  <symbol id="m-sleep" viewBox="0 0 300 300">
+    <path d="M150 205 V152" fill="none" stroke="var(--m-ink)" stroke-width="7" stroke-linecap="round"/>
+    <path d="M150 30 C185 30 205 50 205 67.5 C230 72.5 242.5 95 232.5 115 C245 135 225 155 205 150 C195 165 165 170 150 160 C135 170 105 165 95 150 C75 155 55 135 67.5 115 C57.5 95 70 72.5 95 67.5 C95 50 115 30 150 30 Z" fill="var(--m-leaf)" stroke="var(--m-ink)" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M125 104 Q132 110 139 104 M161 104 Q168 110 175 104" fill="none" stroke="var(--m-ink)" stroke-width="5" stroke-linecap="round"/>
+    <path d="M145 121 Q150 124 155 121" fill="none" stroke="var(--m-ink)" stroke-width="4" stroke-linecap="round"/>
+    <ellipse cx="119" cy="117" rx="7.5" ry="5" fill="var(--m-cheek)"/><ellipse cx="181" cy="117" rx="7.5" ry="5" fill="var(--m-cheek)"/>
+    <path d="M224 52 h17 l-17 15 h17" fill="none" stroke="var(--m-ink)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M250 30 h12 l-12 11 h12" fill="none" stroke="var(--m-ink)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M104 201 L111.5 252 Q112.3 257 117.5 257 L182.5 257 Q187.7 257 188.5 252 L196 201 Z" fill="var(--m-pot)" stroke="var(--m-ink)" stroke-width="5" stroke-linejoin="round"/>
+    <rect x="90" y="179" width="120" height="22" rx="9" fill="var(--m-pot)" stroke="var(--m-ink)" stroke-width="5"/>
+  </symbol>
+</svg>
+
+<h1>Mascot · states &amp; poses</h1>
+<p class="lede">The Bonsai mascot, redrawn <b>1:1 from the shipped Lottie files</b> — thin clean ink
+  outline, <b>flat fills only</b>, minimal face (dot eyes · tiny smile · blush 腮红). Colors are pinned
+  to the Lottie hexes via the <code>--m-*</code> tokens (<code>--m-leaf #3FA34D</code>,
+  <code>--m-pot #E8703A</code>, <code>--m-ink #33302B</code>…), so static SVG and animation never
+  drift. Triggers, loops and the state machine live in <code>motion-lottie.md</code>.</p>
+
+<div class="controls">
+  <select id="themeSel" title="Preview a theme"></select>
+  <span class="lede" style="margin:0">🎨 UI re-themes around the mascot; the mascot itself keeps its canonical Lottie palette</span>
+</div>
+
+<div class="note">Live Lottie · the 4 shipped files (lottie/bonsai-*.json)</div>
+<div class="sheet" id="lots"></div>
+
+<div class="note">Growth timeline — driven by how much context you’ve watered in</div>
+<div class="sheet" id="growth"></div>
+
+<div class="note">Mood &amp; care states — overlays on the current stage</div>
+<div class="sheet" id="mood"></div>
+
+<div class="note">Lottie animations (see motion-lottie.md for the full spec)</div>
+<div class="wrap"><table class="lottie-tbl">
+  <thead><tr><th>Lottie</th><th>Trigger</th><th>Loop</th><th>Status</th></tr></thead>
+  <tbody id="lot"></tbody>
+</table></div>
+
+<script src="lottie/lottie-data.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
+<script>
+const GROWTH=[['m-seed','just planted','#m-seed'],['m-sprout','sprouting','#m-sprout'],['m-bonsai','flourishing','#m-bonsai'],['m-bloom','in bloom','#m-bloom'],['m-fruit','fruiting','#m-fruit']];
+const MOOD=[['m-thirsty','thirsty…','#m-thirsty'],['m-wither','wilting','#m-wither'],['m-cheer','yay!','#m-cheer'],['m-sleep','zzz','#m-sleep']];
+const LOT=[
+ ['bonsai-idle.json','resting (any stage) · breathe + blink','loop','<span class="ship">✓ shipped</span>'],
+ ['bonsai-cheer.json','big win · bounce + star eyes + sparks','once','<span class="ship">✓ shipped</span>'],
+ ['bonsai-thirsty.json','context stale · drop falls','loop','<span class="ship">✓ shipped</span>'],
+ ['bonsai-sleep.json','night / idle · slow breathe + Z','loop','<span class="ship">✓ shipped</span>'],
+ ['plant_seed','first context saved','once','build from #m-seed'],
+ ['grow_up','level up','once','build from #m-sprout → #m-bonsai'],
+ ['bloom','milestone / streak','once→idle','build from #m-bloom'],
+ ['fruit','goal completed','once→idle','build from #m-fruit'],
+ ['wither','neglected','once→hold','build from #m-wither'],
+ ['water_revive','user waters','once','build from #m-wither → #m-bonsai'],
+ ['generating','AI building first UI','loop','build from #m-sprout + swirl'],
+];
+const poseHTML=([id,cap,lot])=>`<div class="pose"><svg class="art art--xl"><use href="#${id}"/></svg><span class="cap">${cap}</span><span class="lot">${lot}</span></div>`;
+growth.innerHTML=GROWTH.map(poseHTML).join('');
+mood.innerHTML=MOOD.map(poseHTML).join('');
+lot.innerHTML=LOT.map(([a,b,c,d])=>`<tr><td>${a}</td><td>${b}</td><td>${c}</td><td>${d}</td></tr>`).join('');
+/* live Lottie players (data inlined via lottie/lottie-data.js; player from CDN) */
+const CAPS={idle:'idle · breathe + blink',cheer:'cheer · bounce + stars',thirsty:'thirsty · drop falls',sleep:'sleep · slow breathe + Z'};
+if(window.LOTTIE_DATA && window.lottie){
+  lots.innerHTML=Object.keys(CAPS).map(k=>`<div class="pose"><div class="lbox" id="L-${k}"></div><span class="cap">${CAPS[k]}</span><span class="lot">bonsai-${k}.json</span></div>`).join('');
+  for(const k of Object.keys(CAPS)) lottie.loadAnimation({container:document.getElementById('L-'+k),renderer:'svg',loop:true,autoplay:true,animationData:LOTTIE_DATA[k]});
+}else{
+  lots.innerHTML=`<div class="pose" style="grid-column:1/-1"><span class="cap">offline — Lottie player CDN unavailable; JSONs are in <code>lottie/</code></span></div>`;
+}
+const THEMES=[['','Fresh Matcha'],['sage','Sage & Clay'],['grove','Bright Grove'],['dusk','Dusk Garden']];
+themeSel.innerHTML=THEMES.map(([v,l])=>`<option value="${v}">🎨 ${l}</option>`).join('');
+themeSel.onchange=()=>{if(themeSel.value)document.documentElement.dataset.theme=themeSel.value;else document.documentElement.removeAttribute('data-theme');};
+</script>
+</body>
+</html>
