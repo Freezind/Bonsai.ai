@@ -44,6 +44,7 @@ void main() {
     AppPrefs.instance.firstRunComplete = false;
     AppPrefs.instance.coachMarkSeen = false;
     AppPrefs.instance.demoDay90.value = false;
+    AppPrefs.instance.connectedResources.value = const [];
     AppPrefs.instance.goals.value = const [];
     ScreenStore.instance.cache.clear();
     ScreenStore.instance.active.value = null;
@@ -274,5 +275,38 @@ void main() {
     await tester.pump(const Duration(milliseconds: 600));
     expect(find.text('Career'), findsOneWidget);
     expect(find.text('Health'), findsOneWidget);
+  });
+
+  testWidgets('Resources: empty -> sheet -> GBrain mock-links -> listed',
+      (tester) async {
+    AppPrefs.instance.firstRunComplete = true;
+    await tester.pumpWidget(const BonsaiApp());
+    await tester.pump(const Duration(milliseconds: 600));
+
+    await tester.tap(find.text('Resources').last);
+    await tester.pump(const Duration(milliseconds: 600));
+    expect(find.text('Nothing feeds your garden yet'), findsOneWidget);
+
+    // Open the connect sheet.
+    await tester.tap(find.text('resource'));
+    await tester.pump(const Duration(milliseconds: 100));
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(find.text('Connect a resource'), findsOneWidget);
+    expect(find.text('GBrain'), findsOneWidget);
+    expect(find.text('Coming soon'), findsNWidgets(4));
+
+    // Tap GBrain: mock linking, then success, sheet closes itself.
+    await tester.tap(find.text('GBrain'));
+    await tester.pump(const Duration(milliseconds: 200));
+    expect(find.textContaining('Linking GBrain'), findsOneWidget);
+    await tester.pump(const Duration(milliseconds: 1800));
+    expect(find.text('GBrain connected'), findsOneWidget);
+    await tester.pump(const Duration(milliseconds: 800));
+    await tester.pump(const Duration(milliseconds: 400));
+
+    // Back on the list: GBrain shows as a connected inlet.
+    expect(AppPrefs.instance.connectedResources.value, contains('gbrain'));
+    expect(find.text('CONTEXT INLETS'), findsOneWidget);
+    expect(find.text('Connected'), findsOneWidget);
   });
 }

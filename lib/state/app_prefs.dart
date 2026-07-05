@@ -30,6 +30,11 @@ class AppPrefs {
   /// The planted goals, in planting order. Tab roots render these.
   final ValueNotifier<List<Goal>> goals = ValueNotifier<List<Goal>>(const []);
 
+  /// Connected resource ids (Resources tab). Mock connections for now —
+  /// the ids gate which connector cards render as linked.
+  final ValueNotifier<List<String>> connectedResources =
+      ValueNotifier<List<String>>(const []);
+
   String? _path; // documents/bonsai_state.json; null in tests -> memory only
 
   Future<void> init() async {
@@ -46,6 +51,9 @@ class AppPrefs {
       firstRunComplete = m['firstRunComplete'] == true;
       coachMarkSeen = m['coachMarkSeen'] == true;
       demoDay90.value = m['demoDay90'] == true;
+      connectedResources.value = [
+        for (final r in (m['connectedResources'] as List? ?? const [])) '$r',
+      ];
       goals.value = [
         for (final g in (m['goals'] as List? ?? const []))
           Goal.fromJson(g as Map<String, dynamic>),
@@ -87,6 +95,13 @@ class AppPrefs {
     await _save();
   }
 
+  Future<void> connectResource(String id) async {
+    if (!connectedResources.value.contains(id)) {
+      connectedResources.value = [...connectedResources.value, id];
+    }
+    await _save();
+  }
+
   Future<void> markCoachMarkSeen() async {
     coachMarkSeen = true;
     await _save();
@@ -110,6 +125,7 @@ class AppPrefs {
       'firstRunComplete': firstRunComplete,
       'coachMarkSeen': coachMarkSeen,
       'demoDay90': demoDay90.value,
+      'connectedResources': connectedResources.value,
       'goals': [for (final g in goals.value) g.toJson()],
     });
     try {

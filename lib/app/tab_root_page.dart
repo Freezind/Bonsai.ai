@@ -6,6 +6,7 @@ import '../goals/goal.dart';
 import '../onboarding/ui/widgets/growing_bonsai.dart';
 import '../onboarding/ui/widgets/mascot.dart';
 import 'home_tab_page.dart';
+import 'resources_page.dart';
 import '../state/app_prefs.dart';
 import 'router.dart';
 
@@ -24,7 +25,7 @@ class TabRootPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (tab == AppTab.home) return const HomeTabPage();
-    if (tab == AppTab.resources) return const _ResourcesRoot();
+    if (tab == AppTab.resources) return const ResourcesPage();
     if (!_plantable) return _QuietRoot(tab: tab);
 
     return AuroraBackground(
@@ -206,106 +207,6 @@ class _QuietRoot extends StatelessWidget {
             Text('This bed is still being prepared.', style: Aurora.body2),
           ],
         ),
-      ),
-    );
-  }
-}
-
-/// Resources: the connector inlets. Tools hold data, Bonsai holds goals.
-/// Demo cards only — real integrations come later.
-class _ResourcesRoot extends StatelessWidget {
-  const _ResourcesRoot();
-
-  @override
-  Widget build(BuildContext context) {
-    return AuroraBackground(
-      child: ListView(
-        padding: const EdgeInsets.all(Aurora.s4),
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: Aurora.s1, bottom: Aurora.s3),
-            child: Text('CONTEXT INLETS', style: Aurora.overline),
-          ),
-          const _ConnectorCard(
-            icon: Icons.hub_outlined,
-            name: 'GBrain',
-            detail: 'Personal knowledge graph',
-            status: 'Connected',
-            live: true,
-          ),
-          const _ConnectorCard(
-            icon: Icons.favorite_outline,
-            name: 'HealthKit',
-            detail: 'Movement, sleep and vitals',
-            status: 'Coming soon',
-            live: false,
-          ),
-          const SizedBox(height: Aurora.s3),
-          Text(
-            'Tools hold data. Bonsai holds goals — connected sources water '
-            'the goals they belong to.',
-            style: Aurora.body2.copyWith(color: Aurora.textDisabled),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ConnectorCard extends StatelessWidget {
-  const _ConnectorCard({
-    required this.icon,
-    required this.name,
-    required this.detail,
-    required this.status,
-    required this.live,
-  });
-  final IconData icon;
-  final String name;
-  final String detail;
-  final String status;
-  final bool live;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: Aurora.s3),
-      padding: const EdgeInsets.all(Aurora.s4),
-      decoration: BoxDecoration(
-        color: Aurora.paper2,
-        border: Border.all(color: Aurora.border, width: 2),
-        borderRadius: BorderRadius.circular(Aurora.rMd),
-      ),
-      child: Row(
-        children: [
-          Icon(icon,
-              size: 28,
-              color: live ? Aurora.primaryLight : Aurora.textDisabled),
-          const SizedBox(width: Aurora.s3),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(name, style: Aurora.title),
-                Text(detail, style: Aurora.body2),
-              ],
-            ),
-          ),
-          Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(
-              color: live ? Aurora.primaryContainer : Aurora.paper3,
-              borderRadius: BorderRadius.circular(Aurora.rFull),
-            ),
-            child: Text(
-              status,
-              style: Aurora.label.copyWith(
-                color: live ? Aurora.primaryLight : Aurora.textSecondary,
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
