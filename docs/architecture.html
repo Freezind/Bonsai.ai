@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bonsai · Tech Architecture</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Fresh Matcha tokens (self-contained mirror of design-system/styles.css) */
+:root{
+  --primary:#2C8248; --on-primary:#FFF; --primary-container:#D4EDD6; --on-primary-container:#123A1E;
+  --secondary:#2F7BB4; --secondary-container:#D6E6F3; --on-secondary-container:#123A5E;
+  --accent:#F4B63C; --on-accent:#3A2900; --warn-container:#F8E4B8; --on-warn:#4A3300;
+  --bg:#F6F4E9; --surface:#FCFBF4; --surface-2:#FFF; --sunken:#ECEADB;
+  --ink:#26302A; --muted:#5E6A56; --subtle:#97A088; --border:#DCE2CE;
+  --pop:3px 3px 0 0 var(--ink); --pop-sm:2px 2px 0 0 var(--ink);
+  --r:16px; --r-lg:22px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--ink);padding:40px 24px 80px;display:flex;flex-direction:column;align-items:center}
+h1{font:800 34px 'Baloo 2';color:var(--primary)}
+.sub{color:var(--muted);font-size:14px;margin:6px 0 34px;text-align:center;max-width:640px;line-height:1.6}
+.sub b{color:var(--ink)}
+
+.diagram{display:flex;flex-direction:column;align-items:center;gap:0;width:100%;max-width:900px}
+
+/* zones */
+.zone{width:100%;border:2px dashed var(--subtle);border-radius:var(--r-lg);padding:20px;position:relative;background:transparent}
+.zone+.zone{margin-top:54px}
+.zone .zlabel{position:absolute;top:-13px;left:22px;background:var(--bg);padding:0 10px;font:800 12px 'Nunito';letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+.zone .zlabel .chip{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:999px;font-size:10px;letter-spacing:0}
+.chip.native{background:var(--primary-container);color:var(--on-primary-container)}
+.chip.mac{background:var(--secondary-container);color:var(--on-secondary-container)}
+
+/* boxes */
+.grid{display:grid;gap:14px}
+.box{background:var(--surface-2);border:2px solid var(--ink);border-radius:var(--r);box-shadow:var(--pop-sm);padding:12px 14px}
+.box h3{font:800 15px 'Baloo 2';display:flex;align-items:center;gap:6px}
+.box p{font-size:12px;color:var(--muted);line-height:1.5;margin-top:4px}
+.box code{font:700 11px ui-monospace,monospace;background:var(--sunken);padding:1px 5px;border-radius:5px;color:var(--ink)}
+.box.hero{background:var(--primary);color:var(--on-primary);box-shadow:var(--pop)}
+.box.hero h3{color:var(--on-primary)}
+.box.hero p{color:#E4F2E4}
+.box.hero code{background:rgba(255,255,255,.18);color:#fff}
+.box.pool{background:var(--primary-container)}
+.box.pool p{color:var(--on-primary-container)}
+.box.blue{background:var(--secondary-container)}
+.box.blue p{color:var(--on-secondary-container)}
+.box.warn{background:var(--warn-container)}
+.box.warn p{color:var(--on-warn)}
+
+/* arrows between zones */
+.link{display:flex;flex-direction:column;align-items:center;margin:-40px 0;z-index:2;position:relative}
+.link .pill{background:var(--surface-2);border:2px solid var(--ink);border-radius:999px;box-shadow:var(--pop-sm);padding:7px 16px;font:800 12px 'Nunito';display:flex;gap:8px;align-items:center}
+.link .pill small{font-weight:600;color:var(--muted)}
+.arrow{width:2.5px;height:22px;background:var(--ink);position:relative}
+.arrow.down::after{content:'';position:absolute;bottom:-1px;left:-4.5px;border:6px solid transparent;border-top:8px solid var(--ink);border-bottom:0}
+.arrow.up::before{content:'';position:absolute;top:-1px;left:-4.5px;border:6px solid transparent;border-bottom:8px solid var(--ink);border-top:0}
+
+/* capability lock ribbon */
+.lock{margin-top:44px;width:100%;max-width:900px;background:var(--surface-2);border:2px solid var(--ink);border-radius:var(--r-lg);box-shadow:var(--pop);padding:18px 22px;display:flex;gap:16px;align-items:flex-start}
+.lock .ico{font-size:26px;line-height:1}
+.lock h3{font:800 16px 'Baloo 2'}
+.lock p{font-size:13px;color:var(--muted);line-height:1.6;margin-top:3px}
+.lock code{font:700 11px ui-monospace,monospace;background:var(--sunken);padding:1px 5px;border-radius:5px}
+
+.legend{margin-top:26px;font-size:12px;color:var(--subtle)}
+@media print{body{padding:12px}.zone+.zone{margin-top:44px}}
+</style>
+</head>
+<body>
+
+<h1>Bonsai · Architecture</h1>
+<p class="sub"><b>Fed by your life, tending it back.</b> One rule holds the whole stack together:
+the model emits <b>structure, never code</b> — everything it says is transpiled on-device,
+through a frozen widget pool, into a fully native app.</p>
+
+<div class="diagram">
+
+  <!-- ═══ device zone ═══ -->
+  <div class="zone">
+    <span class="zlabel">iPhone · Flutter app <span class="chip native">100% native</span></span>
+    <div class="grid" style="grid-template-columns:1fr 1fr 1fr">
+      <div class="box">
+        <h3>🌱 Onboarding</h3>
+        <p>Native Dart seed flow. Fixed 2-round AI conversation → PARA classification (Project / Area). Scripted fallback when offline.</p>
+      </div>
+      <div class="box">
+        <h3>📔 Home digest</h3>
+        <p>Native Dart periodic note: the gardener's weekly report + per-goal highlights with grown trees.</p>
+      </div>
+      <div class="box">
+        <h3>🗂 PARA shell</h3>
+        <p>GoRouter 5-tab shell (<code>Home·P·A·R·A</code>), sub-pages capped at <code>depth ≤ 3</code> — enforced on device.</p>
+      </div>
+    </div>
+    <div class="grid" style="grid-template-columns:1.2fr 1fr 1fr;margin-top:14px">
+      <div class="box hero">
+        <h3>🎨 Goal dashboards · rfw</h3>
+        <p>DSL text → Flutter <b>rfw</b> transpiles it into a real native widget tree. Parse failure keeps the prior screen — never blank.</p>
+      </div>
+      <div class="box pool">
+        <h3>🔒 Frozen widget pool</h3>
+        <p><code>bonsai.widgets</code> — 70+ whitelisted components + Fresh Matcha tokens. The only vocabulary the model may speak.</p>
+      </div>
+      <div class="box">
+        <h3>💾 ScreenStore</h3>
+        <p>Memory + disk DSL cache, in-flight dedupe. Generated once → renders instantly forever.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ transport ═══ -->
+  <div class="link">
+    <div class="arrow up"></div>
+    <div class="pill">HTTP <small>· LAN / USB-tether · POST /generate · rfw DSL only</small></div>
+    <div class="arrow down"></div>
+  </div>
+
+  <!-- ═══ mac zone ═══ -->
+  <div class="zone">
+    <span class="zlabel">Mac · local bridge <span class="chip mac">serve.py · zero deps</span></span>
+    <div class="grid" style="grid-template-columns:1fr 1fr 1fr">
+      <div class="box blue">
+        <h3>💬 converse / conclude</h3>
+        <p>Onboarding turns: one AI follow-up per round; strict-JSON classification + closing copy. In-memory turn cache → retries are idempotent.</p>
+      </div>
+      <div class="box blue">
+        <h3>🧩 intent → DSL</h3>
+        <p>Composes screens from the pool per the system prompt. <code>leaf</code> screens get intent-links stripped mechanically.</p>
+      </div>
+      <div class="box">
+        <h3>🗃 Bridge cache</h3>
+        <p><code>cache.json</code> keyed <code>sha1(system_prompt + intent)</code> + in-flight dedupe — each intent is generated once, ever.</p>
+      </div>
+    </div>
+    <div class="grid" style="grid-template-columns:1fr;margin-top:14px">
+      <div class="box warn">
+        <h3>🤖 headless claude&nbsp;-p</h3>
+        <p>Local Claude login, no API key. The model is a supplier behind the bridge — swappable without touching the app.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══ capability lock ═══ -->
+<div class="lock">
+  <div class="ico">🔐</div>
+  <div>
+    <h3>The capability lock</h3>
+    <p>The model can only compose whitelisted structure — never executable code — and rendering never
+    leaves the device. The pool is kept in three-way sync: <code>lib/rfw_pool/local_widgets.dart</code>
+    (Dart implementations) · <code>bridge/system_prompt.txt</code> (what the model knows) ·
+    <code>lib/ds/aurora_tokens.dart</code> (Fresh Matcha design tokens). This is what makes an
+    AI-composed interface App-Store-shippable.</p>
+  </div>
+</div>
+
+<p class="legend">Bonsai · c0mpiled in Japan pt.3 · 2026-07-05 — self-contained HTML, opens via file://</p>
+
+</body>
+</html>
