@@ -9,6 +9,35 @@ import '../goals/goal.dart';
 class DemoScenario {
   DemoScenario._();
 
+  /// The Day-90 world, carrying the Day-1 narrative forward: if a project
+  /// was already planted (the onboarding take), its TITLE becomes the
+  /// job-hunt project's title — same seed, ninety days later.
+  static List<Goal> day90For(List<Goal> existing) {
+    Goal? planted;
+    for (final g in existing) {
+      if (g.kind == GoalKind.project) {
+        planted = g;
+        break;
+      }
+    }
+    if (planted == null) return day90Goals;
+    return [
+      for (final g in day90Goals)
+        if (g.slug == 'job-hunt')
+          Goal(
+            slug: g.slug,
+            title: planted.title, // continuity with the planting take
+            kind: g.kind,
+            status: g.status,
+            stage: g.stage,
+            parentArea: g.parentArea,
+            highlight: g.highlight,
+          )
+        else
+          g,
+    ];
+  }
+
   static const day90Goals = <Goal>[
     Goal(
       slug: 'job-hunt',

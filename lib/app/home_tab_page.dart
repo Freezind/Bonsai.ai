@@ -21,12 +21,24 @@ import '../state/demo_scenario.dart';
 class HomeTabPage extends StatelessWidget {
   const HomeTabPage({super.key});
 
+  /// The Day-1 registry, stashed while the Day-90 world is on stage so the
+  /// timeline can flip back and forth without losing the planted seed.
+  static List<Goal>? _day1Stash;
+
   Future<void> _toggleTimeline() {
     final prefs = AppPrefs.instance;
     final toDay90 = !prefs.demoDay90.value;
+    if (toDay90) {
+      _day1Stash = prefs.goals.value;
+      return prefs.applyScenario(
+        day90: true,
+        // Carry the planted project's title into the Day-90 world.
+        scenarioGoals: DemoScenario.day90For(prefs.goals.value),
+      );
+    }
     return prefs.applyScenario(
-      day90: toDay90,
-      scenarioGoals: toDay90 ? DemoScenario.day90Goals : const [],
+      day90: false,
+      scenarioGoals: _day1Stash ?? const [],
     );
   }
 

@@ -6,6 +6,7 @@ import 'package:bonsai/app/router.dart';
 import 'package:bonsai/goals/goal.dart';
 import 'package:bonsai/main.dart';
 import 'package:bonsai/onboarding/seed_flow_controller.dart';
+import 'package:bonsai/rfw_pool/demo_dashboards.dart';
 import 'package:bonsai/rfw_pool/pool_runtime.dart';
 import 'package:bonsai/screens/screen_store.dart';
 import 'package:bonsai/state/app_prefs.dart';
@@ -54,6 +55,28 @@ void main() {
 
   test('the frozen pool parses a generated dashboard', () {
     expect(buildRuntime(kTestDashboardDsl), isNotNull);
+  });
+
+  test('every fixed Day-90 dashboard parses against the pool', () {
+    for (final entry in kDemoDashboards.entries) {
+      expect(buildRuntime(entry.value), isNotNull,
+          reason: 'dashboard for ${entry.key} must parse');
+    }
+  });
+
+  test('day90For carries the planted project title forward', () {
+    const planted = Goal(
+        slug: 'my-own-hunt',
+        title: 'Find a design job in Kyoto',
+        kind: GoalKind.project,
+        status: GoalStatus.ready);
+    final world = DemoScenario.day90For(const [planted]);
+    final jobHunt = world.firstWhere((g) => g.slug == 'job-hunt');
+    expect(jobHunt.title, 'Find a design job in Kyoto');
+    // No planted project -> the default persona title stands.
+    final fresh = DemoScenario.day90For(const []);
+    expect(fresh.firstWhere((g) => g.slug == 'job-hunt').title,
+        'Job Hunt \u2014 Senior SWE');
   });
 
   testWidgets('first run: splash -> conversation -> reveal renders the DSL',

@@ -6,6 +6,7 @@ import 'package:rfw/rfw.dart';
 import '../ds/aurora_tokens.dart';
 import '../onboarding/ui/widgets/growing_bonsai.dart';
 import '../onboarding/ui/widgets/mascot.dart';
+import '../rfw_pool/demo_dashboards.dart';
 import '../rfw_pool/pool_runtime.dart';
 import '../screens/screen_store.dart';
 import '../state/app_prefs.dart';
@@ -76,6 +77,13 @@ class _GoalDashboardPageState extends State<GoalDashboardPage> {
   Future<void> _load({String kind = 'reveal'}) async {
     final goal = _goal;
     if (goal == null || _fetching) return;
+    // Fixed-frame dashboards (the pivoted product shape): render the
+    // build-time template straight from the pool — no bridge, instant.
+    final fixed = kDemoDashboards[goal.slug];
+    if (fixed != null) {
+      _apply(goal, fixed);
+      return;
+    }
     setState(() => _fetching = true);
     try {
       final res = await ScreenStore.instance.fetch(
@@ -107,7 +115,11 @@ class _GoalDashboardPageState extends State<GoalDashboardPage> {
       final runtime = buildRuntime(dsl);
       setState(() {
         _runtime = runtime;
-        _content = DynamicContent(ScreenStore.instance.uiData);
+        _content = DynamicContent({
+          ...ScreenStore.instance.uiData,
+          // per-goal bindings: the frame is fixed, the words are the goal's
+          'goal': {'title': goal.title},
+        });
         _dsl = dsl;
       });
     } on Object catch (e) {
