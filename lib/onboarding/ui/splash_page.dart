@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../ds/aurora_tokens.dart';
-import 'widgets/mascot.dart';
+import 'widgets/growing_bonsai.dart';
 
-/// S1 · First-run brand screen. Mascot breathing, brand line, one CTA.
+/// S1 · First-run brand screen. Mascot grows through its stages, brand line,
+/// one CTA.
 /// Not skippable; never shown again once the first goal is classified.
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -48,7 +49,7 @@ class _SplashPageState extends State<SplashPage>
                     position: _rise,
                     child: Column(
                       children: [
-                        const Mascot(size: 220),
+                        const GrowingBonsai(size: 220),
                         const SizedBox(height: Aurora.s5),
                         Text('Bonsai',
                             style: Aurora.display.copyWith(

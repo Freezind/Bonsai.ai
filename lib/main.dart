@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'app/router.dart';
 import 'bridge/bridge_client.dart';
@@ -11,8 +12,25 @@ import 'ds/aurora_tokens.dart';
 import 'screens/screen_store.dart';
 import 'state/app_prefs.dart';
 
+/// Dev switch: `--dart-define=RESET_STATE=true` wipes persisted state at
+/// boot (first-run flag, goal registry, DSL cache) — a clean-slate install
+/// without uninstalling the app.
+const bool kResetState = bool.fromEnvironment('RESET_STATE');
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  if (kResetState) {
+    try {
+      final dir = await getApplicationDocumentsDirectory();
+      for (final name in ['bonsai_state.json', 'dsl_cache.json']) {
+        final f = File('${dir.path}/$name');
+        if (f.existsSync()) f.deleteSync();
+      }
+      debugPrint('boot> RESET_STATE: persisted state wiped');
+    } on Object catch (e) {
+      debugPrint('boot> reset failed: $e');
+    }
+  }
   // Prefs load BEFORE runApp so the router's first-run redirect reads them
   // synchronously (same boot order as the DSL cache restore later on).
   await AppPrefs.instance.init();
