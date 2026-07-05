@@ -44,7 +44,7 @@
 - [x] `lib/rfw_pool/pool_runtime.dart` + `local_widgets.dart` 迁入,组件命名空间统一 `bonsai.*`(与 system_prompt.txt 同步 —— capability-lock 三处一致)
 - [x] `lib/screens/screen_store.dart` 迁入(内存+磁盘缓存、in-flight dedupe、Timer.run 交接,模式不动)
 - [x] `lib/goals/goal_dashboard_page.dart`:渲染 DSL;解析失败保上屏;navigate 事件 no-op + 状态行
-- [x] `lib/goals/goal_dashboard_store.dart`:fetch(goal:slug) 封装
+- [x] fetch(goal:slug) 封装(并入 goal_dashboard_page + screen_store 的 spec/leaf 参数,未单开文件)
 - [x] router:`/projects/goal/:slug`、`/areas/goal/:slug` 子路由(深度 1)
 - [x] S3 接线:进屏发 `{"intent":"goal:<slug>","spec":<转写>,"leaf":true}`;成功 → reveal 导航
 - [x] Classified 原子写入(firstRunComplete + goal 入注册表)移到真实流程
