@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../ds/aurora_tokens.dart';
 import '../bridge/bridge_client.dart';
+import '../screens/agent_sheet.dart';
 import 'router.dart';
 
 /// App chrome: wordmark + robot on top, the tab shell in the middle, the
@@ -76,10 +77,8 @@ class _TopBar extends StatelessWidget {
             ),
           ),
           IconButton.filled(
-            tooltip: 'Bonsai Agent',
-            onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('The gardener arrives in a later phase.')),
-            ),
+            tooltip: 'Bonsai Gardener',
+            onPressed: () => showAgentSheet(context),
             style: IconButton.styleFrom(
               backgroundColor: Aurora.accentTint,
               foregroundColor: Aurora.primaryLight,

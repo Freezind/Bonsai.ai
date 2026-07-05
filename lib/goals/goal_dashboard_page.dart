@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:rfw/rfw.dart';
 
@@ -30,6 +32,17 @@ class _GoalDashboardPageState extends State<GoalDashboardPage> {
   String? _dsl;
   bool _fetching = false;
 
+  /// Silent retry backoff while the dashboard is still growing. The bridge's
+  /// in-flight dedupe means a retry JOINS a running generation, not restarts.
+  static const _backoff = [
+    Duration(seconds: 10),
+    Duration(seconds: 30),
+    Duration(seconds: 60),
+    Duration(seconds: 120),
+  ];
+  int _retryStep = 0;
+  Timer? _retry;
+
   Goal? get _goal {
     for (final g in AppPrefs.instance.goals.value) {
       if (g.slug == widget.slug) return g;
@@ -43,14 +56,30 @@ class _GoalDashboardPageState extends State<GoalDashboardPage> {
     _load();
   }
 
-  Future<void> _load() async {
+  @override
+  void dispose() {
+    _retry?.cancel();
+    super.dispose();
+  }
+
+  void _scheduleRetry() {
+    if (_dsl != null || !mounted) return;
+    final delay = _backoff[_retryStep.clamp(0, _backoff.length - 1)];
+    if (_retryStep < _backoff.length) _retryStep++;
+    _retry?.cancel();
+    _retry = Timer(delay, () {
+      if (mounted && _dsl == null) _load(kind: 'retry');
+    });
+  }
+
+  Future<void> _load({String kind = 'reveal'}) async {
     final goal = _goal;
     if (goal == null || _fetching) return;
     setState(() => _fetching = true);
     try {
       final res = await ScreenStore.instance.fetch(
         goal.intent,
-        kind: 'reveal',
+        kind: kind,
         spec: goal.spec,
         leaf: true,
       );
@@ -62,8 +91,11 @@ class _GoalDashboardPageState extends State<GoalDashboardPage> {
             : 'grown in ${(res.latencyMs / 1000).toStringAsFixed(0)}s',
       );
     } on Object catch (e) {
-      // Keep whatever is on screen (Still-growing state or the prior DSL).
-      ScreenStore.instance.setStatus('still growing · $e');
+      // Keep whatever is on screen (Still-growing state or the prior DSL)
+      // and try again quietly — the metaphor holds: bonsai grow slowly.
+      ScreenStore.instance.setStatus('still growing');
+      debugPrint('dashboard> not ready: $e');
+      _scheduleRetry();
     } finally {
       if (mounted) setState(() => _fetching = false);
     }
@@ -122,11 +154,59 @@ class _GoalDashboardPageState extends State<GoalDashboardPage> {
         child: Text('This seed is gone.', style: Aurora.body2),
       );
     }
-    return Column(
+    final page = Column(
       children: [
         _header(goal),
         const Divider(height: 1, color: Aurora.divider),
         Expanded(child: _body(goal)),
+      ],
+    );
+    if (AppPrefs.instance.coachMarkSeen) return page;
+    // One-time coach mark on the first reveal: teach the PARA tabs + "+".
+    return Stack(
+      children: [
+        page,
+        Positioned.fill(
+          child: GestureDetector(
+            onTap: () {
+              AppPrefs.instance.markCoachMarkSeen();
+              setState(() {});
+            },
+            child: ColoredBox(
+              color: const Color(0x8826302A),
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  margin: const EdgeInsets.all(Aurora.s5),
+                  padding: const EdgeInsets.all(Aurora.s4),
+                  decoration: BoxDecoration(
+                    color: Aurora.paper2,
+                    border: Border.all(color: Aurora.ink, width: 2),
+                    borderRadius: BorderRadius.circular(Aurora.rMd),
+                    boxShadow: Aurora.elevPop,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('This is your goal\'s home', style: Aurora.title),
+                      const SizedBox(height: Aurora.s1),
+                      const Text(
+                        'Bottom tabs are your PARA structure — tap + anytime '
+                        'to plant another seed.',
+                        textAlign: TextAlign.center,
+                        style: Aurora.body2,
+                      ),
+                      const SizedBox(height: Aurora.s2),
+                      Text('Tap anywhere to start tending',
+                          style: Aurora.label
+                              .copyWith(color: Aurora.primaryLight)),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }

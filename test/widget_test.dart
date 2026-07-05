@@ -107,19 +107,68 @@ void main() {
     expect(AppPrefs.instance.goals.value.single.status, GoalStatus.ready);
     expect(ScreenStore.instance.active.value?.intent,
         'goal:finding-a-staff-engineer-job');
+
+    // One-time coach mark: shown on the first reveal, gone after a tap.
+    expect(find.textContaining('PARA structure'), findsOneWidget);
+    await tester.tap(find.textContaining('PARA structure'));
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(AppPrefs.instance.coachMarkSeen, isTrue);
+    expect(find.textContaining('PARA structure'), findsNothing);
+  });
+
+  testWidgets('tab roots list goals and + seed re-enters the conversation',
+      (tester) async {
+    AppPrefs.instance.firstRunComplete = true;
+    AppPrefs.instance.coachMarkSeen = true;
+    AppPrefs.instance.goals.value = const [
+      Goal(
+          slug: 'job-hunt',
+          title: 'Job hunt',
+          kind: GoalKind.project,
+          status: GoalStatus.ready),
+      Goal(
+          slug: 'health',
+          title: 'Health',
+          kind: GoalKind.area,
+          status: GoalStatus.growing),
+    ];
+    await tester.pumpWidget(const BonsaiApp());
+    await tester.pump(const Duration(milliseconds: 600));
+
+    await tester.tap(find.text('Projects').last);
+    await tester.pump(const Duration(milliseconds: 600));
+    expect(find.text('Job hunt'), findsOneWidget);
+    expect(find.text('Ready to tend'), findsOneWidget);
+    expect(find.text('Health'), findsNothing); // areas live on their own tab
+
+    await tester.tap(find.text('Areas').last);
+    await tester.pump(const Duration(milliseconds: 600));
+    expect(find.text('Health'), findsOneWidget);
+    expect(find.textContaining('Still growing'), findsOneWidget);
+
+    // "+ seed" re-enters the same conversation with the tab's framing.
+    await tester.tap(find.text('seed'));
+    await tester.pump(const Duration(milliseconds: 100));
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(
+        find.text(
+            "What's a part of your life you want to tend for the long run?"),
+        findsOneWidget);
+    // Abandoning is allowed after first run (close button present).
+    expect(find.byIcon(Icons.close), findsOneWidget);
   });
 
   testWidgets('completed first run boots straight into the 5-tab shell',
       (tester) async {
     AppPrefs.instance.firstRunComplete = true;
     await tester.pumpWidget(const BonsaiApp());
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 600));
 
     for (final tab in AppTab.values) {
       expect(find.text(tab.label), findsWidgets);
     }
     await tester.tap(find.text('Areas').last);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 600));
     expect(find.text('Nothing planted here yet.'), findsOneWidget);
     expect(tabDepth[AppTab.areas.index].value, 0);
   });
@@ -128,7 +177,7 @@ void main() {
       (tester) async {
     AppPrefs.instance.firstRunComplete = true;
     await tester.pumpWidget(const BonsaiApp());
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 600));
 
     // Deep-enter the seed flow with the area branch (the "+ seed" path).
     final ctx = tester.element(find.text('Home').last);
