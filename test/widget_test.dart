@@ -293,7 +293,8 @@ void main() {
     await tester.pump(const Duration(milliseconds: 500));
     expect(find.text('Connect a resource'), findsOneWidget);
     expect(find.text('GBrain'), findsOneWidget);
-    expect(find.text('Coming soon'), findsNWidgets(4));
+    // Every inlet is connectable (mock) — nothing reads "Coming soon".
+    expect(find.text('Coming soon'), findsNothing);
 
     // Tap GBrain: mock linking, then success, sheet closes itself.
     await tester.tap(find.text('GBrain'));

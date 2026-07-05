@@ -79,13 +79,13 @@ class _Connector {
     _Connector('gbrain', 'GBrain', 'Personal knowledge graph',
         Icons.hub_outlined, available: true),
     _Connector('healthkit', 'HealthKit', 'Movement, sleep and vitals',
-        Icons.favorite_outline),
+        Icons.favorite_outline, available: true),
     _Connector('calendar', 'Calendar', 'Events, focus blocks and rhythms',
-        Icons.calendar_month_outlined),
+        Icons.calendar_month_outlined, available: true),
     _Connector('mail', 'Mail', 'Threads that carry your goals',
-        Icons.mail_outline),
+        Icons.mail_outline, available: true),
     _Connector('notes', 'Notes', 'Journals and captured thoughts',
-        Icons.description_outlined),
+        Icons.description_outlined, available: true),
   ];
 
   static _Connector? byId(String id) {
