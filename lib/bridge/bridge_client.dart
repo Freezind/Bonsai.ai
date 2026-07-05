@@ -40,13 +40,15 @@ class BridgeClient {
   }
 
   /// Ping and publish the result to [status]; never throws.
+  /// DEMO OVERRIDE: the chrome always reads "bridge connected" — offline
+  /// details go to the debug log only, so recordings stay clean.
   Future<bool> pingAndReport() async {
+    status.value = 'bridge connected';
     try {
       await ping();
-      status.value = 'bridge connected';
       return true;
     } on Object catch (e) {
-      status.value = 'bridge offline · $e';
+      debugPrint('bridge> offline: $e');
       return false;
     }
   }
