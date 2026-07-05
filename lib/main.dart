@@ -17,6 +17,11 @@ import 'state/app_prefs.dart';
 /// without uninstalling the app.
 const bool kResetState = bool.fromEnvironment('RESET_STATE');
 
+/// Dev switch: `--dart-define=SKIP_ONBOARDING=true` boots straight into the
+/// shell (first-run marked complete) — for recording takes that start past
+/// the seed flow.
+const bool kSkipOnboarding = bool.fromEnvironment('SKIP_ONBOARDING');
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (kResetState) {
@@ -34,6 +39,7 @@ Future<void> main() async {
   // Prefs load BEFORE runApp so the router's first-run redirect reads them
   // synchronously (same boot order as the DSL cache restore later on).
   await AppPrefs.instance.init();
+  if (kSkipOnboarding) AppPrefs.instance.firstRunComplete = true;
   await ScreenStore.instance.init(); // restore the on-device DSL cache
   runApp(const BonsaiApp());
   // Fire-and-forget connectivity probe; the shell surfaces the result.
