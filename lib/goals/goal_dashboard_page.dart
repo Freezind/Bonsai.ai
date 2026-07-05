@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:rfw/rfw.dart';
 
 import '../ds/aurora_tokens.dart';
+import '../onboarding/ui/widgets/growing_bonsai.dart';
 import '../onboarding/ui/widgets/mascot.dart';
 import '../rfw_pool/pool_runtime.dart';
 import '../screens/screen_store.dart';
@@ -229,6 +230,9 @@ class _GoalDashboardPageState extends State<GoalDashboardPage> {
                 overflow: TextOverflow.ellipsis,
                 style: Aurora.title),
           ),
+          // The goal's own tree, grown to its current stage.
+          StageBonsai(stage: goal.stage, size: 40),
+          const SizedBox(width: Aurora.s2),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
             decoration: BoxDecoration(

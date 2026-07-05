@@ -9,6 +9,7 @@ import 'package:bonsai/onboarding/seed_flow_controller.dart';
 import 'package:bonsai/rfw_pool/pool_runtime.dart';
 import 'package:bonsai/screens/screen_store.dart';
 import 'package:bonsai/state/app_prefs.dart';
+import 'package:bonsai/state/demo_scenario.dart';
 
 /// A dashboard the bridge could have produced: pool widgets only.
 const String kTestDashboardDsl = '''
@@ -41,6 +42,7 @@ void main() {
     // Fresh in-memory state per test (no disk in the test environment).
     AppPrefs.instance.firstRunComplete = false;
     AppPrefs.instance.coachMarkSeen = false;
+    AppPrefs.instance.demoDay90.value = false;
     AppPrefs.instance.goals.value = const [];
     ScreenStore.instance.cache.clear();
     ScreenStore.instance.active.value = null;
@@ -212,5 +214,42 @@ void main() {
     expect(find.text('Still growing'), findsOneWidget);
     expect(find.text('Staying healthy'), findsOneWidget); // header title
     expect(AppPrefs.instance.goals.value.single.status, GoalStatus.growing);
+  });
+
+  testWidgets('Home: sleeping garden on day 1, full digest on day 90',
+      (tester) async {
+    AppPrefs.instance.firstRunComplete = true;
+    await tester.pumpWidget(const BonsaiApp());
+    await tester.pump(const Duration(milliseconds: 600));
+
+    // Day 1 · locked digest, seed-stage pot, planting prompt.
+    expect(find.text('Your garden sleeps'), findsOneWidget);
+    expect(find.textContaining('Plant 2 more seeds'), findsOneWidget);
+
+    // Flip the timeline (what the long-press does).
+    await AppPrefs.instance.applyScenario(
+        day90: true, scenarioGoals: DemoScenario.day90Goals);
+    await tester.pump(const Duration(milliseconds: 600));
+
+    // Day 90 · digest header, overnight note, highlights with area chips.
+    expect(find.text(DemoScenario.digestTitle), findsOneWidget);
+    expect(find.text(DemoScenario.overnightTitle), findsOneWidget);
+    expect(find.text('Job Hunt \u2014 Senior SWE'), findsOneWidget);
+    // Later rows sit below the test viewport fold — scroll to them.
+    await tester.drag(find.byType(ListView), const Offset(0, -500));
+    await tester.pump();
+    expect(find.text('Daily Training'), findsOneWidget);
+    expect(find.text('A \u00b7 Career'), findsOneWidget);
+    expect(find.text('A \u00b7 Health'), findsOneWidget);
+
+    // Projects tab lists both projects with their grown trees.
+    await tester.tap(find.text('Projects').last);
+    await tester.pump(const Duration(milliseconds: 600));
+    expect(find.text('Job Hunt \u2014 Senior SWE'), findsOneWidget);
+    // Areas tab lists both areas.
+    await tester.tap(find.text('Areas').last);
+    await tester.pump(const Duration(milliseconds: 600));
+    expect(find.text('Career'), findsOneWidget);
+    expect(find.text('Health'), findsOneWidget);
   });
 }

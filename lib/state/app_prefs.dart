@@ -22,6 +22,11 @@ class AppPrefs {
   bool firstRunComplete = false;
   bool coachMarkSeen = false;
 
+  /// Demo timeline switch: true = the Day-90 world (fake scenario goals +
+  /// weekly digest on Home). Toggled by a long-press on the Home header for
+  /// before/after screen recording.
+  final ValueNotifier<bool> demoDay90 = ValueNotifier<bool>(false);
+
   /// The planted goals, in planting order. Tab roots render these.
   final ValueNotifier<List<Goal>> goals = ValueNotifier<List<Goal>>(const []);
 
@@ -40,6 +45,7 @@ class AppPrefs {
       final m = jsonDecode(text) as Map<String, dynamic>;
       firstRunComplete = m['firstRunComplete'] == true;
       coachMarkSeen = m['coachMarkSeen'] == true;
+      demoDay90.value = m['demoDay90'] == true;
       goals.value = [
         for (final g in (m['goals'] as List? ?? const []))
           Goal.fromJson(g as Map<String, dynamic>),
@@ -69,6 +75,18 @@ class AppPrefs {
     await _save();
   }
 
+  /// Swap the whole goal registry + demo flag in one write (the Day-1 ⟷
+  /// Day-90 recording switch).
+  Future<void> applyScenario({
+    required bool day90,
+    required List<Goal> scenarioGoals,
+  }) async {
+    demoDay90.value = day90;
+    firstRunComplete = true; // the demo world is past first-run by definition
+    goals.value = scenarioGoals;
+    await _save();
+  }
+
   Future<void> markCoachMarkSeen() async {
     coachMarkSeen = true;
     await _save();
@@ -91,6 +109,7 @@ class AppPrefs {
     final payload = jsonEncode({
       'firstRunComplete': firstRunComplete,
       'coachMarkSeen': coachMarkSeen,
+      'demoDay90': demoDay90.value,
       'goals': [for (final g in goals.value) g.toJson()],
     });
     try {

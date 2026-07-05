@@ -3,7 +3,9 @@ import 'package:go_router/go_router.dart';
 
 import '../ds/aurora_tokens.dart';
 import '../goals/goal.dart';
+import '../onboarding/ui/widgets/growing_bonsai.dart';
 import '../onboarding/ui/widgets/mascot.dart';
+import 'home_tab_page.dart';
 import '../state/app_prefs.dart';
 import 'router.dart';
 
@@ -21,6 +23,7 @@ class TabRootPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (tab == AppTab.home) return const HomeTabPage();
     if (tab == AppTab.resources) return const _ResourcesRoot();
     if (!_plantable) return _QuietRoot(tab: tab);
 
@@ -92,7 +95,7 @@ class _GoalCard extends StatelessWidget {
             if (growing)
               const Mascot(mood: MascotMood.thirsty, size: 44)
             else
-              const Mascot(size: 44),
+              StageBonsai(stage: goal.stage, size: 48),
             const SizedBox(width: Aurora.s3),
             Expanded(
               child: Column(

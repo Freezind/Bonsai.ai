@@ -11,6 +11,9 @@ class Goal {
     required this.kind,
     required this.status,
     this.spec = '',
+    this.stage = 0,
+    this.parentArea,
+    this.highlight = '',
   });
 
   /// Stable id; also the bridge cache key via [intent] (`goal:<slug>`).
@@ -24,14 +27,28 @@ class Goal {
   /// dashboard; it shapes the prompt but never the cache key.
   final String spec;
 
+  /// Growth stage 0..4 (seed → sprout → bonsai → bloom → fruit). The tree
+  /// grows — and its face gets happier — as the goal is tended over time.
+  final int stage;
+
+  /// For projects: the area (by slug) this project belongs to. Areas list
+  /// their projects through this link (Career ⟵ Job Hunt).
+  final String? parentArea;
+
+  /// One-line weekly highlight, surfaced on the Home digest.
+  final String highlight;
+
   String get intent => 'goal:$slug';
 
-  Goal copyWith({GoalStatus? status}) => Goal(
+  Goal copyWith({GoalStatus? status, int? stage, String? highlight}) => Goal(
         slug: slug,
         title: title,
         kind: kind,
         status: status ?? this.status,
         spec: spec,
+        stage: stage ?? this.stage,
+        parentArea: parentArea,
+        highlight: highlight ?? this.highlight,
       );
 
   Map<String, Object?> toJson() => {
@@ -40,6 +57,9 @@ class Goal {
         'kind': kind.name,
         'status': status.name,
         'spec': spec,
+        'stage': stage,
+        if (parentArea != null) 'parentArea': parentArea,
+        if (highlight.isNotEmpty) 'highlight': highlight,
       };
 
   static Goal fromJson(Map<String, dynamic> m) => Goal(
@@ -48,6 +68,9 @@ class Goal {
         kind: GoalKind.values.byName(m['kind'] as String? ?? 'project'),
         status: GoalStatus.values.byName(m['status'] as String? ?? 'growing'),
         spec: m['spec'] as String? ?? '',
+        stage: (m['stage'] as num?)?.toInt() ?? 0,
+        parentArea: m['parentArea'] as String?,
+        highlight: m['highlight'] as String? ?? '',
       );
 }
 

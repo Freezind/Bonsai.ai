@@ -85,6 +85,37 @@ final _fruitStage = _svg('''
 <rect x="90" y="179" width="120" height="22" rx="9" fill="$_pot" stroke="$_ink" stroke-width="5"/>
 ''');
 
+/// All five stage SVGs, seed → fruit, for static per-stage rendering.
+final List<String> kBonsaiStageSvgs = <String>[
+  _seed, _sprout, _bonsai, _bloom, _fruitStage,
+];
+
+/// One FIXED growth stage of the mascot (0 = seed … 4 = fruit) — the tree a
+/// goal has grown into. Later stages carry happier faces by design.
+class StageBonsai extends StatelessWidget {
+  const StageBonsai({super.key, required this.stage, this.size = 44});
+  final int stage;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    final svg = kBonsaiStageSvgs[stage.clamp(0, kBonsaiStageSvgs.length - 1)];
+    return SizedBox(
+      width: size,
+      height: size,
+      child: SvgPicture.string(
+        svg,
+        fit: BoxFit.contain,
+        placeholderBuilder: (_) => Icon(
+          Icons.spa_outlined,
+          size: size * 0.6,
+          color: Theme.of(context).colorScheme.primary,
+        ),
+      ),
+    );
+  }
+}
+
 /// A looping bonsai that grows through its five stages — seed → sprout →
 /// bonsai → bloom → fruit — then starts over. Each stage pops in from the pot
 /// with an overshoot-and-settle, echoing the mascot's motion signature.
