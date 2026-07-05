@@ -82,6 +82,52 @@ class BridgeClient {
     throw BridgeException('unreachable after 3 tries: $lastError');
   }
 
+  /// Seed conversation: the next AI follow-up question for [transcript].
+  /// The bridge's in-memory turn cache makes retries idempotent (a retry
+  /// joins the in-flight call and gets the SAME question).
+  Future<String> nextQuestion({
+    required String entry,
+    required List<Map<String, String>> transcript,
+    required int turn,
+  }) async {
+    final url = baseUrl;
+    final map = await Isolate.run(() => _postForJson(url, '', extra: {
+          'converse': true,
+          'entry': entry,
+          'transcript': transcript,
+          'turn': turn,
+        }, readTimeout: const Duration(seconds: 100)));
+    final q = map['question'];
+    if (q is! String || q.isEmpty) {
+      throw BridgeException(map['error']?.toString() ?? 'no question returned');
+    }
+    return q;
+  }
+
+  /// Seed conversation: final classification + closing copy. Fast — the
+  /// dashboard itself is generated afterwards through the intent channel.
+  Future<ConcludeResult> conclude({
+    required String entry,
+    required List<Map<String, String>> transcript,
+  }) async {
+    final url = baseUrl;
+    final map = await Isolate.run(() => _postForJson(url, '', extra: {
+          'conclude': true,
+          'entry': entry,
+          'transcript': transcript,
+        }, readTimeout: const Duration(seconds: 100)));
+    final kind = map['kind'];
+    if (kind is! String) {
+      throw BridgeException(map['error']?.toString() ?? 'no classification returned');
+    }
+    return ConcludeResult(
+      kind: kind,
+      title: (map['title'] as String?)?.trim() ?? 'My goal',
+      slug: (map['slug'] as String?)?.trim() ?? 'goal',
+      closing: (map['closing'] as String?)?.trim() ?? '',
+    );
+  }
+
   /// Robot chat: ask the agent to modify ONE screen. Returns the full
   /// modified DSL; the bridge overwrites its cache so the edit persists.
   Future<BridgeResult> edit(String intent, String instruction, String current) async {
@@ -147,6 +193,19 @@ class BridgeResult {
   const BridgeResult({required this.dsl, required this.latencyMs});
   final String dsl;
   final int latencyMs;
+}
+
+class ConcludeResult {
+  const ConcludeResult({
+    required this.kind,
+    required this.title,
+    required this.slug,
+    required this.closing,
+  });
+  final String kind; // "project" | "area" — may differ from the entry branch
+  final String title;
+  final String slug;
+  final String closing;
 }
 
 class BridgeException implements Exception {

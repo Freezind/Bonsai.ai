@@ -219,6 +219,150 @@ def _cache_key(intent: str) -> str:
     return hashlib.sha1((SYSTEM_PROMPT + "\x00" + intent).encode("utf-8")).hexdigest()
 
 
+# ---------------- Seed conversation (onboarding) ----------------
+# converse: one AI follow-up question per turn. conclude: classification +
+# closing copy as strict JSON. Results live in an IN-MEMORY cache keyed on
+# the full transcript so client retries are idempotent (a lost reply can't
+# yield a different question or re-run claude) — but transcripts never recur
+# across sessions, so nothing is written to disk / cache.json.
+CONVERSE_SYSTEM = """You are Bonsai's onboarding gardener: warm, brief, never twee.
+A user is planting ONE goal by chatting. Entry context is given (they came in
+planting a Project — something with a finish line — or an Area — something
+tended for the long run).
+
+Ask exactly ONE short follow-up question (one sentence). Purpose: gather the
+MINIMUM needed to (a) tell Project from Area and (b) generate a decent first
+dashboard for this goal. If their goal is vague, use the turn to clarify it.
+If they mentioned several goals, focus on the first and let the others be.
+Never ask for private or sensitive detail.
+
+Output ONLY the question text — no preamble, no quotes, no markdown."""
+
+CONCLUDE_SYSTEM = """You are Bonsai's onboarding gardener. The short planting
+conversation below is over. Classify the goal and write the closing line.
+
+Output STRICT JSON only (no markdown fences, no prose):
+{"kind": "project|area",
+ "title": "<concise goal title, 2-5 words, naturally capitalized>",
+ "slug": "<kebab-case-of-title>",
+ "closing": "<1-2 warm sentences: disclose the classification, teach the PARA
+   meaning in one clause (project = has a finish line; area = tended for the
+   long run), say you're planting it now. If your kind differs from the entry
+   they came through, gently correct course in the same breath.>"}
+
+kind reflects REALITY (finish line -> project; ongoing direction -> area),
+regardless of which entry the user came through."""
+
+TURN_CACHE: dict = {}
+
+
+def _turn_key(mode: str, entry: str, transcript: list) -> str:
+    payload = json.dumps({"m": mode, "e": entry, "t": transcript},
+                         sort_keys=True, ensure_ascii=False)
+    return hashlib.sha1(payload.encode("utf-8")).hexdigest()
+
+
+def _transcript_lines(transcript: list) -> str:
+    return "\n".join(
+        f"{'User' if m.get('role') == 'user' else 'Bonsai'}: {m.get('text', '')}"
+        for m in transcript
+    )
+
+
+def _ask_claude(system: str, task: str, timeout: int = 120) -> tuple:
+    """One headless claude call -> (raw_text, latency_ms) or raises."""
+    t0 = time.time()
+    cmd = ["claude", "-p", "--output-format", "json",
+           "--append-system-prompt", system]
+    if MODEL:
+        cmd += ["--model", MODEL]
+    cmd.append(task)
+    proc = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+    latency = int((time.time() - t0) * 1000)
+    if proc.returncode != 0:
+        raise RuntimeError(f"claude exited {proc.returncode}: {proc.stderr[:300]}")
+    try:
+        raw = json.loads(proc.stdout).get("result", "")
+    except json.JSONDecodeError:
+        raw = proc.stdout
+    return raw.strip(), latency
+
+
+def _deduped_turn(key: str, fn):
+    """TURN_CACHE + shared in-flight dedupe: a retry joins the running call."""
+    with _cache_lock:
+        hit = TURN_CACHE.get(key)
+        if hit:
+            return {**hit, "cached": True}
+        ev = _inflight.get(key)
+        owner = ev is None
+        if owner:
+            ev = threading.Event()
+            _inflight[key] = ev
+    if not owner:
+        ev.wait(timeout=150)
+        with _cache_lock:
+            hit = TURN_CACHE.get(key)
+        return {**hit, "cached": True} if hit else {"error": "in-flight turn failed"}
+    try:
+        result = fn()
+        if "error" not in result:
+            with _cache_lock:
+                TURN_CACHE[key] = result
+        return result
+    finally:
+        with _cache_lock:
+            _inflight.pop(key, None)
+        ev.set()
+
+
+def converse(entry: str, transcript: list, turn: int) -> dict:
+    def run():
+        noun = "Project (has a finish line)" if entry == "project" else \
+               "Area (tended for the long run)"
+        task = (f"Entry: the user is planting a {noun}.\n"
+                f"This is follow-up {turn} of 2.\n\n"
+                f"Conversation so far:\n{_transcript_lines(transcript)}\n\n"
+                "Ask the next follow-up question now.")
+        try:
+            raw, latency = _ask_claude(CONVERSE_SYSTEM, task, timeout=90)
+        except (RuntimeError, subprocess.TimeoutExpired) as e:
+            return {"error": str(e)}
+        question = raw.strip().strip('"').splitlines()[0].strip() if raw.strip() else ""
+        if not question:
+            return {"error": "empty question from model"}
+        return {"question": question, "latency_ms": latency}
+    return _deduped_turn(_turn_key("converse", entry, transcript), run)
+
+
+def conclude(entry: str, transcript: list) -> dict:
+    def run():
+        task = (f"Entry branch: {entry}.\n\n"
+                f"Conversation:\n{_transcript_lines(transcript)}\n\n"
+                "Output the JSON now.")
+        try:
+            raw, latency = _ask_claude(CONCLUDE_SYSTEM, task, timeout=90)
+        except (RuntimeError, subprocess.TimeoutExpired) as e:
+            return {"error": str(e)}
+        text = re.sub(r"^```[a-zA-Z]*\n?", "", raw)
+        text = re.sub(r"\n?```$", "", text).strip()
+        start, end = text.find("{"), text.rfind("}")
+        if start == -1 or end == -1:
+            return {"error": "no JSON in conclude reply", "raw": raw[:300]}
+        try:
+            obj = json.loads(text[start:end + 1])
+        except json.JSONDecodeError as e:
+            return {"error": f"conclude JSON invalid: {e}", "raw": text[:300]}
+        kind = obj.get("kind") if obj.get("kind") in ("project", "area") else entry
+        title = (obj.get("title") or "").strip() or "My goal"
+        slug = re.sub(r"[^a-z0-9]+", "-", (obj.get("slug") or title).lower()).strip("-") or "goal"
+        closing = (obj.get("closing") or "").strip() or \
+            f"Got it — planting “{title}” now…"
+        return {"kind": kind, "title": title, "slug": slug,
+                "closing": closing, "intent": f"goal:{slug}", "latency_ms": latency}
+    return _deduped_turn(_turn_key("conclude", entry, transcript), run)
+
+
 def _extract_dsl(text: str) -> str:
     """Strip code fences / stray prose; keep from first import to last `);`."""
     t = text.strip()
@@ -514,6 +658,21 @@ class Handler(BaseHTTPRequestHandler):
         if req.get("data"):  # the UI data blob the app injects into templates
             return self._send(200, {"data": ui_data(),
                                      "profile": CONTEXT_PACK.get("profile_id") if CONTEXT_PACK else None})
+        if req.get("converse"):  # seed conversation: next follow-up question
+            entry = req.get("entry") if req.get("entry") in ("project", "area") else "project"
+            transcript = req.get("transcript") or []
+            turn = int(req.get("turn") or 1)
+            print(f"→ CONVERSE [{entry}] turn {turn} ({len(transcript)} msgs)")
+            result = converse(entry, transcript, turn)
+            print(f"← converse: {result.get('question', result.get('error', '?'))[:80]!r}")
+            return self._send(200 if "question" in result else 502, result)
+        if req.get("conclude"):  # seed conversation: classification + closing
+            entry = req.get("entry") if req.get("entry") in ("project", "area") else "project"
+            transcript = req.get("transcript") or []
+            print(f"→ CONCLUDE [{entry}] ({len(transcript)} msgs)")
+            result = conclude(entry, transcript)
+            print(f"← conclude: {result.get('kind', '?')} {result.get('slug', result.get('error', '?'))[:60]!r}")
+            return self._send(200 if "kind" in result else 502, result)
         intent = (req.get("intent") or "").strip()
         leaf = bool(req.get("leaf"))
         spec = (req.get("spec") or "").strip()

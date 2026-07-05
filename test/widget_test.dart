@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:bonsai/app/router.dart';
 import 'package:bonsai/goals/goal.dart';
 import 'package:bonsai/main.dart';
+import 'package:bonsai/onboarding/seed_flow_controller.dart';
 import 'package:bonsai/state/app_prefs.dart';
 
 void main() {
@@ -13,6 +14,9 @@ void main() {
     AppPrefs.instance.firstRunComplete = false;
     AppPrefs.instance.coachMarkSeen = false;
     AppPrefs.instance.goals.value = const [];
+    // Real network cannot complete under the test fake clock — force the
+    // scripted spine (which is also the bridge-down production behavior).
+    SeedFlowController.disableLive = true;
   });
 
   testWidgets('first run walks splash -> conversation -> growing -> shell',
