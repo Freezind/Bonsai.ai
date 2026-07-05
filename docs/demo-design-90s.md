@@ -28,13 +28,26 @@ Mode: Builder
 
 1. **PARA:context 按"目的"组织,不是按"工具"组织。** 传统软件里你的求职 context 散在邮箱、日历、表格、聊天里——工具持有数据,但没有工具持有"目标"。Bonsai 把 context 归属到 goal(Projects/Areas/Resources/Archive),goal 才是第一公民。
 2. **人的角色迁移:从喂 context 到只做决策。** 理想状态下 AI 24 小时自主推进目标。早期人提供 context(Day 1 的 AI 提问确认区就是这个),运行一段时间后人只做决策(Day 90 的建议 Banner + 决策卡就是这个)。**UI 的演化不是装饰,它是这个角色迁移的可视化。**
-3. **直接回应 RFS 原文。** Ankit Gupta:"my email client looks more like a task list, and a student's looks more like an events calendar... software companies will ship these shared primitives with full intention that users will heavily modify the final interfaces." —— 冻结组件池就是 shipped primitives,persona 化生成就是 heavily modified final interfaces。这段可以在 pitch 里逐字引用。
+3. **直接回应 RFS 原文。** Ankit Gupta:"my email client looks more like a task list, and a student's looks more like an events calendar... software companies will ship these shared primitives with full intention that users will heavily modify the final interfaces." —— 冻结组件池就是 shipped primitives,按 goal 生成界面就是 heavily modified final interfaces——RFS 讲的是不同人得到不同界面,Bonsai 更进一步:同一个人的每个 goal 都得到自己的界面。这段可以在 pitch 里逐字引用。
 
 ### 已选定的 whoa 时刻(用户拍板)
 
 - **Day 1 → Day 90 演化**(主):同一个求职者,app 自己跟着人生阶段长——AI 提问确认区 → "已重排优先级" Banner + 经验教训 warning + pipeline Stepper
 - **现场 intent 生成**(辅):真机上输入一句话,几十秒后新屏幕长出来。评委只看录制视频,live 风险可控
-- **跨 persona 对比**(可作 3 秒插入镜头):同一个 app binary,求职者首屏是 pipeline 确认区,糖尿病患者首屏是血糖 BarChart——同骨架,异控件
+- **跨 goal 对比**(可作 3 秒插入镜头):同一个人的 app 里,求职 Project 首屏是 pipeline 确认区,健康 Area 首屏是血糖 BarChart——同骨架,异控件。一个镜头同时演示了 PARA(goal 是第一公民)和"每个 goal 长出自己的界面",且不需要为第二个 persona 造数据
+
+### Onboarding flow(2026-07-05 加,用户拍板)
+
+- 第一次打开 app:用户用自然语言说出自己的 goals → app 现场长出 PARA 骨架和各 goal 的首屏。这是 "users become their own forward deployed engineers" 的第一分钟——骨架从无到有,比任何旁白都直观
+- 视频里作为 hook 之后、Day 1 之前的段落(秒数预算已列入 Approach A)
+- build:复用现有 intent → bridge → DSL 流水线,新增一个 first-run 输入屏;等待时间用与"现场 intent 生成"相同的处理(加速播放 + 真实秒表)
+
+### 健康 Area 深化(2026-07-05 加):iOS Health 互通 + 夜间 "dream"
+
+- **context 不只来自人喂**:健康 Area 直接与 iOS HealthKit 互通,睡眠、步数等数据自动流入 goal context——把方向 3"工具持有数据,Bonsai 持有目标"从主张变成事实
+- **AI 每晚 "dream"(夜间自主分析)**:app 在用户睡觉时把睡眠 data 和用户晨间记录的状态做关联,早上以洞察卡片呈现(例:"连续三晚睡眠不足 6h 的次日,你记录的状态都是 low")。这是"人只做决策"的极致展示:你什么都没做,app 替你想了一夜
+- pitch 句:"**Bonsai dreams while you sleep.**"
+- demo 可行性:真 HealthKit 接入是 post-hackathon;demo 里用 kMockData 在健康 Area 首屏放一张晨间洞察卡即可成立(本项目 mock 数据是故意的)。视频里最多一句旁白 + 一个卡片镜头(可与跨 goal 对比合并);完整论述进书面提交
 
 ## 四个差异化方向(全部写透;视频只容一条主线,其余必须落进书面提交材料)
 
@@ -104,32 +117,24 @@ Mode: Builder
 
 ## Approaches Considered(90 秒叙事结构备选)
 
-### Approach A:"一个人生,一个活的 app"(时间轴叙事)⭐ 推荐
+### Approach A:"一个人生,一个活的 app"(时间轴叙事)⭐ 已选定
 
-- **弧线**:hook(tagline + 问题一句话)→ 求职者 Day 1(确认区,人喂 context)→ **Day 90 演化**(同一 app 自己长了,人只做决策)→ 现场 intent 生成(用户还能随时长出新屏)→ 收尾(3 秒跨 persona 对比闪现 + market 一句话)
+- **弧线**:hook(tagline + 问题一句话)→ **onboarding**(用户说出自己的 goals,app 现场长出 PARA 骨架)→ 求职者 Day 1(确认区,人喂 context)→ **Day 90 演化**(同一 app 自己长了,人只做决策)→ 现场 intent 生成(用户还能随时长出新屏)→ 收尾(3 秒跨 goal 对比闪现 + market 一句话)
 - **主打差异化**:方向 1(活的 app),方向 3 作为旁白逻辑,方向 4 靠真机质感隐性传达
-- **秒数预算**(目标 83s,留 7s 余量——90s 是硬上限,顶格剪辑零容错):hook 8s → Day1 18s → Day90 24s → intent 生成 18s → 对比+收尾 15s
+- **秒数预算**(目标 83s,留 7s 余量——90s 是硬上限,顶格剪辑零容错):hook 6s → onboarding 12s → Day1 14s → Day90 22s → intent 生成 16s → 对比+收尾 13s
 - **Effort**: M(三段素材 + 剪辑)· **Risk**: Low(全部素材 runbook 已覆盖)
 - **Pros**:叙事有时间弧度,讲的是"软件活着"这个别人没有的故事;两个已选 whoa 时刻都是主角;哲学层(角色迁移)自然长在叙事里
 - **Cons**:Day 1 → Day 90 的"90 天"需要旁白解释是模拟演化,处理不好像作弊;对比镜头被压缩到 3 秒
 
-### Approach B:"同一个 app,千人千面"(空间对比叙事)
+### Approach B:"同一个 app,一人千面"(空间对比叙事)
 
-- **弧线**:hook → 并排分屏:求职者首屏 vs 糖尿病患者首屏(同 binary 同组件池)→ 引 RFS 原文("email client vs events calendar——我们做出来了")→ 演化快闪 → 收尾
+- **弧线**:hook → 并排分屏:同一个人的求职 Project 首屏 vs 健康 Area 首屏(同 binary 同组件池)→ 引 RFS 原文("email client vs events calendar——我们连一个人的不同 goal 都做到了")→ 演化快闪 → 收尾
 - **主打差异化**:方向 3(goal-native)+ RFS 命中度最高
 - **Effort**: M · **Risk**: Low
 - **Pros**:开场 10 秒就有最强视觉对比;对 RFS 的回应最字面、最不会被评委错过
-- **Cons**:对比是静态的("不同的人不同界面"竞品也能声称),放弃了"活着/生长"这个独有叙事;用户选的 whoa 时刻变成配角
+- **Cons**:对比是静态的("不同 goal 不同界面"竞品也能声称),放弃了"活着/生长"这个独有叙事;用户选的 whoa 时刻变成配角
 
-### Approach C:"这不是 mockup"(技术可信度叙事)
-
-- **弧线**:开场就是真机 + 手指操作 → 现场 intent 生成完整记录(含等待,加速播放)→ 演化 → capability lock 一句话("永不生成代码,所以能进 App Store")→ 收尾
-- **主打差异化**:方向 4 + 方向 2,冲 Biggest Engineering Lift
-- **Effort**: S · **Risk**: Med(把工程叙事讲给混合背景评委,可能失去非技术评委)
-- **Pros**:hackathon 语境里"真的能跑"本身稀缺;与满场网页 demo 形成最大反差
-- **Cons**:Investable Startup 叙事最弱;哲学层没有位置;90 秒讲架构容易变成功能罗列
-
-**RECOMMENDATION: Approach A**,因为它把用户拍板的两个 whoa 时刻(演化 + 现场生成)串成一条有起承转合的弧线,B 的最强镜头(并排对比)可以作为 A 结尾的 3 秒插入不浪费,C 的质感(真机)是 A 的默认拍摄方式——A 实际上吃掉了 B 和 C 的精华。
+**DECISION(2026-07-05,用户拍板):Approach A。** B 的最强镜头(并排对比)作为 A 结尾的 3 秒插入。原 Approach C(技术可信度叙事)已删——hackathon 视频不需要防御性的技术辩解;真机质感是 A 的默认拍摄方式,不言自明,工程叙事(capability lock、iOS async 深坑、三层缓存)只进书面提交。
 
 ## Success Criteria
 
@@ -158,9 +163,9 @@ Mode: Builder
 
 ## Next Steps(含截止时刻;build time 12:00–17:00,提交 17:00 硬截止)
 
-1. 讨论并选定叙事结构(A/B/C 或杂交)——**现在,01:30 前**
+1. ~~讨论并选定叙事结构~~ **已定:Approach A**(含 onboarding 段,C 已删)
 2. 写秒级分镜脚本(每个镜头:画面 + 英文旁白词)——**赛前完成**(分镜不占 build time)
-3. 按 `bridge/DEMO-RUNBOOK.md` 录三个状态的素材——**12:00–13:30**(runbook 已验证,预留重录余量)
+3. 按 `bridge/DEMO-RUNBOOK.md` 录三个状态的素材,**新增**:onboarding first-run 屏 + 健康 Area 首屏(血糖 BarChart + 晨间 "dream" 洞察卡,kMockData)——**12:00–13:30**(runbook 已验证,预留重录余量;新增素材若 13:00 仍未就绪,砍 onboarding 实录改用现场 intent 生成镜头兼任,dream 卡降级为旁白一句话)
 4. 剪辑 + 旁白(默认 TTS)——**13:30–15:30**;往届获奖视频研究(20 分钟)与录制并行,用于校准节奏。**剪辑和旁白对齐是最耗时环节,任何一段超时先砍该段秒数,不外溢**
 5. **书面提交材料**(课题设定 + 产品/技术/商业模式概要 + 全球市场视角,英文):没进视频主线的三条差异化 + 护城河论证 + Engineering Lift 叙事 + 上文两条草案全部落在这里——这是它们唯一的出口,和视频同等优先级——**14:00–15:30,可与剪辑并行(分工)**
 6. 合成检查 + 提交——**16:00 完成初版,16:30 前提交,留 30 分钟事故余量**
