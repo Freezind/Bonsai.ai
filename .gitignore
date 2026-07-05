@@ -31,3 +31,7 @@ doc/api/
 # IDE
 .idea/
 *.iml
+
+# Bridge runtime artifacts
+bridge/cache*.json
+bridge/dsl.log

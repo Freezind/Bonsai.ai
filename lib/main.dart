@@ -5,10 +5,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'app/router.dart';
+import 'bridge/bridge_client.dart';
 import 'ds/aurora_tokens.dart';
 
 void main() {
   runApp(const BonsaiApp());
+  // Fire-and-forget connectivity probe; the shell surfaces the result.
+  BridgeClient.instance.pingAndReport();
 }
 
 class BonsaiApp extends StatefulWidget {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../ds/aurora_tokens.dart';
+import '../bridge/bridge_client.dart';
 import 'router.dart';
 
 /// App chrome: wordmark + robot on top, the tab shell in the middle, the
@@ -51,17 +52,25 @@ class _TopBar extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text('Bonsai', style: Aurora.h2.copyWith(color: Aurora.primaryLight)),
-                ValueListenableBuilder<int>(
-                  valueListenable: tabDepth[shell.currentIndex],
-                  builder: (context, depth, _) {
-                    if (depth == 0) return const SizedBox.shrink();
-                    return Text(
-                      'depth $depth',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 11, color: Aurora.textSecondary),
-                    );
-                  },
+                ValueListenableBuilder<String?>(
+                  valueListenable: BridgeClient.instance.status,
+                  builder: (context, status, _) => ValueListenableBuilder<int>(
+                    valueListenable: tabDepth[shell.currentIndex],
+                    builder: (context, depth, _) {
+                      if (status == null && depth == 0) {
+                        return const SizedBox.shrink();
+                      }
+                      return Text(
+                        [
+                          if (status != null) status,
+                          if (depth > 0) 'depth $depth',
+                        ].join('  ·  '),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontSize: 11, color: Aurora.textSecondary),
+                      );
+                    },
+                  ),
                 ),
               ],
             ),
