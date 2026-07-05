@@ -17,8 +17,9 @@
   --r:16px; --r-lg:22px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--ink);padding:40px 24px 80px;display:flex;flex-direction:column;align-items:center}
-h1{font:800 34px 'Baloo 2';color:var(--primary)}
+html{-webkit-text-size-adjust:100%}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--ink);padding:40px 24px 80px;display:flex;flex-direction:column;align-items:center;overflow-x:hidden}
+h1{font:800 34px 'Baloo 2';color:var(--primary);text-align:center}
 .sub{color:var(--muted);font-size:14px;margin:6px 0 34px;text-align:center;max-width:640px;line-height:1.6}
 .sub b{color:var(--ink)}
 
@@ -27,17 +28,17 @@ h1{font:800 34px 'Baloo 2';color:var(--primary)}
 /* zones */
 .zone{width:100%;border:2px dashed var(--subtle);border-radius:var(--r-lg);padding:20px;position:relative;background:transparent}
 .zone+.zone{margin-top:54px}
-.zone .zlabel{position:absolute;top:-13px;left:22px;background:var(--bg);padding:0 10px;font:800 12px 'Nunito';letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+.zone .zlabel{position:absolute;top:-13px;left:22px;max-width:calc(100% - 34px);background:var(--bg);padding:0 10px;font:800 12px 'Nunito';letter-spacing:.12em;color:var(--muted);text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .zone .zlabel .chip{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:999px;font-size:10px;letter-spacing:0}
 .chip.native{background:var(--primary-container);color:var(--on-primary-container)}
 .chip.mac{background:var(--secondary-container);color:var(--on-secondary-container)}
 
-/* boxes */
-.grid{display:grid;gap:14px}
+/* boxes — mobile-first: single column, widen at breakpoints */
+.grid{display:grid;gap:14px;grid-template-columns:1fr}
 .box{background:var(--surface-2);border:2px solid var(--ink);border-radius:var(--r);box-shadow:var(--pop-sm);padding:12px 14px}
 .box h3{font:800 15px 'Baloo 2';display:flex;align-items:center;gap:6px}
 .box p{font-size:12px;color:var(--muted);line-height:1.5;margin-top:4px}
-.box code{font:700 11px ui-monospace,monospace;background:var(--sunken);padding:1px 5px;border-radius:5px;color:var(--ink)}
+.box code{font:700 11px ui-monospace,monospace;background:var(--sunken);padding:1px 5px;border-radius:5px;color:var(--ink);overflow-wrap:anywhere}
 .box.hero{background:var(--primary);color:var(--on-primary);box-shadow:var(--pop)}
 .box.hero h3{color:var(--on-primary)}
 .box.hero p{color:#E4F2E4}
@@ -49,9 +50,19 @@ h1{font:800 34px 'Baloo 2';color:var(--primary)}
 .box.warn{background:var(--warn-container)}
 .box.warn p{color:var(--on-warn)}
 
+/* desktop-ish layouts */
+@media (min-width:600px){
+  .grid.c3{grid-template-columns:1fr 1fr}
+  .grid.c-hero{grid-template-columns:1fr 1fr}
+}
+@media (min-width:820px){
+  .grid.c3{grid-template-columns:1fr 1fr 1fr}
+  .grid.c-hero{grid-template-columns:1.2fr 1fr 1fr}
+}
+
 /* arrows between zones */
-.link{display:flex;flex-direction:column;align-items:center;margin:-40px 0;z-index:2;position:relative}
-.link .pill{background:var(--surface-2);border:2px solid var(--ink);border-radius:999px;box-shadow:var(--pop-sm);padding:7px 16px;font:800 12px 'Nunito';display:flex;gap:8px;align-items:center}
+.link{display:flex;flex-direction:column;align-items:center;margin:-40px 0;z-index:2;position:relative;width:100%}
+.link .pill{background:var(--surface-2);border:2px solid var(--ink);border-radius:999px;box-shadow:var(--pop-sm);padding:7px 16px;font:800 12px 'Nunito';display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center;text-align:center;max-width:100%}
 .link .pill small{font-weight:600;color:var(--muted)}
 .arrow{width:2.5px;height:22px;background:var(--ink);position:relative}
 .arrow.down::after{content:'';position:absolute;bottom:-1px;left:-4.5px;border:6px solid transparent;border-top:8px solid var(--ink);border-bottom:0}
@@ -59,12 +70,25 @@ h1{font:800 34px 'Baloo 2';color:var(--primary)}
 
 /* capability lock ribbon */
 .lock{margin-top:44px;width:100%;max-width:900px;background:var(--surface-2);border:2px solid var(--ink);border-radius:var(--r-lg);box-shadow:var(--pop);padding:18px 22px;display:flex;gap:16px;align-items:flex-start}
-.lock .ico{font-size:26px;line-height:1}
+.lock .ico{font-size:26px;line-height:1;flex:none}
 .lock h3{font:800 16px 'Baloo 2'}
 .lock p{font-size:13px;color:var(--muted);line-height:1.6;margin-top:3px}
-.lock code{font:700 11px ui-monospace,monospace;background:var(--sunken);padding:1px 5px;border-radius:5px}
+.lock code{font:700 11px ui-monospace,monospace;background:var(--sunken);padding:1px 5px;border-radius:5px;overflow-wrap:anywhere}
 
-.legend{margin-top:26px;font-size:12px;color:var(--subtle)}
+.legend{margin-top:26px;font-size:12px;color:var(--subtle);text-align:center}
+
+/* phones */
+@media (max-width:600px){
+  body{padding:26px 14px 56px}
+  h1{font-size:26px}
+  .sub{font-size:13px;margin-bottom:26px}
+  .zone{padding:18px 13px}
+  .zone+.zone{margin-top:44px}
+  .zone .zlabel{left:14px;font-size:11px;letter-spacing:.08em}
+  .link{margin:-32px 0}
+  .lock{padding:16px 16px;gap:12px}
+  .lock .ico{font-size:22px}
+}
 @media print{body{padding:12px}.zone+.zone{margin-top:44px}}
 </style>
 </head>
@@ -80,7 +104,7 @@ through a frozen widget pool, into a fully native app.</p>
   <!-- ═══ device zone ═══ -->
   <div class="zone">
     <span class="zlabel">iPhone · Flutter app <span class="chip native">100% native</span></span>
-    <div class="grid" style="grid-template-columns:1fr 1fr 1fr">
+    <div class="grid c3">
       <div class="box">
         <h3>🌱 Onboarding</h3>
         <p>Native Dart seed flow. Fixed 2-round AI conversation → PARA classification (Project / Area). Scripted fallback when offline.</p>
@@ -94,7 +118,7 @@ through a frozen widget pool, into a fully native app.</p>
         <p>GoRouter 5-tab shell (<code>Home·P·A·R·A</code>), sub-pages capped at <code>depth ≤ 3</code> — enforced on device.</p>
       </div>
     </div>
-    <div class="grid" style="grid-template-columns:1.2fr 1fr 1fr;margin-top:14px">
+    <div class="grid c-hero" style="margin-top:14px">
       <div class="box hero">
         <h3>🎨 Goal dashboards · rfw</h3>
         <p>DSL text → Flutter <b>rfw</b> transpiles it into a real native widget tree. Parse failure keeps the prior screen — never blank.</p>
@@ -120,7 +144,7 @@ through a frozen widget pool, into a fully native app.</p>
   <!-- ═══ mac zone ═══ -->
   <div class="zone">
     <span class="zlabel">Mac · local bridge <span class="chip mac">serve.py · zero deps</span></span>
-    <div class="grid" style="grid-template-columns:1fr 1fr 1fr">
+    <div class="grid c3">
       <div class="box blue">
         <h3>💬 converse / conclude</h3>
         <p>Onboarding turns: one AI follow-up per round; strict-JSON classification + closing copy. In-memory turn cache → retries are idempotent.</p>
@@ -134,7 +158,7 @@ through a frozen widget pool, into a fully native app.</p>
         <p><code>cache.json</code> keyed <code>sha1(system_prompt + intent)</code> + in-flight dedupe — each intent is generated once, ever.</p>
       </div>
     </div>
-    <div class="grid" style="grid-template-columns:1fr;margin-top:14px">
+    <div class="grid" style="margin-top:14px">
       <div class="box warn">
         <h3>🤖 headless claude&nbsp;-p</h3>
         <p>Local Claude login, no API key. The model is a supplier behind the bridge — swappable without touching the app.</p>
