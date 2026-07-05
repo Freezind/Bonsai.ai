@@ -64,3 +64,11 @@ Bridge URL 也可在 app 的 Debug 页运行时修改(Mac IP 变化时)。生成
 
 - rfw DSL 规则见 `bridge/system_prompt.txt`:数字必须是 double(16.0),整屏包在 `Canvas(child: ...)`,`widget root = ...;` 只有一个
 - 测试里断言的文本来自模板内容(如 'Ship rfw PoC'),改模板会影响 `test/widget_test.dart`
+
+## Commit message conventions
+
+- Write commit messages in English, imperative mood, present tense: "Add", not "Added" or "Adds".
+- Subject line under ~70 chars. Body only when the "why" isn't obvious from the diff — skip it for small, self-explanatory changes.
+- No AI co-author trailers (`Co-Authored-By: Claude ...`, `Claude-Session: ...`, etc.) and no emoji. Commits should read as if a human on the team wrote them.
+- One logical change per commit. Don't bundle unrelated fixes/refactors into a single commit just because they landed in the same session.
+- Reference issue/PR numbers when relevant (`Fixes #12`), but never fabricate one.
