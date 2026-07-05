@@ -23,12 +23,12 @@ The interface isn't generated once and left to rot. As a goal accumulates contex
 Three parts:
 
 - `lib/` — the Flutter app (Dart SDK ^3.9, Flutter 3.44.4)
-- `bridge/` — a local Python bridge (`serve.py`, zero third-party dependencies) that drives a headless `claude -p` to generate DSL, using the developer's own Claude login (no API key)
-- `design-system/` — the Aurora visual reference (HTML/CSS, not part of the build)
+- `bridge/` — a local Python bridge (`serve.py`, zero third-party dependencies) that drives a headless `claude -p` to generate DSL, using the developer's own Claude login (no API key). DSL transpilation rides on Flutter's official **rfw** (Remote Flutter Widgets): the structure text is transpiled on-device into a real native widget tree — the app is fully native, with no WebView or embedded runtime
+- `design-system/` — the **Fresh Matcha** design system, a living HTML style guide (not part of the build): milky-cream paper, spring green × sky blue, wobbly ink outlines with hard "pop" shadows — a picture-book cut-out feel — Baloo 2 × Nunito type, and a hand-drawn potted mascot that grows through five stages. Its Dart token mirror lives in `lib/ds/aurora_tokens.dart`
 
 ## Architecture: the model never writes code
 
-Intent text → `AgentClient` posts to the bridge's `/generate` → the bridge appends `bridge/system_prompt.txt` and calls `claude -p` → the model returns **rfw DSL**, a structural description, never executable code → `applyDsl` parses it and renders against a **frozen, whitelisted component pool**. Parse failures keep the previous screen — the app never goes blank.
+Intent text → `BridgeClient` posts to the bridge's `/generate` → the bridge appends `bridge/system_prompt.txt` and calls `claude -p` → the model returns **rfw DSL**, a structural description, never executable code → `applyDsl` parses it and renders against a **frozen, whitelisted component pool**. Parse failures keep the previous screen — the app never goes blank.
 
 This is a capability lock, not a convenience: the model can only compose components from a pool the developers designed and shipped ahead of time (kept in sync across `lib/rfw_pool/local_widgets.dart`, `bridge/system_prompt.txt`, and `lib/ds/aurora_tokens.dart`). Rendering always happens on-device. That's the difference between a browser-sandbox demo and an architecture that can actually pass App Store review and ship to a consumer's phone.
 
@@ -75,19 +75,27 @@ Goal management is universal, and because every interface is generated rather th
 
 ```bash
 flutter pub get
-flutter test                          # full suite
-flutter test test/widget_test.dart    # single file
+flutter test                          # full suite (test/widget_test.dart)
 flutter analyze                       # flutter_lints rules
 
 # run the bridge first, on a Mac
-python3 bridge/serve.py               # port 8787; see serve.py header for env overrides
-python3 bridge/warm.py [--extra N]    # pre-generate the whole closed app, idempotent
+python3 bridge/serve.py               # port 8787 by default; BONSAI_BRIDGE_PORT / BONSAI_BRIDGE_MODEL to override
 
-# on-device
-adb reverse tcp:8787 tcp:8787         # Android emulator/device
-flutter run --dart-define=BRIDGE_URL=http://<mac-lan-ip>:8787   # physical iOS device
+# on-device (iOS, development)
+flutter run -d <device> --dart-define=BRIDGE_URL=http://<mac-lan-ip>:8787
+
+# recording / demo build — release is required to launch standalone from the
+# home screen (debug builds crash without a debugger on iOS):
+flutter run --release -d <device> \
+  --dart-define=BRIDGE_URL=http://<ip>:8787 \
+  --dart-define=RESET_STATE=true \
+  --dart-define=SKIP_ONBOARDING=true
+# RESET_STATE wipes persisted state on every cold start (re-record first-run);
+# SKIP_ONBOARDING boots straight into the shell.
+
+# Android: adb reverse tcp:8787 tcp:8787, then BRIDGE_URL=http://localhost:8787
 ```
 
-The bridge URL can also be changed at runtime from the app's Debug page. On generation failure, the full DSL is appended to `bridge/dsl.log`.
+Venue/campus Wi-Fi usually isolates clients (the phone can never reach the Mac — `Host is down`): use the iPhone's personal hotspot over the USB cable and point `BRIDGE_URL` at the Mac's tether IP (`172.20.10.x`). On generation failure, the full DSL is appended to `bridge/dsl.log`. The `warm.py` pre-generation toolchain belongs to the main-body phase and hasn't landed yet (see `TODO.md`).
 
 See `AGENTS.md` for full engineering documentation (data flow, iOS `await` deadlock workarounds, caching internals, DSL protocol).

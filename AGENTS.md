@@ -17,35 +17,38 @@ This file provides guidance to AI coding agents (Claude Code 等) when working w
 三个部分:
 
 - `lib/` — Flutter app(Dart SDK ^3.9,Flutter 3.44.4,见 `.tool-versions`)
-- `bridge/` — Mac 上运行的本地 Python 桥接(`serve.py`,无第三方依赖),用 headless `claude -p` 生成 DSL;不用 API key,走本地 claude 登录
-- `design-system/` — 纯 HTML/CSS 设计参考稿(Aurora 视觉系统),不参与构建
+- `bridge/` — Mac 上运行的本地 Python 桥接(`serve.py`,无第三方依赖),用 headless `claude -p` 生成 rfw 文本 DSL;不用 API key,走本地 claude 登录。DSL 的转译依托 Flutter 官方 **rfw**(Remote Flutter Widgets):设备端把结构文本实时转译成真正的原生 widget 树 —— app 因此是**完全原生**的,没有 WebView/嵌入层,模型也永远接触不到可执行代码
+- `design-system/` — 纯 HTML/CSS 活风格指南(**Fresh Matcha** 设计系统:奶白纸底 + 春绿×天蓝,墨线描边 + 硬投影的绘本剪纸感,Baloo 2 × Nunito 圆体,手绘盆栽吉祥物五阶段),不参与构建;Dart 侧 token 层在 `lib/ds/aurora_tokens.dart`(类名沿用 `Aurora` 以保 API 稳定,值即 Fresh Matcha)
 
 ## Commands
 
 ```bash
 flutter pub get
-flutter test                          # 全部测试
-flutter test test/widget_test.dart    # 单个测试文件
+flutter test                          # 全部测试(test/widget_test.dart)
 flutter analyze                       # lint(flutter_lints 规则)
 
 # 运行 bridge(必须先于 app,在 Mac 上)
-python3 bridge/serve.py               # 端口 8787;端口/模型可用环境变量覆盖,见 serve.py 头部
-python3 bridge/warm.py [--extra N]    # 预生成整个封闭 app(每个 tab 一次 bundle 调用),幂等
+python3 bridge/serve.py               # 默认端口 8787;BONSAI_BRIDGE_PORT / BONSAI_BRIDGE_MODEL 等环境变量见 serve.py 头部
 
-# 真机运行
-adb reverse tcp:8787 tcp:8787         # Android 模拟器/真机
-flutter run --dart-define=BRIDGE_URL=http://<mac-lan-ip>:8787   # iOS 真机
+# 真机运行(iOS,开发)
+flutter run -d <device> --dart-define=BRIDGE_URL=http://<mac-lan-ip>:8787
+# 录屏/演示版:release 才能脱线从主屏图标独立启动(debug 版会闪退)
+#   RESET_STATE=true    每次冷启动清空持久化状态(重录 first-run 用)
+#   SKIP_ONBOARDING=true 跳过种子流程直进 shell
+flutter run --release -d <device> --dart-define=BRIDGE_URL=http://<ip>:8787 \
+  --dart-define=RESET_STATE=true --dart-define=SKIP_ONBOARDING=true
+# Android:adb reverse tcp:8787 tcp:8787 后 BRIDGE_URL 用 http://localhost:8787
 ```
 
-Bridge URL 也可在 app 的 Debug 页运行时修改(Mac IP 变化时)。生成失败时,完整 DSL 会追加到 `bridge/dsl.log`。
+会场/校园 Wi-Fi 常有客户端隔离(手机永远打不到 Mac,报 Host is down)——用 iPhone 个人热点 + USB 线共享,BRIDGE_URL 指向 Mac 的热点网口 IP(172.20.10.x)。生成失败时,完整 DSL 会追加到 `bridge/dsl.log`。warm.py 预热工具链属主体开发,尚未迁入(见 TODO.md)。
 
 ## Architecture
 
-**数据流**:intent 文本 → `AgentClient`(`lib/agent/agent_client.dart`)POST 到 bridge `/generate` → bridge 拼上 `bridge/system_prompt.txt` 调 `claude -p` → 返回 rfw 文本 DSL → `applyDsl`(`lib/rfw_pool/pool_runtime.dart`)解析并渲染。DSL 解析失败要保留上一屏(降级),绝不白屏。
+**数据流**:intent 文本 → `BridgeClient`(`lib/bridge/bridge_client.dart`)POST 到 bridge `/generate` → bridge 拼上 `bridge/system_prompt.txt` 调 `claude -p` → 返回 rfw 文本 DSL → `applyDsl`(`lib/rfw_pool/pool_runtime.dart`)解析并渲染。DSL 解析失败要保留上一屏(降级),绝不白屏。
 
 **能力锁(capability lock)哲学**:模型只能组合白名单组件。组件池在三处必须保持同步 —— `lib/rfw_pool/local_widgets.dart`(Dart 实现)、`bridge/system_prompt.txt`(告诉模型有哪些组件)、`lib/ds/aurora_tokens.dart`(设计 token)。改组件池时三处一起改。
 
-**导航模型(封闭有限 app)**:`lib/nav/app_router.dart` 用 GoRouter `StatefulShellRoute` — 5 个底部 tab 是平级(深度 0),只有 push 的子页累积深度,切 tab 重置到根。`kMaxDepth = 3`:深度 3 的屏是封闭叶子(可交互但不能再往下导航),深度上限在设备端强制执行,DSL 里混进更深的链接也无效。tab 根和部分子页是构建期模板(`lib/rfw_pool/templates.dart` + `pool_runtime.dart` 里的 `kConceptDsl`,0 token);其余屏幕由 `bridge/warm.py` 按 tab 整棵子树一次性 bundle 预生成(bundle 内部保证链接封闭)。
+**导航模型(封闭有限 app)**:`lib/app/router.dart` 用 GoRouter `StatefulShellRoute` — 5 个底部 tab 是平级(深度 0),只有 push 的子页累积深度,切 tab 重置到根。`kMaxDepth = 3`:深度 3 的屏是封闭叶子(可交互但不能再往下导航),深度上限在设备端强制执行,DSL 里混进更深的链接也无效。tab 根目前是原生 Dart 页;demo 的 goal 详情页是构建期固定 rfw 模板(`lib/rfw_pool/demo_dashboards.dart`,0 token)。warm.py 子树预生成属主体开发,尚未迁入。
 
 **三层缓存,每个 intent 一生只生成一次**:
 1. bridge 端 `bridge/cache.json` — key 是 sha1(system_prompt + intent),改 system_prompt.txt 自动失效全部旧条目;bridge 有 in-flight dedupe(重试的请求会等待正在进行的生成,不会重复跑)
@@ -53,7 +56,7 @@ Bridge URL 也可在 app 的 Debug 页运行时修改(Mac IP 变化时)。生成
 3. `warm.py` 的 peek 请求只查缓存不生成,保证幂等
 
 **警告:iOS 上 await 会永久卡死(已在多个 Flutter 版本复现)** — 主 isolate 上由 socket/文件事件完成的 Future,其 awaiter 间歇性永远不恢复。已确立的规避方案,改动网络/文件 I/O 时必须遵守:
-- 所有 dart:io 网络和文件 I/O 都放进 `Isolate.run`(见 `agent_client.dart`、`screen_store.dart`)
+- 所有 dart:io 网络和文件 I/O 都放进 `Isolate.run`(见 `bridge_client.dart`、`screen_store.dart`)
 - 跨共享 Future 取结果用 `.then` + `Timer.run` 手动交接到 Completer,不要直接 `await sharedFuture`(见 `ScreenStore.fetch`)
 - `ShellScaffold` 里有 2 秒周期的 keep-alive Timer 维持事件循环唤醒
 - ValueNotifier 更新可能发生在帧中,用 `SchedulerBinding` 判断相位后再通知(`setStatus`、`_DepthObserver`)
@@ -63,7 +66,7 @@ Bridge URL 也可在 app 的 Debug 页运行时修改(Mac IP 变化时)。生成
 ## Notes
 
 - rfw DSL 规则见 `bridge/system_prompt.txt`:数字必须是 double(16.0),整屏包在 `Canvas(child: ...)`,`widget root = ...;` 只有一个
-- 测试里断言的文本来自模板内容(如 'Ship rfw PoC'),改模板会影响 `test/widget_test.dart`
+- 测试断言的文本来自 onboarding 文案与 `DemoScenario`/固定模板内容,改文案会影响 `test/widget_test.dart`
 
 ## Commit message conventions
 
