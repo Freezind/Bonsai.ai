@@ -35,3 +35,6 @@ doc/api/
 # Bridge runtime artifacts
 bridge/cache*.json
 bridge/dsl.log
+.gstack/
+.DS_Store
+screenshot/
