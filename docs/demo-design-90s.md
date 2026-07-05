@@ -15,14 +15,14 @@ Mode: Builder
 ### Naming(2026-07-05 晨定稿:**Bonsai**)
 
 - 理由:活物、随时间生长、**主人修剪塑形而树自己生长**(= AI 生长 / 人做决策的分工)、日本主场加成、西方认知度极高(英语词典收录级借词;Microsoft 2018 收购过同名 AI 公司、Hello Bonsai 等欧美产品用过此名——证明西方语境完全可懂)
-- 品牌句:"**Bonsai — apps you tend, not apps you build.**"
+- 品牌句:"**Bonsai — fed by your life, tending it back.**"(2026-07-05 改稿:原 "apps you tend, not apps you build" 方向反了——不是用户照料 app,是 app 照料用户)
 - 赛后再查商标/域名冲突(Hello Bonsai 在营,Microsoft Bonsai 已退役)
 
 ### Tagline
 
 > **We turn every goal into a living AI-generated native app.**
 >
-> 与品牌句合用:"**Bonsai turns every goal into a living native app. You don't build it — you tend it.**"
+> 与品牌句合用:"**Bonsai turns every goal into a living native app. You don't build it — it tends you.**"
 
 ### 哲学层(为什么这个产品成立)
 
@@ -80,6 +80,12 @@ Mode: Builder
 **一句话版本**:"Tools hold your data. Bonsai holds your goals."
 
 **防御表述(写进书面提交,评审无追问环节)**:"和 AI agent 产品的区别?" —— agent 产品在聊天窗口里跑;goal 值得拥有一个属于它的界面。界面就是决策效率:血糖该是曲线,求职该是 pipeline,聊天气泡两者都表达不好。
+
+**防御表述("这不就是 Obsidian/Notion 加 AI 吗?"):** Obsidian 的 Dataview/Bases 生态早就能把笔记变成"活仪表盘",但那是查询语言——写得出 Dataview 查询、会调 Templater 模板的人才用得起来,你自己就是那个 forward deployed engineer,AI 顶多帮你把这段查询代码生成出来,配置和维护责任始终在你身上。Bonsai 反过来:最终用户不需要懂任何查询语法,一句话就拿到界面,而且模型只输出结构化 DSL、从不出代码,渲染永远在设备端——这才是能装进普通人手机、通过 App Store 审核的架构,不是 Obsidian 插件生态能复制的形态。差异不是"免代码"这么单薄,是免工程量:一个不会写查询语言的人,和一个 Obsidian 高级玩家,用 Bonsai 拿到的是同一个结果。
+
+再往深一层:一个人能把 Obsidian 用 AI 搭成活仪表盘,靠的从来不只是"会用 AI",而是同时具备两种技能——**FDE 技能**(懂 Dataview 查询、会管理 Claude Code、会写 skill/cronjob/hook 去驱动它)和 **FDPM 技能**(知道该为自己的求职、健康、人生阶段设计什么结构、什么视图、什么优先级)。普通人两样都没有——装一个"AI 增强版 Obsidian"不会凭空给他 FDE 的工程能力,也不会凭空给他 FDPM 的产品判断力。这正是 RFS 原文那句"这些 primitives 由一个软件团队来构建和交付"的意思:设计判断力应该长在开发者交付的冻结组件池和系统提示词里,不该要求每个终端用户自己既懂工程又懂产品设计。Bonsai 把 FDE 和 FDPM 两种稀缺技能都封装进了产品本身。
+
+具体例子:你在 Obsidian home 里做的"AI 总结 periodic note"——每天/每周的笔记被 AI 摘要后放进 home——本质就是本文档上一节写的**"AI 每晚 dream"** 那个 whoa 时刻的手工版。区别在于:你的版本靠你自己写 cronjob/hook 决定什么时候跑、自己判断摘要该留什么信息、自己设计 home 里怎么呈现;Bonsai 里这条 pipeline(健康 Area 的睡眠数据关联、晨间洞察卡)是产品原生行为,任何用户不用配置就有。这是同一个洞察的两种实现路径的最直接证据,比抽象讲"FDE/FDPM 技能"更有说服力,建议书面提交时直接用这个当例子。
 
 ### 方向 4:真 native app,不是网页/chat(技术护城河)
 

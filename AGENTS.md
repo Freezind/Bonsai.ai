@@ -10,7 +10,7 @@ This file provides guidance to AI coding agents (Claude Code 等) when working w
 
 ## What this is
 
-**Bonsai**("apps you tend, not apps you build"):一个 Flutter 应用,用户输入意图 → 本地 Claude 桥接服务生成 rfw DSL(只有结构,永远不是可执行代码)→ 设备端通过冻结的组件池(frozen component pool)渲染。
+**Bonsai**("fed by your life, tending it back"):一个 Flutter 应用,用户输入意图 → 本地 Claude 桥接服务生成 rfw DSL(只有结构,永远不是可执行代码)→ 设备端通过冻结的组件池(frozen component pool)渲染。
 
 > **迁移状态(2026-07-05)**:Flutter 代码、bridge、design-system 正在迁入本 repo,迁移完成前下文中的目录引用可能尚未就位。demo 叙事设计文档见 `docs/demo-design-90s.md`。
 

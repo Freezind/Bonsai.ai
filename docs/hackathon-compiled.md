@@ -51,7 +51,7 @@
 
 - 🥇 1st:¥250,000 · 🥈 2nd:¥100,000 · 🥉 3rd:¥50,000
 - Honorable Mentions:The Investable Startup Award / The UX/UI Award / The Biggest Engineering Lift
-- 获奖队伍受邀参加 YC Partner Office Hours;YC 卒業生企业提供 computing credits
+- 获奖队伍受邀参加 YC Partner Office Hours;YC 卒業生企业提供 computing credits(上届 c0mpiled hackathon 合计提供超 6000 万日元 credits)
 
 ## Tooling expectation
 
