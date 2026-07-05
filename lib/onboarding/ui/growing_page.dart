@@ -5,13 +5,13 @@ import 'package:go_router/go_router.dart';
 
 import '../../ds/aurora_tokens.dart';
 import '../../goals/goal.dart';
+import '../../screens/screen_store.dart';
 import 'widgets/mascot.dart';
 
 /// S3 · Growth loading. Full-screen mascot + microcopy carousel while the
-/// goal's dashboard is generated. Real duration, no fake progress bar.
-///
-/// This phase fakes the generation with a short timer; the bridge fetch
-/// replaces [_grow] when the rfw layer lands.
+/// goal's dashboard is generated for real through the bridge. Real duration,
+/// no fake progress bar; a hard 90s cap so the flow always completes — the
+/// dashboard page keeps tending a goal that isn't ready yet.
 class GrowingPage extends StatefulWidget {
   const GrowingPage({super.key, required this.goal});
   final Goal goal;
@@ -41,14 +41,23 @@ class _GrowingPageState extends State<GrowingPage> {
     _grow();
   }
 
-  /// Placeholder generation: a fixed wait, then reveal on the goal's tab.
+  /// Generate the dashboard through the bridge (three-layer cache + in-flight
+  /// dedupe behind it), then reveal the goal's own page. On failure or after
+  /// the 90s cap the reveal STILL happens — the dashboard page shows the
+  /// Still-growing state and keeps retrying; the bridge's dedupe means those
+  /// retries JOIN a still-running generation rather than restart it.
   Future<void> _grow() async {
-    await Future<void>.delayed(const Duration(seconds: 4));
+    final goal = widget.goal;
+    try {
+      await ScreenStore.instance
+          .fetch(goal.intent, kind: 'reveal', spec: goal.spec, leaf: true)
+          .timeout(const Duration(seconds: 90));
+    } on Object catch (e) {
+      debugPrint('grow> not ready yet: $e');
+    }
     if (!mounted) return;
-    final tabPath = widget.goal.kind == GoalKind.area ? '/areas' : '/projects';
-    // Reveal target becomes the goal's own dashboard once the rfw layer
-    // lands; until then the tab root stands in.
-    context.go(tabPath);
+    final tabPath = goal.kind == GoalKind.area ? '/areas' : '/projects';
+    context.go('$tabPath/goal/${goal.slug}');
   }
 
   @override

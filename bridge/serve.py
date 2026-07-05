@@ -375,6 +375,17 @@ def _extract_dsl(text: str) -> str:
     return t.strip()
 
 
+# A leaf screen must not link deeper, but models occasionally emit intent
+# links anyway. Enforce mechanically: strip `onX: event "navigate" {intent:…}`
+# handlers (route-based navigates stay — those are tab switches, not depth).
+_NAV_INTENT_HANDLER = re.compile(
+    r",?\s*on[A-Za-z]+:\s*event\s+\"navigate\"\s*\{[^{}]*intent\s*:[^{}]*\}")
+
+
+def _enforce_leaf(dsl: str) -> str:
+    return _NAV_INTENT_HANDLER.sub("", dsl)
+
+
 BUNDLE_ADDENDUM = """
 
 BUNDLE MODE (CRITICAL): you will output MULTIPLE screens in ONE reply.
@@ -620,6 +631,8 @@ def _generate_owner(intent: str, key: str, leaf: bool = False, spec: str = "") -
     except json.JSONDecodeError:
         raw = proc.stdout
     dsl = _extract_dsl(raw)
+    if leaf:
+        dsl = _enforce_leaf(dsl)
     if "widget root" not in dsl:
         return {"error": "model did not produce a root widget", "raw": raw[:600], "latency_ms": latency}
     with _cache_lock:

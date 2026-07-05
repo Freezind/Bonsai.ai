@@ -10,6 +10,7 @@ class Goal {
     required this.title,
     required this.kind,
     required this.status,
+    this.spec = '',
   });
 
   /// Stable id; also the bridge cache key via [intent] (`goal:<slug>`).
@@ -18,6 +19,11 @@ class Goal {
   final GoalKind kind;
   final GoalStatus status;
 
+  /// The dashboard generation spec (conversation digest + requirements).
+  /// Persisted with the goal so a reinstall/retry can regenerate the
+  /// dashboard; it shapes the prompt but never the cache key.
+  final String spec;
+
   String get intent => 'goal:$slug';
 
   Goal copyWith({GoalStatus? status}) => Goal(
@@ -25,6 +31,7 @@ class Goal {
         title: title,
         kind: kind,
         status: status ?? this.status,
+        spec: spec,
       );
 
   Map<String, Object?> toJson() => {
@@ -32,6 +39,7 @@ class Goal {
         'title': title,
         'kind': kind.name,
         'status': status.name,
+        'spec': spec,
       };
 
   static Goal fromJson(Map<String, dynamic> m) => Goal(
@@ -39,6 +47,7 @@ class Goal {
         title: m['title'] as String,
         kind: GoalKind.values.byName(m['kind'] as String? ?? 'project'),
         status: GoalStatus.values.byName(m['status'] as String? ?? 'growing'),
+        spec: m['spec'] as String? ?? '',
       );
 }
 

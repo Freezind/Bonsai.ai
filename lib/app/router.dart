@@ -3,6 +3,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:go_router/go_router.dart';
 
 import '../goals/goal.dart';
+import '../goals/goal_dashboard_page.dart';
 import '../onboarding/seed_flow_state.dart';
 import '../onboarding/ui/conversation_page.dart';
 import '../onboarding/ui/growing_page.dart';
@@ -141,6 +142,17 @@ GoRouter createAppRouter() => GoRouter(
                     path: tab.path,
                     name: tab.name,
                     builder: (context, state) => TabRootPage(tab: tab),
+                    routes: [
+                      // A goal's own dashboard (depth 1): the reveal target
+                      // and the tap-through from goal cards.
+                      GoRoute(
+                        path: 'goal/:slug',
+                        name: '${tab.name}-goal',
+                        builder: (context, state) => GoalDashboardPage(
+                          slug: state.pathParameters['slug']!,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

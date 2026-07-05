@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'app/router.dart';
 import 'bridge/bridge_client.dart';
 import 'ds/aurora_tokens.dart';
+import 'screens/screen_store.dart';
 import 'state/app_prefs.dart';
 
 Future<void> main() async {
@@ -15,6 +16,7 @@ Future<void> main() async {
   // Prefs load BEFORE runApp so the router's first-run redirect reads them
   // synchronously (same boot order as the DSL cache restore later on).
   await AppPrefs.instance.init();
+  await ScreenStore.instance.init(); // restore the on-device DSL cache
   runApp(const BonsaiApp());
   // Fire-and-forget connectivity probe; the shell surfaces the result.
   BridgeClient.instance.pingAndReport();

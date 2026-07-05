@@ -40,6 +40,27 @@ class SeedFlowController {
   List<Map<String, String>> get _wire =>
       [for (final m in transcript) m.toJson()];
 
+  /// The dashboard generation spec, persisted on the goal: the conversation
+  /// digest + first-dashboard requirements. Shapes the generation prompt;
+  /// never part of the cache key.
+  String _dashboardSpec(Goal goal) {
+    final lines = [
+      for (final m in transcript)
+        '${m.fromUser ? 'User' : 'Bonsai'}: ${m.text}',
+    ].join('\n');
+    final kindWord = goal.kind == GoalKind.area
+        ? 'AREA (tended for the long run)'
+        : 'PROJECT (has a finish line)';
+    return 'First dashboard for the goal "${goal.title}" — a $kindWord.\n'
+        'Planting conversation:\n$lines\n\n'
+        'Requirements: a self-contained dashboard for THIS goal reflecting '
+        'what the user said — their stated next steps, stage and rhythm. '
+        'Pick widgets that fit the goal\'s nature (staged process -> '
+        'Stepper/StatusTable/CheckItem; metric-driven -> BarChart/Stat/'
+        'ProgressRing). Include one warm assistant note referencing their '
+        'own words. Invent NO facts beyond the conversation.';
+  }
+
   /// The user submitted an answer for the current question.
   Future<void> submitAnswer(String text) async {
     final s = state.value;
@@ -97,12 +118,19 @@ class SeedFlowController {
           transcript: _wire,
         );
         final kind = r.kind == 'area' ? GoalKind.area : GoalKind.project;
-        final goal = Goal(
+        var goal = Goal(
           slug: AppPrefs.instance.freeSlug(
               r.slug.isEmpty ? slugify(r.title) : r.slug),
           title: r.title,
           kind: kind,
           status: GoalStatus.growing,
+        );
+        goal = Goal(
+          slug: goal.slug,
+          title: goal.title,
+          kind: goal.kind,
+          status: goal.status,
+          spec: _dashboardSpec(goal),
         );
         final closing =
             r.closing.isNotEmpty ? r.closing : ScriptedFallback.closing(goal);
@@ -113,10 +141,17 @@ class SeedFlowController {
       }
     }
     await Future<void>.delayed(const Duration(milliseconds: 900));
-    final goal = ScriptedFallback.classify(
+    var goal = ScriptedFallback.classify(
       entry,
       transcript,
       freeSlug: AppPrefs.instance.freeSlug,
+    );
+    goal = Goal(
+      slug: goal.slug,
+      title: goal.title,
+      kind: goal.kind,
+      status: goal.status,
+      spec: _dashboardSpec(goal),
     );
     return (goal, ScriptedFallback.closing(goal));
   }
