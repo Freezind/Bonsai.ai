@@ -33,10 +33,10 @@
 - [ ] **Mascot animations**: 4 of the 11 specified Lotties exist (idle/cheer/thirsty/sleep); in-app growth uses SVG cross-fades as a stand-in → complete per `design-system/motion-lottie.md` (plant_seed/grow_up/bloom/fruit/wither/water_revive/generating)
 - [ ] **Device checkpoints**: the 4 on-device checkpoints in `docs/onboarding/todo.md` (mostly exercised today — check off with notes)
 
-- [ ] **写秒级分镜脚本**(Approach A"一个人生,一个活的 app",83s 预算:hook 8s → Day1 18s → Day90 24s → intent 生成 18s → 对比+收尾 15s;每镜头 = 画面 + 英文旁白词)——依据已批准的设计文档 `docs/demo-design-90s.md`,10:35 主办方公布提交规则后回填格式
-- [ ] The Assignment:粗剪 Day 1 → Day 90 演化段给没看过项目的人看,让 TA 一句话复述——验证叙事是否成立
+- [ ] **Write the second-by-second shot-by-shot script** (Approach A "one life, one living app", 83s budget: hook 8s → Day1 18s → Day90 24s → intent generation 18s → comparison + close 15s; each shot = visuals + English voiceover lines) -- based on the approved design doc `docs/demo-design-90s.md`; backfill the format after the organizers announce the submission rules at 10:35
+- [ ] The Assignment: rough cut the Day 1 → Day 90 evolution segment, show it to someone who has never seen the project, and have them restate it in one sentence -- validates whether the narrative holds
 
-- [ ] 研究往届 c0mpiled 获奖队伍的 90 秒 demo video(结构、节奏、怎么在 90 秒内讲清 problem → demo → market)
-  - 线索:主办方的往届活动 highlights 页 https://www.notion.so/melts/Transpose-x-OUVC-YC-367903bd64b8807a9bbafc9a07c50a80
-  - 线索:东京场 c0mpiled-7 / San Fransokyo(2026-03-08,虎ノ门 Hills)详情页 https://melts.notion.site/Transpose-IPC-YC-2-305903bd64b88088a162e8e9ff8682cd — 规则同样是"90 秒视频、评委只看录制成果物",参考价值最直接
-- [ ] 找其他国家/城市场次的 c0mpiled 获奖 90 秒 demo video(本场是 c0mpiled-12,东京是 c0mpiled-7,系列至少办过 12 场,应有海外场次的获奖作品可参考)
+- [ ] Study the 90-second demo videos of past winning c0mpiled teams (structure, pacing, how to cover problem → demo → market in 90 seconds)
+  - Lead: the organizers' past-event highlights page https://www.notion.so/melts/Transpose-x-OUVC-YC-367903bd64b8807a9bbafc9a07c50a80
+  - Lead: the Tokyo event c0mpiled-7 / San Fransokyo (2026-03-08, Toranomon Hills) detail page https://melts.notion.site/Transpose-IPC-YC-2-305903bd64b88088a162e8e9ff8682cd -- the rules were likewise "90-second video, judges only see the recorded deliverable", making it the most directly relevant reference
+- [ ] Find winning 90-second demo videos from c0mpiled events in other countries/cities (this event is c0mpiled-12, Tokyo was c0mpiled-7; the series has run at least 12 events, so there should be winning entries from overseas events to reference)

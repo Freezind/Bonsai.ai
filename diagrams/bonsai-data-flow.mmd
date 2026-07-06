@@ -1,34 +1,34 @@
 graph LR
-  subgraph goals["Goals(mock 活动流)"]
-    JH["P · Job Hunt<br/>投递 / 面试 / todos"]
-    CA["A · Career<br/>优势劣势 / 职业状态"]
-    HE["A · Health<br/>睡眠 / 习惯 / 心情"]
+  subgraph goals["Goals (mock activity streams)"]
+    JH["P · Job Hunt<br/>applications / interviews / todos"]
+    CA["A · Career<br/>strengths and gaps / career status"]
+    HE["A · Health<br/>sleep / habits / mood"]
   end
 
-  subgraph mac["Mac(bridge 侧)"]
-    GARD["gardener cron<br/>每天 06:00 · 每周日"]
+  subgraph mac["Mac (bridge side)"]
+    GARD["gardener cron<br/>daily 06:00 · every Sunday"]
     BRIDGE["bridge serve.py<br/>claude -p + system_prompt"]
-    L1[("cache.json<br/>缓存①")]
-    WARM["warm.py<br/>peek 只查缓存③"]
+    L1[("cache.json<br/>cache #1")]
+    WARM["warm.py<br/>peek: cache-only lookups #3"]
   end
 
-  subgraph app["Flutter app(设备端)"]
-    INTENT["用户 intent<br/>(自然语言)"]
-    L2[("ScreenStore<br/>内存 + 磁盘 缓存②")]
-    POOL["冻结组件池 bonsai.*<br/>rfw 渲染 · capability lock"]
-    HOME["Home tab<br/>periodic note:今日卡 + weekly digest"]
-    DASH["Goal dashboards<br/>P / A 各自主页"]
+  subgraph app["Flutter app (on-device)"]
+    INTENT["user intent<br/>(natural language)"]
+    L2[("ScreenStore<br/>memory + disk cache #2")]
+    POOL["frozen component pool bonsai.*<br/>rfw rendering · capability lock"]
+    HOME["Home tab<br/>periodic note: today card + weekly digest"]
+    DASH["Goal dashboards<br/>P / A home screens"]
   end
 
   JH -->|activity| GARD
   CA -->|activity| GARD
   HE -->|activity| GARD
-  GARD -->|"夜间 AI 总结"| BRIDGE
+  GARD -->|"nightly AI summary"| BRIDGE
   INTENT -->|"ScreenStore.fetch"| L2
   L2 -->|"miss → POST /generate"| BRIDGE
-  BRIDGE -->|"rfw DSL(只有结构,永不代码)"| L1
-  L1 -->|"DSL 返回"| L2
+  BRIDGE -->|"rfw DSL (structure only, never code)"| L1
+  L1 -->|"DSL returned"| L2
   L2 --> POOL
   POOL -->|"digest DSL"| HOME
   POOL -->|"goal DSL"| DASH
-  WARM -.->|"幂等预热"| BRIDGE
+  WARM -.->|"idempotent warm-up"| BRIDGE

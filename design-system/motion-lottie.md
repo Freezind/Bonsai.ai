@@ -3,7 +3,7 @@
 The mascot is the emotional core of Bonsai — a little potted tree with a minimal face that **grows,
 withers, blooms and fruits** as you water it with context. Style (canonical, from the shipped
 Lottie files): **thin clean ink outline · flat fills only · minimal face** (dot eyes, tiny smile,
-blush) — 细线条、干净扁平配色、极简表情.
+blush) — thin lines, clean flat colors, minimal expression.
 
 ## Shipped assets (source of truth)
 `lottie/` in this folder holds the canonical files — standard Bodymovin JSON, 300×300, 30fps.

@@ -78,7 +78,7 @@ class Goal {
 String slugify(String title) {
   final s = title
       .toLowerCase()
-      .replaceAll(RegExp(r'[^a-z0-9一-鿿]+'), '-')
+      .replaceAll(RegExp(r'[^a-z0-9\u4e00-\u9fff]+'), '-')
       .replaceAll(RegExp(r'-+'), '-')
       .replaceAll(RegExp(r'^-|-$'), '');
   return s.isEmpty ? 'goal' : (s.length > 40 ? s.substring(0, 40) : s);

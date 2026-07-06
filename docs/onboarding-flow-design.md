@@ -1,114 +1,114 @@
-# Bonsai first-run onboarding flow — 产品设计("种一颗种子")
+# Bonsai first-run onboarding flow — product design ("plant a seed")
 
-Status: APPROVED(2026-07-05,/spec 流程,用户拍板)
-Scope: 产品/UX 层面。实现细节(bridge 协议、模板、状态管理)另行讨论。
-上游依据:`docs/demo-design-90s.md` Onboarding flow 一节(视频 Approach A,onboarding 段 12s,位于 hook 之后 Day 1 之前)。
+Status: APPROVED (2026-07-05, /spec process, signed off by the user)
+Scope: product/UX level. Implementation details (bridge protocol, templates, state management) to be discussed separately.
+Upstream basis: the Onboarding flow section of `docs/demo-design-90s.md` (video Approach A, onboarding segment 12s, placed after the hook and before Day 1).
 
 ## Context
 
-用户第一次打开 Bonsai 时没有任何 first-run 体验——app 直接进 5-tab PARA shell(构建期模板)。视频叙事已拍板含 onboarding 段:用户用自然语言说出 goal,app 现场长出属于这个 goal 的界面。这是 "users become their own forward deployed engineers" 的第一分钟。
+When users open Bonsai for the first time there is no first-run experience — the app goes straight into the 5-tab PARA shell (build-time templates). The video narrative has been finalized to include an onboarding segment: the user states a goal in natural language, and the app grows an interface belonging to that goal on the spot. This is the first minute of "users become their own forward deployed engineers".
 
-## 核心概念:onboarding = 种一个 goal 的流程
+## Core concept: onboarding = the flow for planting one goal
 
-onboarding 不是一次性向导,它就是"种一颗种子"(plant a seed)的通用流程:
+Onboarding is not a one-off wizard; it is the general-purpose "plant a seed" flow:
 
-- **每次只处理一个 goal**。first-run 的唯一特殊性:前面多一屏品牌开场,且 app 里还什么都没有
-- **后续添加 goal 点 `+` 重走同一个 flow**(跳过开场屏)
-- demo 剧本:first-run 种求职(Project)→ `+` 种健康(Area)→ 最终 app = 1 Project + 1 Area,跨 goal 对比镜头素材自然产生
+- **Only one goal is handled at a time**. The only thing special about first-run: there is one extra brand splash screen up front, and the app contains nothing yet
+- **Adding later goals via `+` re-runs the same flow** (skipping the splash screen)
+- Demo script: first-run plants job hunt (Project) → `+` plants health (Area) → final app = 1 Project + 1 Area, naturally producing cross-goal comparison shot material
 
-onboarding 对话、`+`、chat button 三者是**同一个交互面**:自然语言进,界面出。种下(onboard)→ 修剪(chat)= "apps you tend" 的产品化。
+The onboarding conversation, `+`, and the chat button are **the same interaction surface**: natural language in, interface out. Plant (onboard) → prune (chat) = the productization of "apps you tend".
 
-## Flow(5 步)
+## Flow (5 steps)
 
-### Step 1 · 开场屏(仅 first-run)
+### Step 1 · Splash screen (first-run only)
 
-- 画面:Aurora 视觉,极简盆栽/种子意象 + 品牌句
-- 文案:`Bonsai` / `Fed by your life, tending it back.`
-- 唯一 CTA:`Plant your first seed` → 进入对话
-- 无登录、无权限请求、无 feature tour
-- **不可跳过**:first-run 没有 skip——空 app 没有意义,第一颗种子就是 app 存在的前提
-- **完成即永别**:种下第一个 goal(或触发失败降级)即视为 first-run 完成,此后打开 app 直接进 shell,开场屏永不再现
+- Visual: Aurora look, minimalist bonsai/seed imagery + brand line
+- Copy: `Bonsai` / `Fed by your life, tending it back.`
+- Single CTA: `Plant your first seed` → enters the conversation
+- No login, no permission requests, no feature tour
+- **Not skippable**: first-run has no skip — an empty app is meaningless; the first seed is the precondition for the app existing at all
+- **Complete once, gone forever**: planting the first goal (or triggering the failure fallback) counts as first-run complete; from then on the app opens straight into the shell and the splash screen never appears again
 
-### Step 2 · 对话(固定 2 轮追问)
+### Step 2 · Conversation (fixed 2 rounds of follow-up questions)
 
-入口按类型分化,开场问题本身就在教 PARA:
+Entry points branch by type; the opening question itself teaches PARA:
 
-- **Projects tab 的 `+`(及 first-run 默认)**:`What's something you're working toward right now?`——有终点的事
-- **Areas tab 的 `+`**:`What's a part of your life you want to tend for the long run?`——长期、永不结束的方向
+- **`+` on the Projects tab (and the first-run default)**: `What's something you're working toward right now?` — something with an endpoint
+- **`+` on the Areas tab**: `What's a part of your life you want to tend for the long run?` — a long-term, never-ending direction
 
-对话结构定死:开场问题 → 追问 1 → 追问 2 → AI 主动收尾。追问只问到"能归类 + 能生成像样 dashboard"为止(最小可生成),不询问隐私细节;更深的 context 留给 Day 1 确认区收集(与既有叙事分工一致)。
+The conversation structure is fixed: opening question → follow-up 1 → follow-up 2 → the AI proactively wraps up. Follow-ups only go as far as "can be classified + can generate a decent dashboard" (minimum viable for generation); no probing into private details — deeper context is left for the Day 1 confirmation area to collect (consistent with the existing narrative's division of labor).
 
-求职示例追问:`What kind of role are you looking for?` → `Where are you in the process — just starting, or already interviewing?`
+Job-hunt example follow-ups: `What kind of role are you looking for?` → `Where are you in the process — just starting, or already interviewing?`
 
-**归类展示(不询问)**:AI 收尾时展示归类结果,顺便教 PARA 语义:
-- Project 版:`Got it — your job hunt is a Project: something with a finish line. Planting it now…`
-- Area 版:`…is an Area: something you tend for the long run.`
-- 归类纠偏(兜底):用户在 Project 入口说了个没有终点的事 → `That sounds like an Area — something you tend, not finish. Planting it there.`
-- 模糊输入:听不懂就把追问轮用来澄清;仍不确定时按"有没有终点"口头确认一句,不出选择控件
+**Classification is shown, not asked**: when the AI wraps up, it presents the classification result, teaching PARA semantics along the way:
+- Project version: `Got it — your job hunt is a Project: something with a finish line. Planting it now…`
+- Area version: `…is an Area: something you tend for the long run.`
+- Classification correction (safety net): the user describes something with no endpoint at the Project entry → `That sounds like an Area — something you tend, not finish. Planting it there.`
+- Ambiguous input: if the AI doesn't understand, it uses the follow-up rounds for clarification; if still unsure, it verbally confirms once based on "does it have an endpoint" — no choice controls are shown
 
-### Step 3 · 生长 loading(统一揭示)
+### Step 3 · Growing loading (unified reveal)
 
-- 全屏盆栽生长动画,真实时长(几十秒),不做假进度条
-- 微文案轮播,顺便讲论点:
+- Full-screen bonsai growing animation, real duration (tens of seconds), no fake progress bar
+- Micro-copy rotation that also makes the thesis:
   - `Growing your interface…`
   - `Composed from Bonsai primitives — structure, never code`
   - `Almost there. Good things grow slow.`
 
-### Step 4 · 揭示:goal 的 dashboard
+### Step 4 · Reveal: the goal's dashboard
 
-- loading 完成 → 直接落在刚种下的 goal 的主页(dashboard),一次性完整揭示。每个 Project/Area 都有自己的 dashboard
-- 一条轻提示(coach mark,只出现一次,可跳过):底部 tab 是你的 PARA 结构;`+` 随时种下一颗
-- **chat button 常驻**每个 goal 的 dashboard:用户随时用自然语言 fine-tune 这个 UI(`Make this a chart` / `Add my interview pipeline`)。揭示不是终点,是修剪的开始
-- 这一屏是视频 onboarding 段的收尾镜头
+- Loading completes → land directly on the home page (dashboard) of the goal just planted, revealed all at once in full. Every Project/Area has its own dashboard
+- One light hint (coach mark, shown only once, skippable): the bottom tabs are your PARA structure; `+` plants another seed anytime
+- **The chat button is a permanent fixture** on every goal's dashboard: users can fine-tune this UI in natural language at any time (`Make this a chart` / `Add my interview pipeline`). The reveal is not the end — it is the beginning of pruning
+- This screen is the closing shot of the video's onboarding segment
 
-### Step 5 · 再种
+### Step 5 · Plant again
 
-- tab 根 / dashboard 常驻 `+`,点击重入 Step 2(带该 tab 的类型语境)
-- 用户一次说了多个 goals 时:AI 只围绕一个展开,其余口头带过(`Let's start with the job hunt — you can plant the others anytime with +`)
+- Tab roots / dashboards carry a permanent `+`; tapping re-enters Step 2 (with that tab's type context)
+- When the user names multiple goals at once: the AI only expands on one and verbally acknowledges the rest (`Let's start with the job hunt — you can plant the others anytime with +`)
 
 ## Resources = connectors
 
-Resources tab 的产品定位:**外部 context 的接入口**(connector 列表),数据从 connector 流入、归属到 goal——"工具持有数据,Bonsai 持有目标"的具体产品面。
+Product positioning of the Resources tab: **the intake point for external context** (a connector list); data flows in from connectors and is attributed to goals — the concrete product face of "tools hold the data, Bonsai holds the goals".
 
-- **GBrain 是第一个 resource 后端**:个人知识图谱喂进 goal context
-- HealthKit 是第二个(健康 Area,post-hackathon)
-- demo 呈现:Resources tab 展示 connector 卡片(`GBrain · Connected` / `HealthKit · Coming soon`,kMockData)
+- **GBrain is the first resource backend**: the personal knowledge graph feeds into goal context
+- HealthKit is the second (health Area, post-hackathon)
+- Demo presentation: the Resources tab shows connector cards (`GBrain · Connected` / `HealthKit · Coming soon`, kMockData)
 
-## 失败降级(first-run 无"上一屏"可保留)
+## Failure fallback (first-run has no "previous screen" to keep)
 
-- 生成失败 → 仍然揭示构建期模板骨架(空 PARA shell),goal 位置放卡片:`Still growing — check back in a moment`
-- 后台自动重试,成功后卡片原位换成真 dashboard
-- 用户永远有 app 可用;隐喻自洽(盆栽本来就慢)
+- Generation fails → still reveal the build-time template skeleton (empty PARA shell), with a card in the goal's slot: `Still growing — check back in a moment`
+- Automatic retries in the background; on success the card is swapped in place with the real dashboard
+- The user always has a usable app; the metaphor stays coherent (bonsai are slow by nature)
 
-## 12s 视频映射
+## 12s video mapping
 
-打字镜头加速播放 + 真实秒表角标(与 intent 生成段同一处理):
+Typing shots played at accelerated speed + a real stopwatch corner badge (same treatment as the intent generation segment):
 
-| 镜头 | 秒数 |
+| Shot | Seconds |
 |------|------|
-| 开场屏(品牌句 + Plant your first seed) | 2s |
-| 对话(开场问题 + 2 轮追问,加速) | 4s |
-| 生长动画(加速 + 秒表角标) | 3s |
-| dashboard 揭示 | 3s |
+| Splash screen (brand line + Plant your first seed) | 2s |
+| Conversation (opening question + 2 rounds of follow-ups, accelerated) | 4s |
+| Growing animation (accelerated + stopwatch badge) | 3s |
+| Dashboard reveal | 3s |
 
 ## Out of Scope
 
-- 账号/登录、语音输入(纯打字)、系统权限请求、通知引导
-- seeds 库(多余 goals 暂存再种)——已否决,改为 `+` 重走 flow
-- 真 GBrain / HealthKit 接入(demo 用 kMockData 卡片)
-- 实现细节:bridge 协议扩展、对话状态管理、动画实现——另行讨论
+- Accounts/login, voice input (typing only), system permission requests, notification onboarding
+- A seeds library (stashing extra goals to plant later) — rejected; replaced by re-running the flow via `+`
+- Real GBrain / HealthKit integration (demo uses kMockData cards)
+- Implementation details: bridge protocol extensions, conversation state management, animation implementation — to be discussed separately
 
-## 决策记录
+## Decision log
 
-| # | 决策 | 结果 |
+| # | Decision | Outcome |
 |---|------|------|
-| D1 | 输入形态 | 对话式多轮 |
-| D2 | PARA 归类 | AI 自动归类并展示(+入口分化后作为纠偏兜底) |
-| D3 | 等待体验 | 统一 loading 后一次揭示 |
-| D4 | spec 深度 | 只做产品设计,实现另议 |
-| D5 | 对话结束 | AI 判断够了就收(固定 2 轮追问) |
-| D6 | 追问深度 | 最小可生成,深 context 留给 Day 1 确认区 |
-| D7 | 揭示落点 | goal 自己的 dashboard(每个 Project/Area 有主页) |
-| D8 | 失败降级 | 预置模板骨架兜底 + 后台重试 |
-| D9 | dashboard 定位 | 每个 goal 的主页,非全局 Home tab |
-| D10 | 多 goal 处理 | AI 只问一个,其余 `+` 重走 flow |
+| D1 | Input modality | Conversational, multi-turn |
+| D2 | PARA classification | AI classifies automatically and presents it (with entry-point branching, serves as the correction safety net) |
+| D3 | Waiting experience | Unified loading followed by a single reveal |
+| D4 | Spec depth | Product design only; implementation discussed separately |
+| D5 | Conversation ending | AI wraps up when it judges it has enough (fixed 2 rounds of follow-ups) |
+| D6 | Follow-up depth | Minimum viable for generation; deep context left for the Day 1 confirmation area |
+| D7 | Reveal destination | The goal's own dashboard (every Project/Area has a home page) |
+| D8 | Failure fallback | Preset template skeleton as the safety net + background retries |
+| D9 | Dashboard positioning | Each goal's home page, not a global Home tab |
+| D10 | Multi-goal handling | AI asks about only one; the rest re-run the flow via `+` |

@@ -1,77 +1,77 @@
-# Onboarding 开发路线图
+# Onboarding Development Roadmap
 
-Status: PLANNED(2026-07-05)
-Scope: onboarding flow(种一颗种子)+ 5-tab app 骨架的实现路线。产品设计依据 `docs/onboarding-flow-design.md`(APPROVED),画面细节见 `docs/onboarding/page-spec.md`,任务清单见 `docs/onboarding/todo.md`。
-视觉依据: **Aurora 设计系统**(`design-system/`,Fresh Matcha 主题)+ 吉祥物 Lottie(`design-system/lottie/bonsai-*.json`)。
+Status: PLANNED (2026-07-05)
+Scope: implementation roadmap for the onboarding flow ("plant a seed") + the 5-tab app skeleton. Product design follows `docs/onboarding-flow-design.md` (APPROVED); screen details are in `docs/onboarding/page-spec.md`; the task checklist is in `docs/onboarding/todo.md`.
+Visual reference: **Aurora design system** (`design-system/`, Fresh Matcha theme) + mascot Lottie (`design-system/lottie/bonsai-*.json`).
 
-## 总原则
+## Guiding principles
 
-- **onboarding 全部原生 Dart**,不走 DSL。桥接 AI bridge 做三件事:实时生成追问、收尾分类、生成第一个 goal dashboard(dashboard 是 rfw DSL,由 reveal 屏渲染)。
-- **app 骨架 = 5 tab**(Home / Projects / Areas / Resources / Archive),GoRouter `StatefulShellRoute` tab 栈。骨架本期**不接 DSL**,tab root 是原生空页;主体开发再做桥接。
-- **状态管理从简**:ValueNotifier + 单例,与 ScreenStore/rfw 层同一习惯。不引入 riverpod/hooks 等新框架。
-- **iOS I/O 铁律**(必须遵守,历史上已多次踩坑):
-  - 所有 dart:io 网络/文件 I/O 放进 `Isolate.run`
-  - 跨共享 Future 取结果用 `.then` + `Timer.run` 手动交接到 Completer,不直接 `await sharedFuture`
-  - 根 widget 常驻 2 秒 keep-alive Timer 维持事件循环唤醒(注意:onboarding 先于 shell 存在,Timer 必须放在 main.dart 根部,不能放 ShellScaffold)
-- goal ≡ project/area(同义词,文档统一用 goal)。
+- **Onboarding is entirely native Dart**, no DSL. The AI bridge does three things: generating follow-up questions in real time, final classification, and generating the first goal dashboard (the dashboard is rfw DSL, rendered by the reveal screen).
+- **App skeleton = 5 tabs** (Home / Projects / Areas / Resources / Archive), GoRouter `StatefulShellRoute` tab stacks. The skeleton does **not** hook up DSL this phase; tab roots are native empty pages; bridge integration comes with the main app body work.
+- **Keep state management simple**: ValueNotifier + singletons, the same convention as the ScreenStore/rfw layer. Do not introduce new frameworks like riverpod/hooks.
+- **iOS I/O iron rules** (must be followed; we have been burned by this repeatedly):
+  - All dart:io network/file I/O goes inside `Isolate.run`
+  - To take a result from a shared Future, use `.then` + `Timer.run` to hand it off manually to a Completer; never `await sharedFuture` directly
+  - The root widget keeps a persistent 2-second keep-alive Timer to keep the event loop awake (note: onboarding exists before the shell, so the Timer must live at the root of main.dart, not in ShellScaffold)
+- goal ≡ project/area (synonyms; docs consistently use "goal").
 
-## 目标 lib/ 结构
+## Target lib/ structure
 
 ```
 lib/
-  main.dart                      # BonsaiApp;先 await AppPrefs.init() 再 runApp;根 keep-alive Timer
+  main.dart                      # BonsaiApp; await AppPrefs.init() before runApp; root keep-alive Timer
   app/
-    router.dart                  # GoRouter StatefulShellRoute,5 tab 分支 + onboarding 顶级路由 + redirect 门控
-    shell_scaffold.dart          # shell 外壳(顶栏 wordmark、robot icon、底部 tab bar)
-    tab_root_page.dart           # 原生空 tab root(空状态 + "+ seed" 按钮 + goal 卡列表)
+    router.dart                  # GoRouter StatefulShellRoute, 5 tab branches + top-level onboarding routes + redirect gating
+    shell_scaffold.dart          # shell chrome (top bar wordmark, robot icon, bottom tab bar)
+    tab_root_page.dart           # native empty tab root (empty state + "+ seed" button + goal card list)
   ds/
-    aurora_tokens.dart           # Aurora 设计系统 token(Fresh Matcha 值 + 吉祥物色板)
+    aurora_tokens.dart           # Aurora design system tokens (Fresh Matcha values + mascot palette)
   bridge/
-    bridge_client.dart           # bridge HTTP 客户端(Isolate.run 全包),含 nextQuestion()/conclude() 两个 onboarding 方法
+    bridge_client.dart           # bridge HTTP client (fully wrapped in Isolate.run), with nextQuestion()/conclude() onboarding methods
   state/
-    app_prefs.dart               # AppPrefs 单例:firstRunComplete / coachMarkSeen / goal 注册表;Isolate.run 读写 bonsai_state.json
+    app_prefs.dart               # AppPrefs singleton: firstRunComplete / coachMarkSeen / goal registry; reads/writes bonsai_state.json via Isolate.run
   goals/
     goal.dart                    # Goal {id, title, kind: project|area, intent, status: growing|ready}
-    goal_dashboard_page.dart     # reveal 落点:渲染 bridge 生成的 dashboard DSL;原生 Still-growing 占位
-    goal_dashboard_store.dart    # 拉取 DSL + 静默重试退避
+    goal_dashboard_page.dart     # reveal destination: renders the bridge-generated dashboard DSL; native Still-growing placeholder
+    goal_dashboard_store.dart    # fetches DSL + silent retry backoff
   onboarding/
-    seed_flow_state.dart         # sealed 状态机状态
+    seed_flow_state.dart         # sealed state machine states
     seed_flow_controller.dart    # ValueNotifier<SeedFlowState> + async submitAnswer()
-    scripted_fallback.dart       # 脚本问题(按入口分支)+ 本地分类兜底
+    scripted_fallback.dart       # scripted questions (branched by entry) + local classification fallback
     ui/
-      splash_page.dart           # S1 开场屏(仅 first-run)
-      conversation_page.dart     # S2 对话
-      growing_page.dart          # S3 生长 loading
-      widgets/                   # 气泡、typing 指示、文案轮播、吉祥物 Lottie 容器
+      splash_page.dart           # S1 splash screen (first-run only)
+      conversation_page.dart     # S2 conversation
+      growing_page.dart          # S3 growing loading
+      widgets/                   # bubbles, typing indicator, copy carousel, mascot Lottie container
   screens/
-    screen_store.dart            # DSL 缓存(内存+磁盘)+ in-flight dedupe(Phase 5 迁入)
-    agent_sheet.dart             # robot bottom sheet,adjust UI with bot(Phase 6 迁入)
+    screen_store.dart            # DSL cache (memory + disk) + in-flight dedupe (moved in during Phase 5)
+    agent_sheet.dart             # robot bottom sheet, adjust UI with bot (moved in during Phase 6)
   rfw_pool/
-    pool_runtime.dart            # rfw Runtime 构建 + applyDsl(Phase 5 迁入)
-    local_widgets.dart           # 冻结组件池,rfw 命名空间 bonsai.*(Phase 5 迁入)
+    pool_runtime.dart            # rfw Runtime construction + applyDsl (moved in during Phase 5)
+    local_widgets.dart           # frozen component pool, rfw namespace bonsai.* (moved in during Phase 5)
 ```
 
-## 架构决策
+## Architecture decisions
 
-### D-A1 状态管理:ValueNotifier + 单例
-新代码与既有层同一习惯:`SeedFlowController` 持 `ValueNotifier<SeedFlowState>`;`AppPrefs` 单例持 `ValueNotifier` 并用 Isolate.run 读写 `documents/bonsai_state.json`(与 ScreenStore 磁盘模式一致);页面 = StatefulWidget + ValueListenableBuilder。不用 shared_preferences(平台通道 Future 在 iOS 死锁问题上未经本项目验证,文件 + Isolate.run 是已验证路径)。
+### D-A1 State management: ValueNotifier + singletons
+New code follows the same convention as the existing layers: `SeedFlowController` holds a `ValueNotifier<SeedFlowState>`; the `AppPrefs` singleton holds `ValueNotifier`s and reads/writes `documents/bonsai_state.json` via Isolate.run (matching the ScreenStore disk pattern); pages = StatefulWidget + ValueListenableBuilder. No shared_preferences (its platform-channel Futures are unverified in this project against the iOS deadlock issue; file + Isolate.run is the proven path).
 
-### D-A2 路由与门控
-onboarding 路由在 StatefulShellRoute **之外**:
+### D-A2 Routing and gating
+Onboarding routes live **outside** the StatefulShellRoute:
 
 ```
-/onboarding/splash      # S1,仅 first-run
-/seed?entry=project|area  # S2 对话
+/onboarding/splash      # S1, first-run only
+/seed?entry=project|area  # S2 conversation
 /seed/growing           # S3 loading
 ```
 
-redirect 同步读 `AppPrefs.instance.firstRunComplete`:未完成且不在 onboarding 路径 → 跳 `/onboarding/splash`。flag 只翻转一次,流程内跳转全部显式 `context.go(...)`,不需要 refreshListenable。`+ seed` 直接 `context.go('/seed?entry=area')`,redirect 不再触发。
+redirect reads `AppPrefs.instance.firstRunComplete` synchronously: not complete and not on an onboarding path → jump to `/onboarding/splash`. The flag flips only once, and all in-flow navigation is explicit `context.go(...)`, so no refreshListenable is needed. `+ seed` goes directly to `context.go('/seed?entry=area')`; the redirect no longer fires.
 
-reveal 落点:每个 tab 分支加子路由 `goal/:id`(如 `/projects/goal/job-hunt`,深度 1)。reveal = `context.go('/projects/goal/job-hunt')` —— 分支切换 + 压栈一步完成,回滑落在 tab root(满足设计文档 D7/D9:dashboard 是 goal 自己的主页)。
+Reveal destination: each tab branch adds a child route `goal/:id` (e.g. `/projects/goal/job-hunt`, depth 1). reveal = `context.go('/projects/goal/job-hunt')` — branch switch + push in one step, and swiping back lands on the tab root (satisfying design doc D7/D9: the dashboard is the goal's own home page).
 
-### D-A3 bridge 协议扩展(扩展 POST /generate,不加新端点)
+### D-A3 Bridge protocol extensions (extend POST /generate, no new endpoints)
 
-**(a) 对话轮次 `converse`** —— AI 实时生成下一个追问:
+**(a) Conversation turn `converse`** — the AI generates the next follow-up question in real time:
 
 ```json
 POST /generate
@@ -83,20 +83,20 @@ POST /generate
 → 200 {"question": "What kind of role are you looking for?", "latency_ms": 4200}
 ```
 
-新增 CONVERSE 附加 system prompt:只输出一个简短追问;目标 = 达到"可分类 + 可生成像样 dashboard"的最少信息;不问隐私细节;输入模糊时用这一轮澄清。纯文本输出,无 DSL。
+New CONVERSE supplementary system prompt: output only a single short follow-up question; goal = reach the minimum information needed to "classify + generate a decent dashboard"; do not ask for private details; when the input is vague, use this turn to clarify. Plain text output, no DSL.
 
-**(b) 收尾分类 `conclude`** —— 秒级返回,**不生成 dashboard**(分类气泡要先于 loading 屏出现):
+**(b) Final classification `conclude`** — returns within seconds, **does not generate the dashboard** (the classification bubble must appear before the loading screen):
 
 ```json
-{"conclude": true, "entry": "project", "transcript": [ ...全部 6 条消息... ]}
+{"conclude": true, "entry": "project", "transcript": [ ...all 6 messages... ]}
 → 200 {"kind": "project", "title": "Job hunt", "slug": "job-hunt",
        "closing": "Got it — your job hunt is a Project: something with a finish line. Planting it now…",
        "intent": "goal:job-hunt", "latency_ms": 6100}
 ```
 
-`kind` 可与 `entry` 不同(设计文档的纠偏兜底);closing 文案由模型出,纠偏才读得自然。严格 JSON 输出,复用现有 fence 剥离/`{...}` 提取。
+`kind` may differ from `entry` (the design doc's correction fallback); the closing copy comes from the model so a correction reads naturally. Strict JSON output, reusing the existing fence stripping / `{...}` extraction.
 
-**(c) dashboard 生成 —— 零新协议**,走现有 intent 通道:
+**(c) Dashboard generation — zero new protocol**, uses the existing intent channel:
 
 ```json
 {"intent": "goal:job-hunt",
@@ -104,11 +104,11 @@ POST /generate
  "leaf": true}
 ```
 
-关键:`spec` 注入生成任务但**不进缓存 key**(既有机制),`goal:<slug>` 成为稳定缓存 key —— 三层缓存、in-flight dedupe、未来 warm 工具全部免费复用。`leaf: true` 使 dashboard 不含下钻 intent(子页生成属主体开发);edit 模式(robot sheet)对 leaf 屏照常可用。
+Key point: `spec` injects the generation task but is **not part of the cache key** (existing mechanism), so `goal:<slug>` becomes a stable cache key — the three-layer cache, in-flight dedupe, and future warm tooling are all reused for free. `leaf: true` means the dashboard contains no drill-down intents (child page generation belongs to the main app body work); edit mode (robot sheet) still works as usual on leaf screens.
 
-**轮次缓存语义**:`converse`/`conclude` 结果进独立**内存** TURN_CACHE(key = sha1(system + entry + transcript)),共享 in-flight 去重表,保证客户端 3 次重试幂等(丢包重试不会得到不同问题、不会重跑模型)。不落盘 —— 转写不会跨会话复现,不污染 cache.json。
+**Turn cache semantics**: `converse`/`conclude` results go into a separate **in-memory** TURN_CACHE (key = sha1(system + entry + transcript)), sharing the in-flight dedupe table, guaranteeing the client's 3 retries are idempotent (a retry after packet loss will not get a different question and will not rerun the model). Not persisted to disk — transcripts never recur across sessions, so cache.json stays unpolluted.
 
-### D-A4 对话状态机
+### D-A4 Conversation state machine
 
 ```
 Opening → AwaitingAnswer(0) → AskingFollowUp(1) → AwaitingAnswer(1)
@@ -116,58 +116,58 @@ Opening → AwaitingAnswer(0) → AskingFollowUp(1) → AwaitingAnswer(1)
         → Classified → Growing → Revealed | GrowingFallback
 ```
 
-- 追问轮数(固定 2)由客户端 controller 强制,不问模型"够了吗"(设计文档 D5)。
-- **对话中途不持久化**:对话不到一分钟,中途被杀直接重走(splash 是否出现只看 firstRunComplete)。
-- `Classified` 时原子写入两件事:`firstRunComplete = true` + Goal(status: growing)入注册表。此后 loading 中被杀也能完美恢复:重启 → shell → Projects tab 有 goal 卡("Still growing")→ 拉取命中 bridge 缓存或加入 in-flight。
+- The number of follow-up turns (fixed at 2) is enforced by the client controller; we never ask the model "is that enough?" (design doc D5).
+- **No persistence mid-conversation**: the conversation takes under a minute; if killed midway, just redo it (whether splash appears depends only on firstRunComplete).
+- At `Classified`, two things are written atomically: `firstRunComplete = true` + the Goal (status: growing) enters the registry. From then on, being killed during loading recovers perfectly: restart → shell → the Projects tab has the goal card ("Still growing") → the fetch hits the bridge cache or joins the in-flight generation.
 
-### D-A5 降级链(逐级,互不纠缠)
+### D-A5 Degradation chain (step by step, mutually independent)
 
-| 失败点 | 行为 |
+| Failure point | Behavior |
 |---|---|
-| 单轮 converse 失败(3 次重试尽) | 切 `scripted_fallback` 脚本问题(按入口分支 2 问),此后整段对话保持脚本,不混用 |
-| conclude 失败 / 对话已是脚本 | 本地分类 = entry 类型;title = 首条回答截 ~40 字;slug 去重(重名加 `-2`);closing 用固定模板 |
-| dashboard 生成失败 / 超 90s | 流程照常完成:goal 以 growing 状态入注册表,reveal 照常导航,GoalDashboardPage 渲染**原生** Fresh Matcha 占位(吉祥物 thirsty Lottie + "Still growing — check back in a moment" 卡);10/30/60/120s 静默重试,in-flight dedupe 保证重试是**加入**进行中的生成而非重启;成功后 DSL 原位换入,状态翻 ready |
+| A single converse turn fails (3 retries exhausted) | Switch to `scripted_fallback` scripted questions (2 questions branched by entry); the rest of the conversation stays scripted, no mixing |
+| conclude fails / conversation already scripted | Local classification = entry type; title = first answer truncated to ~40 chars; slug deduped (append `-2` on collision); closing uses a fixed template |
+| Dashboard generation fails / exceeds 90s | The flow completes as normal: the goal enters the registry in growing status, reveal navigates as usual, GoalDashboardPage renders a **native** Fresh Matcha placeholder (mascot thirsty Lottie + "Still growing — check back in a moment" card); silent retries at 10/30/60/120s, with in-flight dedupe guaranteeing a retry **joins** the ongoing generation rather than restarting it; on success the DSL is swapped in place and the status flips to ready |
 
-占位用原生实现(而非 rfw 模板)是有意的 —— 本期完全不需要模板层。
+Making the placeholder native (rather than an rfw template) is intentional — the template layer is not needed at all this phase.
 
-### D-A6 标识符规范
-- rfw 组件命名空间:`bonsai.*`(capability-lock 三处同步:`lib/rfw_pool/local_widgets.dart` + `bridge/system_prompt.txt` + `lib/ds/aurora_tokens.dart`)
-- App 类:`BonsaiApp`;bridge 环境变量:`BONSAI_CONTEXT` / `BONSAI_CACHE`
-- 持久化文件:`bonsai_state.json`(prefs + goal 注册表)、`dsl_cache.json`(DSL 缓存)
+### D-A6 Identifier conventions
+- rfw component namespace: `bonsai.*` (capability lock kept in sync across three places: `lib/rfw_pool/local_widgets.dart` + `bridge/system_prompt.txt` + `lib/ds/aurora_tokens.dart`)
+- App class: `BonsaiApp`; bridge env vars: `BONSAI_CONTEXT` / `BONSAI_CACHE`
+- Persisted files: `bonsai_state.json` (prefs + goal registry), `dsl_cache.json` (DSL cache)
 
-### D-A7 Token 与资产
-- `lib/ds/aurora_tokens.dart`,`class Aurora`,值 = Fresh Matcha(`design-system/styles.css`):primary `#2C8248`、secondary `#2F7BB4`、accent `#F4B63C`、bg `#F6F4E9`、ink `#26302A` 等;吉祥物色板(mLeaf `#3FA34D`、mPot `#E8703A`、mInk `#33302B`…)与 Lottie 烘焙值一致。
-- 招牌 elev-pop:`BoxShadow(offset: Offset(3,3), blurRadius: 0, color: ink)`。
-- **字体打包 TTF**(Baloo 2 display + Nunito body),不用 google_fonts 运行时拉取(demo 现场热点网络不可靠)。Patrick Hand 本期不需要。
-- Lottie:`design-system/lottie/bonsai-{idle,cheer,thirsty,sleep}.json` → `assets/lottie/`,`lottie` 包加载。
+### D-A7 Tokens and assets
+- `lib/ds/aurora_tokens.dart`, `class Aurora`, values = Fresh Matcha (`design-system/styles.css`): primary `#2C8248`, secondary `#2F7BB4`, accent `#F4B63C`, bg `#F6F4E9`, ink `#26302A`, etc.; the mascot palette (mLeaf `#3FA34D`, mPot `#E8703A`, mInk `#33302B`...) matches the values baked into the Lottie files.
+- Signature elev-pop: `BoxShadow(offset: Offset(3,3), blurRadius: 0, color: ink)`.
+- **Bundle fonts as TTF** (Baloo 2 display + Nunito body); no google_fonts runtime fetching (hotspot networking at the demo venue is unreliable). Patrick Hand is not needed this phase.
+- Lottie: `design-system/lottie/bonsai-{idle,cheer,thirsty,sleep}.json` → `assets/lottie/`, loaded with the `lottie` package.
 
-## 分阶段计划
+## Phased plan
 
-| Phase | 内容 | 检查点(app 可跑) | 风险 |
+| Phase | Content | Checkpoint (app runnable) | Risk |
 |---|---|---|---|
-| **0 Scaffold** | flutter create(Flutter 3.44.4 / Dart ^3.9);deps:`go_router ^16` `rfw ^1.1.3` `http` `path_provider` `lottie`(零状态管理新依赖);Lottie + 字体资产入 assets;analysis_options | `flutter run` 出空 MaterialApp | 版本漂移;iOS 签名 |
-| **1 Tokens + 骨架** | `aurora_tokens.dart`(Fresh Matcha 值);`app/router.dart`:StatefulShellRoute 5 分支,tab root = 原生空页 + `+ seed`;AppTab / DepthObserver / kMaxDepth 机制照常;keep-alive Timer 放 main.dart 根部;`BonsaiApp` | 5 tab Fresh Matcha 渲染,切换正常,深度观察器就位 | 低;go_router 16 API 对齐 |
-| **2 Bridge + ping** | `bridge/serve.py` + `system_prompt.txt` 就位(环境变量 `BONSAI_*`,空 cache.json,命名空间 `bonsai.*` 声明);`bridge_client.dart`(Isolate.run 全包 + 3 次重试 + `--dart-define=BRIDGE_URL`);临时状态行显示 ping 结果 | 真机空 intent ping 返回 400 | 真机 LAN 可达性;Mac 上 claude CLI 登录 |
-| **3 Onboarding 静态** | S1/S2/S3 三页 UI 全建(**仅脚本问题**,不接 bridge);`app_prefs.dart` + redirect 门控;流程终点先落 stub 页;文案轮播;吉祥物 Lottie 状态 | 离线可走完整流程;杀进程重启跳过 splash | 全视觉,无逻辑风险 |
-| **4 对话接线** | serve.py `converse`/`conclude` 模式 + TURN_CACHE;`bridge_client.nextQuestion()`/`.conclude()`;controller 按 D-A5 在 live/脚本间切换 | 真机 AI 实时追问;对话中途杀 bridge 无缝降级脚本 | prompt 调优(问题质量/延迟);JSON 提取边角 |
-| **5 rfw 子集 + 生成 + reveal** | `pool_runtime.dart` + `local_widgets.dart`(命名空间 `bonsai.*`,与 system_prompt 同步)+ `screen_store.dart` 迁入;`GoalDashboardPage`(解析失败保上屏、navigate 视为 no-op);growing 页发 `generate(goal:<slug>, spec, leaf)`;`goal/:id` 子路由;reveal 导航 | 真机种子→dashboard 全链路;二次启动 dashboard 缓存秒开 | **风险峰值**:iOS 死锁面 + rfw 面;缓解 = I/O 模式逐字节沿用已验证写法 |
-| **6 兜底 + 润色** | Still-growing 占位 + 重试退避;coach mark(一次性,`coachMarkSeen`);`agent_sheet.dart` 迁入(robot icon → bottom sheet);tab root `+ seed` 全接 + goal 卡列表(注册表驱动) | 完整 demo 剧本:first-run 种 Project → `+` 种 Area → bot 改 UI | 生成 dashboard 上的 edit 质量;coach mark 层级/时机 |
+| **0 Scaffold** | flutter create (Flutter 3.44.4 / Dart ^3.9); deps: `go_router ^16` `rfw ^1.1.3` `http` `path_provider` `lottie` (zero new state-management deps); Lottie + font assets into assets; analysis_options | `flutter run` shows an empty MaterialApp | Version drift; iOS signing |
+| **1 Tokens + skeleton** | `aurora_tokens.dart` (Fresh Matcha values); `app/router.dart`: StatefulShellRoute with 5 branches, tab root = native empty page + `+ seed`; AppTab / DepthObserver / kMaxDepth mechanisms as usual; keep-alive Timer at the root of main.dart; `BonsaiApp` | 5 tabs render in Fresh Matcha, switching works, depth observer in place | Low; go_router 16 API alignment |
+| **2 Bridge + ping** | `bridge/serve.py` + `system_prompt.txt` in place (env vars `BONSAI_*`, empty cache.json, namespace `bonsai.*` declared); `bridge_client.dart` (fully wrapped in Isolate.run + 3 retries + `--dart-define=BRIDGE_URL`); temporary status line shows the ping result | Empty-intent ping from a real device returns 400 | LAN reachability from the device; claude CLI login on the Mac |
+| **3 Onboarding static** | Build all three S1/S2/S3 page UIs (**scripted questions only**, no bridge); `app_prefs.dart` + redirect gating; the flow ends at a stub page for now; copy carousel; mascot Lottie states | The full flow works offline; killing the process and restarting skips splash | All visual, no logic risk |
+| **4 Conversation wiring** | serve.py `converse`/`conclude` modes + TURN_CACHE; `bridge_client.nextQuestion()`/`.conclude()`; controller switches between live/scripted per D-A5 | Real-time AI follow-ups on device; killing the bridge mid-conversation degrades seamlessly to script | Prompt tuning (question quality/latency); JSON extraction edge cases |
+| **5 rfw subset + generation + reveal** | Move in `pool_runtime.dart` + `local_widgets.dart` (namespace `bonsai.*`, synced with system_prompt) + `screen_store.dart`; `GoalDashboardPage` (keep previous screen on parse failure, treat navigate as a no-op); the growing page sends `generate(goal:<slug>, spec, leaf)`; `goal/:id` child route; reveal navigation | Full seed → dashboard pipeline on device; on second launch the dashboard opens instantly from cache | **Peak risk**: iOS deadlock surface + rfw surface; mitigation = reuse the proven I/O patterns byte for byte |
+| **6 Fallbacks + polish** | Still-growing placeholder + retry backoff; coach mark (one-time, `coachMarkSeen`); move in `agent_sheet.dart` (robot icon → bottom sheet); fully wire tab root `+ seed` + goal card list (registry-driven) | Full demo script: first-run plants a Project → `+` plants an Area → bot adjusts UI | Edit quality on generated dashboards; coach mark layering/timing |
 
-排序理由:Phase 3 先于 4 —— demo 先有离线保底脊柱,AI 再入环(hackathon 保险丝);Phase 5 单独隔离,因为它承载全部 iOS 死锁面与 rfw 面。
+Ordering rationale: Phase 3 comes before 4 — the demo gets an offline safety spine first, then AI enters the loop (hackathon fuse); Phase 5 is isolated on its own because it carries the entire iOS deadlock surface and the rfw surface.
 
-## 本期不做
+## Out of scope this phase
 
-- warm.py 预热 / plan / bundle 工具链(主体开发期)
-- 模板全集与 tab root DSL 化(骨架保持原生空页)
-- context packs / persona 数据(ScreenStore.uiData 用中性默认值)
-- debug 页(Phase 6 视调试需要可加,半小时工作量)
-- 子页下钻生成(dashboard 以 leaf 生成,无 intent 链接)
-- 真实 GBrain / HealthKit 接入(Resources tab 维持 kMockData 连接器卡)
+- warm.py pre-generation / plan / bundle tooling (main app body development phase)
+- Full template set and DSL-izing tab roots (skeleton keeps native empty pages)
+- context packs / persona data (ScreenStore.uiData uses neutral defaults)
+- Debug page (can be added in Phase 6 if debugging calls for it; half an hour of work)
+- Child page drill-down generation (dashboards are generated as leaf, no intent links)
+- Real GBrain / HealthKit integration (Resources tab keeps the kMockData connector cards)
 
-## 验收(整体)
+## Acceptance (overall)
 
-1. first-run:Splash → 对话(AI 追问)→ 分类披露 → 生长 loading → 落在 goal 自己的 dashboard(rfw 渲染),coach mark 一次
-2. 杀 bridge 重走:脚本问题兜底,全流程可完成,占位卡 + 静默重试语义正确
-3. `+ seed`(Areas 入口)重入同一流程,跳过 Splash,分类为 area
-4. 重启 app:不再出 Splash;goal 卡在对应 tab root;dashboard 缓存秒开
-5. `flutter analyze` 干净;tab 深度/切换行为与骨架测试一致
+1. first-run: Splash → conversation (AI follow-ups) → classification disclosure → growing loading → land on the goal's own dashboard (rfw-rendered), coach mark once
+2. Rerun with the bridge killed: scripted-question fallback, the whole flow completes, placeholder card + silent retry semantics correct
+3. `+ seed` (Areas entry) re-enters the same flow, skips Splash, classifies as area
+4. Restart the app: Splash never reappears; goal cards sit on the corresponding tab roots; dashboards open instantly from cache
+5. `flutter analyze` is clean; tab depth/switching behavior matches the skeleton tests

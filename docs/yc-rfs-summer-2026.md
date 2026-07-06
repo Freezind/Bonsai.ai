@@ -1,9 +1,9 @@
 # YC Requests for Startups — Summer 2026
 
-> 来源:https://www.ycombinator.com/rfs(抓取于 2026-07-04)
-> 本项目选题为 **Dynamic Software Interfaces**,全文如下;hackathon 可选的另外两个方向附在文末。
+> Source: https://www.ycombinator.com/rfs (captured 2026-07-04)
+> This project's chosen topic is **Dynamic Software Interfaces**, quoted in full below; the other two hackathon-eligible directions are appended at the end.
 
-## Dynamic Software Interfaces(本项目选题)
+## Dynamic Software Interfaces (this project's topic)
 
 By [Ankit Gupta](https://www.ycombinator.com/people/ankit-gupta) — https://www.ycombinator.com/rfs#dynamic-software-interfaces
 
@@ -17,28 +17,28 @@ By [Ankit Gupta](https://www.ycombinator.com/people/ankit-gupta) — https://www
 >
 > If you're a radical thinker looking to define the future of software, we'd love to hear from you.
 
-### 与本项目的对应关系
+### How this project maps to it
 
-RFS 的核心命题 → Bonsai 的回答:
+The RFS's core theses → Bonsai's answers:
 
-- **"software companies will ship these shared primitives"** → 冻结组件池(frozen component pool,`lib/rfw_pool/local_widgets.dart`):开发者交付的是设计好的 primitives,不是最终界面
-- **"users become their own forward deployed engineers"** → 用户用自然语言 intent 让 agent 生成界面(rfw DSL),无需写代码
-- **"How will a developer make software that can be accessed by the user's coding agents?"** → 交付物是 DSL 可组合的组件白名单 + 系统提示词(capability lock),agent 只输出结构、永不输出可执行代码;渲染始终在设备端
+- **"software companies will ship these shared primitives"** → frozen component pool (`lib/rfw_pool/local_widgets.dart`): what the developer ships is a set of designed primitives, not the final interface
+- **"users become their own forward deployed engineers"** → users express intents in natural language and let the agent generate the interface (rfw DSL), no code required
+- **"How will a developer make software that can be accessed by the user's coding agents?"** → the deliverable is a DSL-composable component whitelist + system prompt (capability lock); the agent only emits structure, never executable code; rendering always happens on-device
 
-## Hackathon 的另外两个可选方向(参考)
+## The other two hackathon-eligible directions (for reference)
 
 ### Company Brain
 
 By Tom Blomfield — https://www.ycombinator.com/rfs#company-brain
 
-公司知识散落在人脑、邮件、Slack、工单、数据库里。AI 自动化的瓶颈已不是模型而是领域知识。需要一个新原语 "company brain":把碎片化知识抽取、结构化、保持最新,变成 AI 可执行的 skills 文件——原始公司数据与可靠 AI 自动化之间缺失的那一层。
+Company knowledge is scattered across people's heads, email, Slack, tickets, and databases. The bottleneck for AI automation is no longer the model but domain knowledge. A new primitive is needed, the "company brain": extract fragmented knowledge, structure it, keep it up to date, and turn it into AI-executable skills files -- the missing layer between raw company data and reliable AI automation.
 
 ### Software for Agents
 
 By Aaron Epstein — https://www.ycombinator.com/rfs#software-for-agents
 
-互联网下一个万亿级用户是 AI agent。"Make Something Agents Want":agent 需要的不是表单、按钮、仪表盘,而是机器可读接口(API、MCP、CLI)和详尽文档,让 agent 无需人介入即可发现、注册、上手使用。每个主流软件品类都需要为 agent 重建。
+The internet's next trillion-scale users are AI agents. "Make Something Agents Want": what agents need is not forms, buttons, or dashboards, but machine-readable interfaces (API, MCP, CLI) and thorough documentation, so agents can discover, sign up, and get going without human intervention. Every major software category needs to be rebuilt for agents.
 
-## Summer 2026 完整主题列表(仅目录)
+## Complete Summer 2026 topic list (index only)
 
 AI for Low-Pesticide Agriculture · AI-Native Discovery Engines · AI-Native Service Companies · AI Personalized Medicine · Company Brain · Counter-Swarm Defense · **Dynamic Software Interfaces** · Electronics in Space · Hardware Supply Chain · Industrial Capabilities in Space · Inference Chips for Agent Workflows · SaaS Challengers · Software for Agents · Startups That Want to Sell to Huge Companies · Supply Chain 2.0 for Semiconductors · The AI Operating System for Companies
