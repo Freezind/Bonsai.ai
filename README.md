@@ -24,7 +24,7 @@ Three parts:
 
 - `lib/` — the Flutter app (Dart SDK ^3.9, Flutter 3.44.4)
 - `bridge/` — a local Python bridge (`serve.py`, zero third-party dependencies) that drives a headless `claude -p` to generate DSL, using the developer's own Claude login (no API key). DSL transpilation rides on Flutter's official **rfw** (Remote Flutter Widgets): the structure text is transpiled on-device into a real native widget tree — the app is fully native, with no WebView or embedded runtime
-- `design-system/` — the **Fresh Matcha** design system, a living HTML style guide (not part of the build): milky-cream paper, spring green × sky blue, wobbly ink outlines with hard "pop" shadows — a picture-book cut-out feel — Baloo 2 × Nunito type, and a hand-drawn potted mascot that grows through five stages. Its Dart token mirror lives in `lib/ds/aurora_tokens.dart`
+- `design-system/` — the **Fresh Matcha** design system, a living HTML style guide (not part of the build): milky-cream paper, spring green × sky blue, wobbly ink outlines with hard "pop" shadows — a picture-book cut-out feel — Baloo 2 × Nunito type, and a hand-drawn potted mascot that grows through five stages. Its Dart token mirror lives in `lib/ds/aurora_tokens.dart`. The design system was bootstrapped with [mobile-design-system](https://github.com/rikucherry1993/mobile-design-system-skill), a public Claude Code skill built specifically for mobile apps
 
 ## Architecture: the model never writes code
 
