@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../ds/aurora_tokens.dart';
+import '../../ds/matcha_tokens.dart';
 import 'widgets/growing_bonsai.dart';
 
 /// S1 · First-run brand screen. Mascot grows through its stages, brand line,
@@ -35,11 +35,11 @@ class _SplashPageState extends State<SplashPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Aurora.bg,
-      body: AuroraBackground(
+      backgroundColor: Matcha.bg,
+      body: MatchaBackground(
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Aurora.s6),
+            padding: const EdgeInsets.symmetric(horizontal: Matcha.s6),
             child: Column(
               children: [
                 const Spacer(flex: 3),
@@ -50,13 +50,13 @@ class _SplashPageState extends State<SplashPage>
                     child: Column(
                       children: [
                         const GrowingBonsai(size: 220),
-                        const SizedBox(height: Aurora.s5),
+                        const SizedBox(height: Matcha.s5),
                         Text('Bonsai',
-                            style: Aurora.display.copyWith(
-                                fontSize: 40, color: Aurora.primaryLight)),
-                        const SizedBox(height: Aurora.s2),
+                            style: Matcha.display.copyWith(
+                                fontSize: 40, color: Matcha.primaryLight)),
+                        const SizedBox(height: Matcha.s2),
                         const Text('Fed by your life, tending it back.',
-                            textAlign: TextAlign.center, style: Aurora.body),
+                            textAlign: TextAlign.center, style: Matcha.body),
                       ],
                     ),
                   ),
@@ -70,7 +70,7 @@ class _SplashPageState extends State<SplashPage>
                     onPressed: () => context.go('/seed?entry=project'),
                   ),
                 ),
-                const SizedBox(height: Aurora.s6),
+                const SizedBox(height: Matcha.s6),
               ],
             ),
           ),
@@ -108,10 +108,10 @@ class _PlantButtonState extends State<_PlantButton> {
         width: double.infinity,
         height: 56,
         decoration: BoxDecoration(
-          color: Aurora.primary,
-          border: Border.all(color: Aurora.ink, width: 2),
-          borderRadius: BorderRadius.circular(Aurora.rFull),
-          boxShadow: _down ? Aurora.elevPopSm : Aurora.elevPop,
+          color: Matcha.primary,
+          border: Border.all(color: Matcha.ink, width: 2),
+          borderRadius: BorderRadius.circular(Matcha.rFull),
+          boxShadow: _down ? Matcha.elevPopSm : Matcha.elevPop,
         ),
         child: const Center(
           child: Text(
@@ -120,7 +120,7 @@ class _PlantButtonState extends State<_PlantButton> {
               fontFamily: 'Baloo 2',
               fontSize: 18,
               fontWeight: FontWeight.w800,
-              color: Aurora.onPrimary,
+              color: Matcha.onPrimary,
             ),
           ),
         ),

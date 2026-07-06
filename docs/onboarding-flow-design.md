@@ -22,7 +22,7 @@ The onboarding conversation, `+`, and the chat button are **the same interaction
 
 ### Step 1 · Splash screen (first-run only)
 
-- Visual: Aurora look, minimalist bonsai/seed imagery + brand line
+- Visual: Fresh Matcha look, minimalist bonsai/seed imagery + brand line
 - Copy: `Bonsai` / `Fed by your life, tending it back.`
 - Single CTA: `Plant your first seed` → enters the conversation
 - No login, no permission requests, no feature tour

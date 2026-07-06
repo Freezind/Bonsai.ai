@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../ds/aurora_tokens.dart';
+import '../../ds/matcha_tokens.dart';
 import '../../state/app_prefs.dart';
 import '../seed_flow_controller.dart';
 import '../seed_flow_state.dart';
@@ -80,22 +80,22 @@ class _ConversationPageState extends State<ConversationPage> {
     return PopScope(
       canPop: false,
       child: Scaffold(
-        backgroundColor: Aurora.bg,
+        backgroundColor: Matcha.bg,
         appBar: AppBar(
-          backgroundColor: Aurora.paper,
+          backgroundColor: Matcha.paper,
           elevation: 0,
           centerTitle: true,
           automaticallyImplyLeading: false,
-          title: Text('Planting a seed', style: Aurora.h2),
+          title: Text('Planting a seed', style: Matcha.h2),
           actions: [
             if (_dismissible)
               IconButton(
                 tooltip: 'Abandon this seed',
-                icon: const Icon(Icons.close, color: Aurora.textSecondary),
+                icon: const Icon(Icons.close, color: Matcha.textSecondary),
                 onPressed: _confirmAbandon,
               ),
           ],
-          shape: const Border(bottom: BorderSide(color: Aurora.divider)),
+          shape: const Border(bottom: BorderSide(color: Matcha.divider)),
         ),
         body: SafeArea(
           child: Column(
@@ -107,7 +107,7 @@ class _ConversationPageState extends State<ConversationPage> {
                     final thinking = s is SeedThinking || s is SeedConcluding;
                     return ListView(
                       controller: _scroll,
-                      padding: const EdgeInsets.symmetric(vertical: Aurora.s3),
+                      padding: const EdgeInsets.symmetric(vertical: Matcha.s3),
                       children: [
                         for (final m in _flow.transcript) ChatBubble(message: m),
                         if (thinking) const TypingIndicator(),
@@ -128,10 +128,10 @@ class _ConversationPageState extends State<ConversationPage> {
     final leave = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Aurora.paper2,
-        title: Text('Abandon this seed?', style: Aurora.h2),
+        backgroundColor: Matcha.paper2,
+        title: Text('Abandon this seed?', style: Matcha.h2),
         content: const Text('Nothing is planted until the conversation finishes.',
-            style: Aurora.body),
+            style: Matcha.body),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -164,10 +164,10 @@ class _Composer extends StatelessWidget {
         final enabled = s is SeedAwaitingAnswer;
         return Container(
           padding: const EdgeInsets.fromLTRB(
-              Aurora.s4, Aurora.s2, Aurora.s2, Aurora.s2),
+              Matcha.s4, Matcha.s2, Matcha.s2, Matcha.s2),
           decoration: const BoxDecoration(
-            color: Aurora.paper,
-            border: Border(top: BorderSide(color: Aurora.divider)),
+            color: Matcha.paper,
+            border: Border(top: BorderSide(color: Matcha.divider)),
           ),
           child: Row(
             children: [
@@ -179,36 +179,36 @@ class _Composer extends StatelessWidget {
                   maxLines: 4,
                   textInputAction: TextInputAction.send,
                   onSubmitted: (_) => onSend(),
-                  style: Aurora.body,
+                  style: Matcha.body,
                   decoration: InputDecoration(
                     hintText: enabled ? 'Type your answer…' : 'Bonsai is thinking…',
-                    hintStyle: Aurora.body.copyWith(color: Aurora.textDisabled),
+                    hintStyle: Matcha.body.copyWith(color: Matcha.textDisabled),
                     filled: true,
-                    fillColor: Aurora.paper2,
+                    fillColor: Matcha.paper2,
                     contentPadding: const EdgeInsets.symmetric(
-                        horizontal: Aurora.s4, vertical: Aurora.s3),
+                        horizontal: Matcha.s4, vertical: Matcha.s3),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(Aurora.rMd),
-                      borderSide: const BorderSide(color: Aurora.border, width: 2),
+                      borderRadius: BorderRadius.circular(Matcha.rMd),
+                      borderSide: const BorderSide(color: Matcha.border, width: 2),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(Aurora.rMd),
-                      borderSide: const BorderSide(color: Aurora.primary, width: 2),
+                      borderRadius: BorderRadius.circular(Matcha.rMd),
+                      borderSide: const BorderSide(color: Matcha.primary, width: 2),
                     ),
                     disabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(Aurora.rMd),
-                      borderSide: const BorderSide(color: Aurora.border, width: 2),
+                      borderRadius: BorderRadius.circular(Matcha.rMd),
+                      borderSide: const BorderSide(color: Matcha.border, width: 2),
                     ),
                   ),
                 ),
               ),
-              const SizedBox(width: Aurora.s2),
+              const SizedBox(width: Matcha.s2),
               IconButton.filled(
                 onPressed: enabled ? onSend : null,
                 style: IconButton.styleFrom(
-                  backgroundColor: Aurora.primary,
-                  foregroundColor: Aurora.onPrimary,
-                  disabledBackgroundColor: Aurora.paper3,
+                  backgroundColor: Matcha.primary,
+                  foregroundColor: Matcha.onPrimary,
+                  disabledBackgroundColor: Matcha.paper3,
                   minimumSize: const Size(48, 48),
                 ),
                 icon: const Icon(Icons.arrow_upward_rounded),

@@ -8,7 +8,7 @@ import 'package:path_provider/path_provider.dart';
 
 import 'app/router.dart';
 import 'bridge/bridge_client.dart';
-import 'ds/aurora_tokens.dart';
+import 'ds/matcha_tokens.dart';
 import 'screens/screen_store.dart';
 import 'state/app_prefs.dart';
 
@@ -82,15 +82,15 @@ class _BonsaiAppState extends State<BonsaiApp> {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
-        scaffoldBackgroundColor: Aurora.bg,
+        scaffoldBackgroundColor: Matcha.bg,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Aurora.primary,
-          primary: Aurora.primary,
-          secondary: Aurora.secondary,
-          surface: Aurora.paper,
+          seedColor: Matcha.primary,
+          primary: Matcha.primary,
+          secondary: Matcha.secondary,
+          surface: Matcha.paper,
         ),
         fontFamily: 'Nunito',
-        dividerColor: Aurora.divider,
+        dividerColor: Matcha.divider,
       ),
       routerConfig: _router,
     );

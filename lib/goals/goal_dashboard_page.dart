@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:rfw/rfw.dart';
 
-import '../ds/aurora_tokens.dart';
+import '../ds/matcha_tokens.dart';
 import '../onboarding/ui/widgets/growing_bonsai.dart';
 import '../onboarding/ui/widgets/mascot.dart';
 import '../rfw_pool/demo_dashboards.dart';
@@ -164,13 +164,13 @@ class _GoalDashboardPageState extends State<GoalDashboardPage> {
     final goal = _goal;
     if (goal == null) {
       return Center(
-        child: Text('This seed is gone.', style: Aurora.body2),
+        child: Text('This seed is gone.', style: Matcha.body2),
       );
     }
     final page = Column(
       children: [
         _header(goal),
-        const Divider(height: 1, color: Aurora.divider),
+        const Divider(height: 1, color: Matcha.divider),
         Expanded(child: _body(goal)),
       ],
     );
@@ -190,29 +190,29 @@ class _GoalDashboardPageState extends State<GoalDashboardPage> {
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: Container(
-                  margin: const EdgeInsets.all(Aurora.s5),
-                  padding: const EdgeInsets.all(Aurora.s4),
+                  margin: const EdgeInsets.all(Matcha.s5),
+                  padding: const EdgeInsets.all(Matcha.s4),
                   decoration: BoxDecoration(
-                    color: Aurora.paper2,
-                    border: Border.all(color: Aurora.ink, width: 2),
-                    borderRadius: BorderRadius.circular(Aurora.rMd),
-                    boxShadow: Aurora.elevPop,
+                    color: Matcha.paper2,
+                    border: Border.all(color: Matcha.ink, width: 2),
+                    borderRadius: BorderRadius.circular(Matcha.rMd),
+                    boxShadow: Matcha.elevPop,
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('This is your goal\'s home', style: Aurora.title),
-                      const SizedBox(height: Aurora.s1),
+                      Text('This is your goal\'s home', style: Matcha.title),
+                      const SizedBox(height: Matcha.s1),
                       const Text(
                         'Bottom tabs are your PARA structure — tap + anytime '
                         'to plant another seed.',
                         textAlign: TextAlign.center,
-                        style: Aurora.body2,
+                        style: Matcha.body2,
                       ),
-                      const SizedBox(height: Aurora.s2),
+                      const SizedBox(height: Matcha.s2),
                       Text('Tap anywhere to start tending',
-                          style: Aurora.label
-                              .copyWith(color: Aurora.primaryLight)),
+                          style: Matcha.label
+                              .copyWith(color: Matcha.primaryLight)),
                     ],
                   ),
                 ),
@@ -226,11 +226,11 @@ class _GoalDashboardPageState extends State<GoalDashboardPage> {
 
   Widget _header(Goal goal) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(4, 2, Aurora.s4, 2),
+      padding: const EdgeInsets.fromLTRB(4, 2, Matcha.s4, 2),
       child: Row(
         children: [
           IconButton(
-            icon: const Icon(Icons.arrow_back, color: Aurora.textSecondary),
+            icon: const Icon(Icons.arrow_back, color: Matcha.textSecondary),
             onPressed: () {
               final nav = Navigator.of(context);
               if (nav.canPop()) nav.pop();
@@ -240,25 +240,25 @@ class _GoalDashboardPageState extends State<GoalDashboardPage> {
             child: Text(goal.title,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: Aurora.title),
+                style: Matcha.title),
           ),
           // The goal's own tree, grown to its current stage.
           StageBonsai(stage: goal.stage, size: 40),
-          const SizedBox(width: Aurora.s2),
+          const SizedBox(width: Matcha.s2),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
             decoration: BoxDecoration(
               color: goal.kind == GoalKind.area
-                  ? Aurora.secondaryContainer
-                  : Aurora.primaryContainer,
-              borderRadius: BorderRadius.circular(Aurora.rFull),
+                  ? Matcha.secondaryContainer
+                  : Matcha.primaryContainer,
+              borderRadius: BorderRadius.circular(Matcha.rFull),
             ),
             child: Text(
               goal.kind == GoalKind.area ? 'Area' : 'Project',
-              style: Aurora.label.copyWith(
+              style: Matcha.label.copyWith(
                 color: goal.kind == GoalKind.area
-                    ? Aurora.secondary
-                    : Aurora.primaryLight,
+                    ? Matcha.secondary
+                    : Matcha.primaryLight,
               ),
             ),
           ),
@@ -307,37 +307,37 @@ class _StillGrowing extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Mascot(mood: MascotMood.thirsty, size: 160),
-          const SizedBox(height: Aurora.s4),
+          const SizedBox(height: Matcha.s4),
           Container(
-            margin: const EdgeInsets.symmetric(horizontal: Aurora.s6),
-            padding: const EdgeInsets.all(Aurora.s4),
+            margin: const EdgeInsets.symmetric(horizontal: Matcha.s6),
+            padding: const EdgeInsets.all(Matcha.s4),
             decoration: BoxDecoration(
-              color: Aurora.paper2,
-              border: Border.all(color: Aurora.border, width: 2),
-              borderRadius: BorderRadius.circular(Aurora.rMd),
+              color: Matcha.paper2,
+              border: Border.all(color: Matcha.border, width: 2),
+              borderRadius: BorderRadius.circular(Matcha.rMd),
             ),
             child: Column(
               children: [
-                Text('Still growing', style: Aurora.title),
-                const SizedBox(height: Aurora.s1),
+                Text('Still growing', style: Matcha.title),
+                const SizedBox(height: Matcha.s1),
                 const Text('Check back in a moment.',
-                    textAlign: TextAlign.center, style: Aurora.body2),
+                    textAlign: TextAlign.center, style: Matcha.body2),
               ],
             ),
           ),
-          const SizedBox(height: Aurora.s4),
+          const SizedBox(height: Matcha.s4),
           if (fetching)
             const SizedBox(
               width: 22,
               height: 22,
               child: CircularProgressIndicator(
-                  strokeWidth: 2.5, color: Aurora.primary),
+                  strokeWidth: 2.5, color: Matcha.primary),
             )
           else
             TextButton(
               onPressed: onRetry,
               child: const Text('Water it again',
-                  style: TextStyle(color: Aurora.primaryLight)),
+                  style: TextStyle(color: Matcha.primaryLight)),
             ),
         ],
       ),

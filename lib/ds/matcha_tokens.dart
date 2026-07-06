@@ -1,15 +1,15 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
-/// Aurora design tokens — Dart mirror of design-system/styles.css :root
+/// Matcha design tokens — Dart mirror of design-system/styles.css :root
 /// ("Fresh Matcha": bright spring green + sky blue on milky cream, warm ink
 /// outlines, hard offset "pop" shadows, flat fills only — no gradients).
 ///
 /// NOTE on `primaryLight`: in this LIGHT theme it carries the accent
 /// FOREGROUND — a deeper, text-safe green for small text on cream surfaces.
 /// Never use raw `primary` as small text on cream.
-class Aurora {
-  Aurora._();
+class Matcha {
+  Matcha._();
 
   // ---- palette: spring green + sky blue, sun accent ----
   static const primary = Color(0xFF2C8248);
@@ -103,14 +103,14 @@ class Aurora {
 
 /// The living canvas: flat milky cream + sparse warm paper grain.
 /// (Flat colour only — no gradient washes.)
-class AuroraBackground extends StatelessWidget {
-  const AuroraBackground({super.key, required this.child});
+class MatchaBackground extends StatelessWidget {
+  const MatchaBackground({super.key, required this.child});
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
-      decoration: const BoxDecoration(color: Aurora.bg),
+      decoration: const BoxDecoration(color: Matcha.bg),
       child: CustomPaint(painter: _GrainPainter(), child: child),
     );
   }

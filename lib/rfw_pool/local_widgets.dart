@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rfw/rfw.dart';
 
-import '../ds/aurora_tokens.dart';
+import '../ds/matcha_tokens.dart';
 
 /// The frozen component pool, exposed to the agent's DSL as `bonsai.*` local
 /// widgets. The agent (L2.5) may only compose these + core layout primitives;
@@ -73,20 +73,20 @@ Widget _tappable(Widget w, VoidCallback? onTap) =>
 
 final Map<String, LocalWidgetBuilder> _widgets = {
   // ---- the living canvas ----
-  'Canvas': (context, source) => AuroraBackground(child: source.child(['child'])),
+  'Canvas': (context, source) => MatchaBackground(child: source.child(['child'])),
 
   'Gap': (context, source) => const Spacer(),
 
   // ---- typed text ----
   'Txt': (context, source) {
     final style = switch (_s(source, 'style', 'body')) {
-      'display' => Aurora.display,
-      'h2' => Aurora.h2,
-      'title' => Aurora.title,
-      'body2' => Aurora.body2,
-      'label' => Aurora.label,
-      'overline' => Aurora.overline,
-      _ => Aurora.body,
+      'display' => Matcha.display,
+      'h2' => Matcha.h2,
+      'title' => Matcha.title,
+      'body2' => Matcha.body2,
+      'label' => Matcha.label,
+      'overline' => Matcha.overline,
+      _ => Matcha.body,
     };
     return Text(_s(source, 'text'), style: style);
   },
@@ -95,7 +95,7 @@ final Map<String, LocalWidgetBuilder> _widgets = {
         Icon(
           _icons[_s(source, 'name', 'sparkle')] ?? Icons.circle_outlined,
           size: _d(source, 'size', 22),
-          color: Aurora.textSecondary,
+          color: Matcha.textSecondary,
         ),
         source.handler(['onTap'], (VoidCallback t) => t),
       ),
@@ -106,19 +106,19 @@ final Map<String, LocalWidgetBuilder> _widgets = {
     final label = _s(source, 'label', 'Button');
     final onTap = source.handler(['onPressed'], (VoidCallback t) => t);
     final child = Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Aurora.s5, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: Matcha.s5, vertical: 12),
       child: Text(label,
           style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w600,
-              color: variant == 'contained' ? Aurora.onPrimary : Aurora.primaryLight)),
+              color: variant == 'contained' ? Matcha.onPrimary : Matcha.primaryLight)),
     );
     final deco = switch (variant) {
       'outlined' => BoxDecoration(
-          borderRadius: BorderRadius.circular(Aurora.rFull),
-          border: Border.all(color: Aurora.primary, width: 1.5)),
+          borderRadius: BorderRadius.circular(Matcha.rFull),
+          border: Border.all(color: Matcha.primary, width: 1.5)),
       'text' => const BoxDecoration(),
-      _ => BoxDecoration(color: Aurora.primary, borderRadius: BorderRadius.circular(Aurora.rFull)),
+      _ => BoxDecoration(color: Matcha.primary, borderRadius: BorderRadius.circular(Matcha.rFull)),
     };
     return GestureDetector(
       onTap: onTap,
@@ -133,18 +133,18 @@ final Map<String, LocalWidgetBuilder> _widgets = {
       onTap: onTap,
       child: Container(
         height: 32,
-        padding: const EdgeInsets.symmetric(horizontal: Aurora.s3),
+        padding: const EdgeInsets.symmetric(horizontal: Matcha.s3),
         decoration: BoxDecoration(
-          color: selected ? Aurora.accentTint : Aurora.paper2,
-          borderRadius: BorderRadius.circular(Aurora.rFull),
-          border: Border.all(color: selected ? Aurora.primary : Aurora.outline),
+          color: selected ? Matcha.accentTint : Matcha.paper2,
+          borderRadius: BorderRadius.circular(Matcha.rFull),
+          border: Border.all(color: selected ? Matcha.primary : Matcha.outline),
         ),
         alignment: Alignment.center,
         child: Text(_s(source, 'label'),
             style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: selected ? Aurora.primaryLight : Aurora.textSecondary)),
+                color: selected ? Matcha.primaryLight : Matcha.textSecondary)),
       ),
     );
   },
@@ -153,17 +153,17 @@ final Map<String, LocalWidgetBuilder> _widgets = {
     final onTap = source.handler(['onTap'], (VoidCallback t) => t);
     return _tappable(Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       if (_s(source, 'label').isNotEmpty)
-        Padding(padding: const EdgeInsets.only(bottom: 6), child: Text(_s(source, 'label'), style: Aurora.label)),
+        Padding(padding: const EdgeInsets.only(bottom: 6), child: Text(_s(source, 'label'), style: Matcha.label)),
       Container(
         height: 50,
-        padding: const EdgeInsets.symmetric(horizontal: Aurora.s3),
+        padding: const EdgeInsets.symmetric(horizontal: Matcha.s3),
         alignment: Alignment.centerLeft,
         decoration: BoxDecoration(
-          color: Aurora.paper,
-          borderRadius: BorderRadius.circular(Aurora.rSm),
-          border: Border.all(color: Aurora.outline, width: 1.5),
+          color: Matcha.paper,
+          borderRadius: BorderRadius.circular(Matcha.rSm),
+          border: Border.all(color: Matcha.outline, width: 1.5),
         ),
-        child: Text(_s(source, 'placeholder'), style: const TextStyle(color: Aurora.textDisabled, fontSize: 15)),
+        child: Text(_s(source, 'placeholder'), style: const TextStyle(color: Matcha.textDisabled, fontSize: 15)),
       ),
     ]), onTap);
   },
@@ -171,11 +171,11 @@ final Map<String, LocalWidgetBuilder> _widgets = {
   // ---- surfaces ----
   'Card': (context, source) => _tappable(
         Container(
-          padding: const EdgeInsets.all(Aurora.s4),
+          padding: const EdgeInsets.all(Matcha.s4),
           decoration: BoxDecoration(
-            color: Aurora.paper,
-            borderRadius: BorderRadius.circular(Aurora.rLg),
-            border: Border.all(color: Aurora.divider),
+            color: Matcha.paper,
+            borderRadius: BorderRadius.circular(Matcha.rLg),
+            border: Border.all(color: Matcha.divider),
           ),
           child: source.child(['child']),
         ),
@@ -191,32 +191,32 @@ final Map<String, LocalWidgetBuilder> _widgets = {
     final onAction = source.handler(['onAction'], (VoidCallback t) => t);
     final back = onBack == null
         ? null
-        : _tappable(const Padding(padding: EdgeInsets.all(4), child: Icon(Icons.arrow_back, color: Aurora.textSecondary)), onBack);
+        : _tappable(const Padding(padding: EdgeInsets.all(4), child: Icon(Icons.arrow_back, color: Matcha.textSecondary)), onBack);
     final action = actionIcon.isEmpty
         ? null
-        : _tappable(Padding(padding: const EdgeInsets.all(4), child: Icon(_icons[actionIcon] ?? Icons.more_vert, color: Aurora.textSecondary)), onAction);
+        : _tappable(Padding(padding: const EdgeInsets.all(4), child: Icon(_icons[actionIcon] ?? Icons.more_vert, color: Matcha.textSecondary)), onAction);
     if (large) {
       return Padding(
-        padding: const EdgeInsets.fromLTRB(Aurora.s4, Aurora.s5, Aurora.s4, Aurora.s3),
+        padding: const EdgeInsets.fromLTRB(Matcha.s4, Matcha.s5, Matcha.s4, Matcha.s3),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           if (back != null || action != null)
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Row(children: [if (back != null) back, const Spacer(), if (action != null) action]),
             ),
-          if (overline.isNotEmpty) Text(overline, style: Aurora.overline),
+          if (overline.isNotEmpty) Text(overline, style: Matcha.overline),
           const SizedBox(height: 8),
-          Text(title, style: Aurora.display),
+          Text(title, style: Matcha.display),
         ]),
       );
     }
     return SizedBox(
       height: 56,
       child: Row(children: [
-        const SizedBox(width: Aurora.s2),
+        const SizedBox(width: Matcha.s2),
         if (back != null) Padding(padding: const EdgeInsets.only(right: 8), child: back),
-        Expanded(child: Text(title, style: Aurora.title)),
-        if (action != null) Padding(padding: const EdgeInsets.only(right: Aurora.s3), child: action),
+        Expanded(child: Text(title, style: Matcha.title)),
+        if (action != null) Padding(padding: const EdgeInsets.only(right: Matcha.s3), child: action),
       ]),
     );
   },
@@ -234,8 +234,8 @@ final Map<String, LocalWidgetBuilder> _widgets = {
       child: Container(
         width: 56,
         height: 56,
-        decoration: BoxDecoration(color: Aurora.primary, borderRadius: BorderRadius.circular(Aurora.rLg)),
-        child: const Icon(Icons.add, color: Aurora.onPrimary),
+        decoration: BoxDecoration(color: Matcha.primary, borderRadius: BorderRadius.circular(Matcha.rLg)),
+        child: const Icon(Icons.add, color: Matcha.onPrimary),
       ),
     );
   },
@@ -245,13 +245,13 @@ final Map<String, LocalWidgetBuilder> _widgets = {
     return GestureDetector(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: Aurora.s3, horizontal: Aurora.s2),
+        padding: const EdgeInsets.symmetric(vertical: Matcha.s3, horizontal: Matcha.s2),
         child: Row(children: [
           Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(_s(source, 'title'), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Aurora.textPrimary)),
+              Text(_s(source, 'title'), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Matcha.textPrimary)),
               if (_s(source, 'subtitle').isNotEmpty)
-                Padding(padding: const EdgeInsets.only(top: 2), child: Text(_s(source, 'subtitle'), style: Aurora.body2)),
+                Padding(padding: const EdgeInsets.only(top: 2), child: Text(_s(source, 'subtitle'), style: Matcha.body2)),
             ]),
           ),
           if (source.v<String>(['status']) != null) _statusBadge(_s(source, 'status'), _s(source, 'status')),
@@ -260,19 +260,19 @@ final Map<String, LocalWidgetBuilder> _widgets = {
     );
   },
 
-  'Rule': (context, source) => Container(height: 1, color: Aurora.divider),
+  'Rule': (context, source) => Container(height: 1, color: Matcha.divider),
 
   // ---- signature: PARA / status ----
   'CatTag': (context, source) {
     final label = _s(source, 'label', 'Category');
     final archive = _b(source, 'archive');
-    final c = archive ? Aurora.catArchive : Aurora.catNeutral;
+    final c = archive ? Matcha.catArchive : Matcha.catNeutral;
     return _tappable(Container(
       height: 26,
       padding: const EdgeInsets.symmetric(horizontal: 11),
       decoration: BoxDecoration(
         color: c.withValues(alpha: 0.14),
-        borderRadius: BorderRadius.circular(Aurora.rFull),
+        borderRadius: BorderRadius.circular(Matcha.rFull),
         border: Border.all(color: c.withValues(alpha: 0.40)),
       ),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
@@ -291,11 +291,11 @@ final Map<String, LocalWidgetBuilder> _widgets = {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-      padding: const EdgeInsets.all(Aurora.s4),
+      padding: const EdgeInsets.all(Matcha.s4),
       decoration: BoxDecoration(
-        color: Aurora.paper,
-        borderRadius: BorderRadius.circular(Aurora.rLg),
-        border: Border.all(color: Aurora.divider),
+        color: Matcha.paper,
+        borderRadius: BorderRadius.circular(Matcha.rLg),
+        border: Border.all(color: Matcha.divider),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -303,13 +303,13 @@ final Map<String, LocalWidgetBuilder> _widgets = {
           _statusBadge(_s(source, 'status', 'actionable'), _s(source, 'status', 'actionable')),
         ]),
         const SizedBox(height: 10),
-        Text(_s(source, 'title'), style: Aurora.title),
+        Text(_s(source, 'title'), style: Matcha.title),
         if (_s(source, 'subtitle').isNotEmpty)
-          Padding(padding: const EdgeInsets.only(top: 4), child: Text(_s(source, 'subtitle'), style: Aurora.body2)),
+          Padding(padding: const EdgeInsets.only(top: 4), child: Text(_s(source, 'subtitle'), style: Matcha.body2)),
         const SizedBox(height: 12),
         ClipRRect(
-          borderRadius: BorderRadius.circular(Aurora.rFull),
-          child: LinearProgressIndicator(value: progress, minHeight: 6, backgroundColor: Aurora.paper3, color: Aurora.primary),
+          borderRadius: BorderRadius.circular(Matcha.rFull),
+          child: LinearProgressIndicator(value: progress, minHeight: 6, backgroundColor: Matcha.paper3, color: Matcha.primary),
         ),
       ]),
       ),
@@ -320,9 +320,9 @@ final Map<String, LocalWidgetBuilder> _widgets = {
 
   'StatusRow': (context, source) => _tappable(
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 11, horizontal: Aurora.s3),
+          padding: const EdgeInsets.symmetric(vertical: 11, horizontal: Matcha.s3),
           child: Row(children: [
-            Expanded(child: Text(_s(source, 'item'), style: const TextStyle(fontSize: 14, color: Aurora.textPrimary))),
+            Expanded(child: Text(_s(source, 'item'), style: const TextStyle(fontSize: 14, color: Matcha.textPrimary))),
             _statusBadge(_s(source, 'status', 'blocked'), _s(source, 'status', 'blocked')),
           ]),
         ),
@@ -331,31 +331,31 @@ final Map<String, LocalWidgetBuilder> _widgets = {
 
   // ---- signature hero: dependency graph (nodes; edges as simple guides) ----
   'DependencyGraph': (context, source) => Container(
-        padding: const EdgeInsets.all(Aurora.s5),
+        padding: const EdgeInsets.all(Matcha.s5),
         decoration: BoxDecoration(
-          color: Aurora.paper,
-          borderRadius: BorderRadius.circular(Aurora.rLg),
-          border: Border.all(color: Aurora.divider),
+          color: Matcha.paper,
+          borderRadius: BorderRadius.circular(Matcha.rLg),
+          border: Border.all(color: Matcha.divider),
         ),
         child: Wrap(spacing: 14, runSpacing: 14, children: source.childList(['nodes'])),
       ),
 
   'DepNode': (context, source) {
-    final c = Aurora.status(_s(source, 'status', 'blocked'));
+    final c = Matcha.status(_s(source, 'status', 'blocked'));
     final onTap = source.handler(['onTap'], (VoidCallback t) => t);
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
         decoration: BoxDecoration(
-          color: Aurora.paper2,
-          borderRadius: BorderRadius.circular(Aurora.rFull),
+          color: Matcha.paper2,
+          borderRadius: BorderRadius.circular(Matcha.rFull),
           border: Border.all(color: c.withValues(alpha: 0.5), width: 1.5),
         ),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
           Container(width: 8, height: 8, decoration: BoxDecoration(color: c, shape: BoxShape.circle)),
           const SizedBox(width: 8),
-          Text(_s(source, 'label'), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Aurora.textPrimary)),
+          Text(_s(source, 'label'), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Matcha.textPrimary)),
         ]),
       ),
     );
@@ -363,7 +363,7 @@ final Map<String, LocalWidgetBuilder> _widgets = {
 
   // ======== expanded pool: common components ========
   'Tabs': (context, source) => Container(
-        decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: Aurora.divider))),
+        decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: Matcha.divider))),
         child: Row(children: source.childList(['children'])),
       ),
   'Tab': (context, source) {
@@ -374,9 +374,9 @@ final Map<String, LocalWidgetBuilder> _widgets = {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
         margin: const EdgeInsets.only(right: 8),
-        decoration: BoxDecoration(border: Border(bottom: BorderSide(color: sel ? Aurora.primary : Colors.transparent, width: 2))),
+        decoration: BoxDecoration(border: Border(bottom: BorderSide(color: sel ? Matcha.primary : Colors.transparent, width: 2))),
         child: Text(_s(source, 'label'),
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: sel ? Aurora.primaryLight : Aurora.textSecondary)),
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: sel ? Matcha.primaryLight : Matcha.textSecondary)),
       ),
     );
   },
@@ -389,23 +389,23 @@ final Map<String, LocalWidgetBuilder> _widgets = {
           width: 40,
           height: 40,
           alignment: Alignment.center,
-          decoration: const BoxDecoration(color: Aurora.accentTint, shape: BoxShape.circle),
-          child: Text(_s(source, 'initials', '•'), style: const TextStyle(color: Aurora.primaryLight, fontWeight: FontWeight.w600, fontSize: 14)),
+          decoration: const BoxDecoration(color: Matcha.accentTint, shape: BoxShape.circle),
+          child: Text(_s(source, 'initials', '•'), style: const TextStyle(color: Matcha.primaryLight, fontWeight: FontWeight.w600, fontSize: 14)),
         ),
         source.handler(['onTap'], (VoidCallback t) => t),
       ),
   'Alert': (context, source) {
     final c = switch (_s(source, 'severity', 'info')) {
-      'success' => Aurora.stDone,
-      'warning' => Aurora.stWarning,
-      'error' => Aurora.stBlocker,
-      _ => Aurora.primary,
+      'success' => Matcha.stDone,
+      'warning' => Matcha.stWarning,
+      'error' => Matcha.stBlocker,
+      _ => Matcha.primary,
     };
     return _tappable(
       Container(
-        padding: const EdgeInsets.symmetric(horizontal: Aurora.s4, vertical: Aurora.s3),
-        decoration: BoxDecoration(color: Aurora.paper2, borderRadius: BorderRadius.circular(Aurora.rSm), border: Border(left: BorderSide(color: c, width: 3))),
-        child: Text(_s(source, 'text'), style: Aurora.body),
+        padding: const EdgeInsets.symmetric(horizontal: Matcha.s4, vertical: Matcha.s3),
+        decoration: BoxDecoration(color: Matcha.paper2, borderRadius: BorderRadius.circular(Matcha.rSm), border: Border(left: BorderSide(color: c, width: 3))),
+        child: Text(_s(source, 'text'), style: Matcha.body),
       ),
       source.handler(['onTap'], (VoidCallback t) => t),
     );
@@ -418,7 +418,7 @@ final Map<String, LocalWidgetBuilder> _widgets = {
       ),
   'Step': (context, source) {
     final st = _s(source, 'state', 'upcoming');
-    final c = switch (st) { 'done' => Aurora.stDone, 'active' => Aurora.primary, _ => Aurora.paper3 };
+    final c = switch (st) { 'done' => Matcha.stDone, 'active' => Matcha.primary, _ => Matcha.paper3 };
     return _tappable(Padding(
       padding: const EdgeInsets.only(right: 10),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
@@ -428,32 +428,32 @@ final Map<String, LocalWidgetBuilder> _widgets = {
           alignment: Alignment.center,
           decoration: BoxDecoration(color: c, shape: BoxShape.circle),
           child: st == 'done'
-              ? const Icon(Icons.check, size: 14, color: Aurora.onPrimary)
-              : Text(_s(source, 'n', '•'), style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: st == 'active' ? Aurora.onPrimary : Aurora.textSecondary)),
+              ? const Icon(Icons.check, size: 14, color: Matcha.onPrimary)
+              : Text(_s(source, 'n', '•'), style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: st == 'active' ? Matcha.onPrimary : Matcha.textSecondary)),
         ),
         const SizedBox(width: 6),
-        Text(_s(source, 'label'), style: const TextStyle(fontSize: 13, color: Aurora.textSecondary, fontWeight: FontWeight.w600)),
+        Text(_s(source, 'label'), style: const TextStyle(fontSize: 13, color: Matcha.textSecondary, fontWeight: FontWeight.w600)),
       ]),
     ), source.handler(['onTap'], (VoidCallback t) => t));
   },
   'Sheet': (context, source) => Container(
-        padding: const EdgeInsets.fromLTRB(Aurora.s4, Aurora.s3, Aurora.s4, Aurora.s5),
-        decoration: const BoxDecoration(color: Aurora.paper2, borderRadius: BorderRadius.vertical(top: Radius.circular(Aurora.rXl))),
+        padding: const EdgeInsets.fromLTRB(Matcha.s4, Matcha.s3, Matcha.s4, Matcha.s5),
+        decoration: const BoxDecoration(color: Matcha.paper2, borderRadius: BorderRadius.vertical(top: Radius.circular(Matcha.rXl))),
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, mainAxisSize: MainAxisSize.min, children: [
-          Center(child: Container(width: 40, height: 5, margin: const EdgeInsets.only(bottom: 14), decoration: BoxDecoration(color: Aurora.outline, borderRadius: BorderRadius.circular(3)))),
+          Center(child: Container(width: 40, height: 5, margin: const EdgeInsets.only(bottom: 14), decoration: BoxDecoration(color: Matcha.outline, borderRadius: BorderRadius.circular(3)))),
           source.child(['child']),
         ]),
       ),
   'Menu': (context, source) => Container(
         padding: const EdgeInsets.all(6),
-        decoration: BoxDecoration(color: Aurora.paper2, borderRadius: BorderRadius.circular(Aurora.rSm), border: Border.all(color: Aurora.outline)),
+        decoration: BoxDecoration(color: Matcha.paper2, borderRadius: BorderRadius.circular(Matcha.rSm), border: Border.all(color: Matcha.outline)),
         child: Column(mainAxisSize: MainAxisSize.min, children: source.childList(['children'])),
       ),
   'MenuItem': (context, source) {
     final onTap = source.handler(['onTap'], (VoidCallback t) => t);
     return GestureDetector(
       onTap: onTap,
-      child: Container(width: double.infinity, padding: const EdgeInsets.symmetric(horizontal: Aurora.s3, vertical: 10), child: Text(_s(source, 'label'), style: Aurora.body)),
+      child: Container(width: double.infinity, padding: const EdgeInsets.symmetric(horizontal: Matcha.s3, vertical: 10), child: Text(_s(source, 'label'), style: Matcha.body)),
     );
   },
   'Slider': (context, source) {
@@ -462,9 +462,9 @@ final Map<String, LocalWidgetBuilder> _widgets = {
       height: 24,
       child: LayoutBuilder(
         builder: (c, bc) => Stack(alignment: Alignment.centerLeft, children: [
-          Container(height: 6, decoration: BoxDecoration(color: Aurora.paper3, borderRadius: BorderRadius.circular(Aurora.rFull))),
-          Container(height: 6, width: bc.maxWidth * v, decoration: BoxDecoration(color: Aurora.primary, borderRadius: BorderRadius.circular(Aurora.rFull))),
-          Positioned(left: (bc.maxWidth - 18) * v, child: Container(width: 18, height: 18, decoration: const BoxDecoration(color: Aurora.primaryLight, shape: BoxShape.circle))),
+          Container(height: 6, decoration: BoxDecoration(color: Matcha.paper3, borderRadius: BorderRadius.circular(Matcha.rFull))),
+          Container(height: 6, width: bc.maxWidth * v, decoration: BoxDecoration(color: Matcha.primary, borderRadius: BorderRadius.circular(Matcha.rFull))),
+          Positioned(left: (bc.maxWidth - 18) * v, child: Container(width: 18, height: 18, decoration: const BoxDecoration(color: Matcha.primaryLight, shape: BoxShape.circle))),
         ]),
       ),
     ), source.handler(['onTap'], (VoidCallback t) => t));
@@ -472,16 +472,16 @@ final Map<String, LocalWidgetBuilder> _widgets = {
   'HabitHeatmap': (context, source) => Column(crossAxisAlignment: CrossAxisAlignment.start, children: source.childList(['rows'])),
   'HeatRow': (context, source) {
     final days = _s(source, 'days').split(',').where((x) => x.isNotEmpty);
-    Color cell(String s) => switch (s.trim()) { 'd' || 't' => Aurora.stDone, 'm' => const Color(0x66CF7A66), _ => Aurora.paper3 };
+    Color cell(String s) => switch (s.trim()) { 'd' || 't' => Matcha.stDone, 'm' => const Color(0x66CF7A66), _ => Matcha.paper3 };
     return _tappable(Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(children: [
-        SizedBox(width: 96, child: Text(_s(source, 'label'), style: Aurora.body2)),
+        SizedBox(width: 96, child: Text(_s(source, 'label'), style: Matcha.body2)),
         ...days.map((s) => Container(
               width: 16,
               height: 16,
               margin: const EdgeInsets.only(right: 4),
-              decoration: BoxDecoration(color: cell(s), borderRadius: BorderRadius.circular(5), border: s.trim() == 't' ? Border.all(color: Aurora.primary, width: 2) : null),
+              decoration: BoxDecoration(color: cell(s), borderRadius: BorderRadius.circular(5), border: s.trim() == 't' ? Border.all(color: Matcha.primary, width: 2) : null),
             )),
       ]),
     ), source.handler(['onTap'], (VoidCallback t) => t));
@@ -497,9 +497,9 @@ final Map<String, LocalWidgetBuilder> _widgets = {
         width: size,
         height: size,
         child: Stack(fit: StackFit.expand, children: [
-          const CircularProgressIndicator(value: 1, strokeWidth: 6, color: Aurora.paper3),
-          CircularProgressIndicator(value: v, strokeWidth: 6, color: Aurora.primary, strokeCap: StrokeCap.round),
-          Center(child: Text(label, style: TextStyle(fontSize: size * 0.2, fontWeight: FontWeight.w700, color: Aurora.textPrimary))),
+          const CircularProgressIndicator(value: 1, strokeWidth: 6, color: Matcha.paper3),
+          CircularProgressIndicator(value: v, strokeWidth: 6, color: Matcha.primary, strokeCap: StrokeCap.round),
+          Center(child: Text(label, style: TextStyle(fontSize: size * 0.2, fontWeight: FontWeight.w700, color: Matcha.textPrimary))),
         ]),
       ),
       source.handler(['onTap'], (VoidCallback t) => t),
@@ -510,16 +510,16 @@ final Map<String, LocalWidgetBuilder> _widgets = {
     final up = !delta.startsWith('-');
     return _tappable(
       Container(
-        padding: const EdgeInsets.all(Aurora.s4),
-        decoration: BoxDecoration(color: Aurora.paper, borderRadius: BorderRadius.circular(Aurora.rLg), border: Border.all(color: Aurora.divider)),
+        padding: const EdgeInsets.all(Matcha.s4),
+        decoration: BoxDecoration(color: Matcha.paper, borderRadius: BorderRadius.circular(Matcha.rLg), border: Border.all(color: Matcha.divider)),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(_s(source, 'label'), style: Aurora.label),
+          Text(_s(source, 'label'), style: Matcha.label),
           const SizedBox(height: 6),
-          Text(_s(source, 'value'), style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w700, color: Aurora.textPrimary)),
+          Text(_s(source, 'value'), style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w700, color: Matcha.textPrimary)),
           if (delta.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(top: 4),
-              child: Text(delta, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: up ? Aurora.stDone : Aurora.stBlocker)),
+              child: Text(delta, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: up ? Matcha.stDone : Matcha.stBlocker)),
             ),
         ]),
       ),
@@ -529,12 +529,12 @@ final Map<String, LocalWidgetBuilder> _widgets = {
   'SearchBar': (context, source) => _tappable(
         Container(
           height: 44,
-          padding: const EdgeInsets.symmetric(horizontal: Aurora.s3),
-          decoration: BoxDecoration(color: Aurora.paper2, borderRadius: BorderRadius.circular(Aurora.rFull), border: Border.all(color: Aurora.outline)),
+          padding: const EdgeInsets.symmetric(horizontal: Matcha.s3),
+          decoration: BoxDecoration(color: Matcha.paper2, borderRadius: BorderRadius.circular(Matcha.rFull), border: Border.all(color: Matcha.outline)),
           child: Row(children: [
-            const Icon(Icons.search, size: 18, color: Aurora.textDisabled),
+            const Icon(Icons.search, size: 18, color: Matcha.textDisabled),
             const SizedBox(width: 8),
-            Text(_s(source, 'placeholder', 'Search'), style: const TextStyle(color: Aurora.textDisabled, fontSize: 14)),
+            Text(_s(source, 'placeholder', 'Search'), style: const TextStyle(color: Matcha.textDisabled, fontSize: 14)),
           ]),
         ),
         source.handler(['onTap'], (VoidCallback t) => t),
@@ -542,10 +542,10 @@ final Map<String, LocalWidgetBuilder> _widgets = {
   'SectionHeader': (context, source) {
     final action = _s(source, 'action');
     return Row(children: [
-      Expanded(child: Text(_s(source, 'title').toUpperCase(), style: Aurora.overline)),
+      Expanded(child: Text(_s(source, 'title').toUpperCase(), style: Matcha.overline)),
       if (action.isNotEmpty)
         _tappable(
-          Text(action, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Aurora.primaryLight)),
+          Text(action, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Matcha.primaryLight)),
           source.handler(['onAction'], (VoidCallback t) => t),
         ),
     ]);
@@ -553,20 +553,20 @@ final Map<String, LocalWidgetBuilder> _widgets = {
   'EmptyState': (context, source) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 32),
         child: Column(children: [
-          Icon(_icons[_s(source, 'icon', 'inbox')] ?? Icons.inbox_outlined, size: 40, color: Aurora.textDisabled),
+          Icon(_icons[_s(source, 'icon', 'inbox')] ?? Icons.inbox_outlined, size: 40, color: Matcha.textDisabled),
           const SizedBox(height: 10),
-          Text(_s(source, 'text', 'Nothing here yet'), style: Aurora.body2, textAlign: TextAlign.center),
+          Text(_s(source, 'text', 'Nothing here yet'), style: Matcha.body2, textAlign: TextAlign.center),
         ]),
       ),
   'Timeline': (context, source) => Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: source.childList(['children'])),
   'TimeItem': (context, source) {
-    final c = Aurora.status(_s(source, 'status', 'foundation'));
+    final c = Matcha.status(_s(source, 'status', 'foundation'));
     return _tappable(
       IntrinsicHeight(
         child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Column(children: [
             Container(width: 10, height: 10, margin: const EdgeInsets.only(top: 4), decoration: BoxDecoration(color: c, shape: BoxShape.circle)),
-            Expanded(child: Container(width: 2, color: Aurora.divider)),
+            Expanded(child: Container(width: 2, color: Matcha.divider)),
           ]),
           const SizedBox(width: 12),
           Expanded(
@@ -574,11 +574,11 @@ final Map<String, LocalWidgetBuilder> _widgets = {
               padding: const EdgeInsets.only(bottom: 18),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Row(children: [
-                  Expanded(child: Text(_s(source, 'title'), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Aurora.textPrimary))),
-                  if (_s(source, 'time').isNotEmpty) Text(_s(source, 'time'), style: const TextStyle(fontSize: 11, color: Aurora.textDisabled)),
+                  Expanded(child: Text(_s(source, 'title'), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Matcha.textPrimary))),
+                  if (_s(source, 'time').isNotEmpty) Text(_s(source, 'time'), style: const TextStyle(fontSize: 11, color: Matcha.textDisabled)),
                 ]),
                 if (_s(source, 'subtitle').isNotEmpty)
-                  Padding(padding: const EdgeInsets.only(top: 2), child: Text(_s(source, 'subtitle'), style: Aurora.body2)),
+                  Padding(padding: const EdgeInsets.only(top: 2), child: Text(_s(source, 'subtitle'), style: Matcha.body2)),
               ]),
             ),
           ),
@@ -602,10 +602,10 @@ final Map<String, LocalWidgetBuilder> _widgets = {
               child: Column(mainAxisAlignment: MainAxisAlignment.end, children: [
                 Container(
                   height: maxV <= 0 ? 0 : (vals[i] / maxV) * h,
-                  decoration: BoxDecoration(color: Aurora.primary.withValues(alpha: 0.85), borderRadius: const BorderRadius.vertical(top: Radius.circular(4))),
+                  decoration: BoxDecoration(color: Matcha.primary.withValues(alpha: 0.85), borderRadius: const BorderRadius.vertical(top: Radius.circular(4))),
                 ),
                 const SizedBox(height: 4),
-                Text(i < labels.length ? labels[i] : '', style: const TextStyle(fontSize: 10, color: Aurora.textSecondary)),
+                Text(i < labels.length ? labels[i] : '', style: const TextStyle(fontSize: 10, color: Matcha.textSecondary)),
               ]),
             ),
           ),
@@ -620,8 +620,8 @@ final Map<String, LocalWidgetBuilder> _widgets = {
   'KeyValue': (context, source) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 7),
         child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          SizedBox(width: 120, child: Text(_s(source, 'label'), style: Aurora.body2)),
-          Expanded(child: Text(_s(source, 'value'), style: const TextStyle(fontSize: 14, color: Aurora.textPrimary))),
+          SizedBox(width: 120, child: Text(_s(source, 'label'), style: Matcha.body2)),
+          Expanded(child: Text(_s(source, 'value'), style: const TextStyle(fontSize: 14, color: Matcha.textPrimary))),
         ]),
       ),
   'MoodPicker': (context, source) => Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: source.childList(['options'])),
@@ -633,22 +633,22 @@ final Map<String, LocalWidgetBuilder> _widgets = {
       ),
   'Banner': (context, source) => _tappable(
         Container(
-          padding: const EdgeInsets.all(Aurora.s5),
+          padding: const EdgeInsets.all(Matcha.s5),
           decoration: BoxDecoration(
-            gradient: const LinearGradient(colors: [Aurora.bannerA, Aurora.bannerB], begin: Alignment.topLeft, end: Alignment.bottomRight),
-            borderRadius: BorderRadius.circular(Aurora.rXl),
-            border: Border.all(color: Aurora.outline),
+            gradient: const LinearGradient(colors: [Matcha.bannerA, Matcha.bannerB], begin: Alignment.topLeft, end: Alignment.bottomRight),
+            borderRadius: BorderRadius.circular(Matcha.rXl),
+            border: Border.all(color: Matcha.outline),
           ),
           child: Row(children: [
             Expanded(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(_s(source, 'title'), style: Aurora.title),
+                Text(_s(source, 'title'), style: Matcha.title),
                 if (_s(source, 'subtitle').isNotEmpty)
-                  Padding(padding: const EdgeInsets.only(top: 6), child: Text(_s(source, 'subtitle'), style: Aurora.body2)),
+                  Padding(padding: const EdgeInsets.only(top: 6), child: Text(_s(source, 'subtitle'), style: Matcha.body2)),
               ]),
             ),
             if (_s(source, 'icon').isNotEmpty)
-              Icon(_icons[_s(source, 'icon')] ?? Icons.auto_awesome_outlined, size: 32, color: Aurora.primaryLight),
+              Icon(_icons[_s(source, 'icon')] ?? Icons.auto_awesome_outlined, size: 32, color: Matcha.primaryLight),
           ]),
         ),
         source.handler(['onTap'], (VoidCallback t) => t),
@@ -657,11 +657,11 @@ final Map<String, LocalWidgetBuilder> _widgets = {
 
 // ---- shared builders reused across components ----
 Widget _statusBadge(String status, String label) {
-  final c = Aurora.status(status);
+  final c = Matcha.status(status);
   return Container(
     height: 24,
     padding: const EdgeInsets.symmetric(horizontal: 10),
-    decoration: BoxDecoration(color: c.withValues(alpha: 0.16), borderRadius: BorderRadius.circular(Aurora.rFull)),
+    decoration: BoxDecoration(color: c.withValues(alpha: 0.16), borderRadius: BorderRadius.circular(Matcha.rFull)),
     child: Row(mainAxisSize: MainAxisSize.min, children: [
       Container(width: 7, height: 7, decoration: BoxDecoration(color: c, shape: BoxShape.circle)),
       const SizedBox(width: 6),
@@ -700,11 +700,11 @@ class _LocalCheckItemState extends State<_LocalCheckItem> {
             height: 22,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: checked ? Aurora.primary : Colors.transparent,
+              color: checked ? Matcha.primary : Colors.transparent,
               borderRadius: BorderRadius.circular(7),
-              border: Border.all(color: checked ? Aurora.primary : Aurora.outline, width: 1.5),
+              border: Border.all(color: checked ? Matcha.primary : Matcha.outline, width: 1.5),
             ),
-            child: checked ? const Icon(Icons.check, size: 15, color: Aurora.onPrimary) : null,
+            child: checked ? const Icon(Icons.check, size: 15, color: Matcha.onPrimary) : null,
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -712,7 +712,7 @@ class _LocalCheckItemState extends State<_LocalCheckItem> {
               widget.label,
               style: TextStyle(
                 fontSize: 14,
-                color: checked ? Aurora.textSecondary : Aurora.textPrimary,
+                color: checked ? Matcha.textSecondary : Matcha.textPrimary,
                 decoration: checked ? TextDecoration.lineThrough : null,
               ),
             ),
@@ -748,11 +748,11 @@ class _LocalSwitchState extends State<_LocalSwitch> {
         padding: const EdgeInsets.all(3),
         alignment: on ? Alignment.centerRight : Alignment.centerLeft,
         decoration: BoxDecoration(
-          color: on ? Aurora.primaryDark : Aurora.paper3,
-          borderRadius: BorderRadius.circular(Aurora.rFull),
-          border: Border.all(color: on ? Aurora.primary : Aurora.outline),
+          color: on ? Matcha.primaryDark : Matcha.paper3,
+          borderRadius: BorderRadius.circular(Matcha.rFull),
+          border: Border.all(color: on ? Matcha.primary : Matcha.outline),
         ),
-        child: Container(width: 18, height: 18, decoration: BoxDecoration(color: on ? Aurora.primaryLight : Aurora.textSecondary, shape: BoxShape.circle)),
+        child: Container(width: 18, height: 18, decoration: BoxDecoration(color: on ? Matcha.primaryLight : Matcha.textSecondary, shape: BoxShape.circle)),
       ),
     );
   }
@@ -783,26 +783,26 @@ class _LocalMoodOptionState extends State<_LocalMoodOption> {
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: sel ? Aurora.accentTint : Colors.transparent,
-            border: Border.all(color: sel ? Aurora.primary : Colors.transparent, width: 1.5),
+            color: sel ? Matcha.accentTint : Colors.transparent,
+            border: Border.all(color: sel ? Matcha.primary : Colors.transparent, width: 1.5),
           ),
           child: Text(widget.emoji, style: const TextStyle(fontSize: 26)),
         ),
         if (widget.label.isNotEmpty)
-          Padding(padding: const EdgeInsets.only(top: 4), child: Text(widget.label, style: const TextStyle(fontSize: 11, color: Aurora.textSecondary))),
+          Padding(padding: const EdgeInsets.only(top: 4), child: Text(widget.label, style: const TextStyle(fontSize: 11, color: Matcha.textSecondary))),
       ]),
     );
   }
 }
 
 Widget _catTag(String label, bool archive) {
-  final c = archive ? Aurora.catArchive : Aurora.catNeutral;
+  final c = archive ? Matcha.catArchive : Matcha.catNeutral;
   return Container(
     height: 26,
     padding: const EdgeInsets.symmetric(horizontal: 11),
     decoration: BoxDecoration(
       color: c.withValues(alpha: 0.14),
-      borderRadius: BorderRadius.circular(Aurora.rFull),
+      borderRadius: BorderRadius.circular(Matcha.rFull),
       border: Border.all(color: c.withValues(alpha: 0.40)),
     ),
     child: Row(mainAxisSize: MainAxisSize.min, children: [

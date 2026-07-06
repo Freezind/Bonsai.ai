@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../ds/aurora_tokens.dart';
+import '../ds/matcha_tokens.dart';
 import '../onboarding/ui/widgets/mascot.dart';
 import '../state/app_prefs.dart';
 
@@ -18,7 +18,7 @@ class ResourcesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AuroraBackground(
+    return MatchaBackground(
       child: ValueListenableBuilder<List<String>>(
         valueListenable: AppPrefs.instance.connectedResources,
         builder: (context, connected, _) {
@@ -29,29 +29,29 @@ class ResourcesPage extends StatelessWidget {
               else
                 ListView(
                   padding: const EdgeInsets.fromLTRB(
-                      Aurora.s4, Aurora.s4, Aurora.s4, 96),
+                      Matcha.s4, Matcha.s4, Matcha.s4, 96),
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(
-                          left: Aurora.s1, bottom: Aurora.s3),
-                      child: Text('CONTEXT INLETS', style: Aurora.overline),
+                          left: Matcha.s1, bottom: Matcha.s3),
+                      child: Text('CONTEXT INLETS', style: Matcha.overline),
                     ),
                     for (final id in connected)
                       if (_Connector.byId(id) != null)
                         _ConnectorCard(
                             connector: _Connector.byId(id)!, live: true),
-                    const SizedBox(height: Aurora.s3),
+                    const SizedBox(height: Matcha.s3),
                     Text(
                       'Tools hold data. Bonsai holds goals — connected '
                       'sources water the goals they belong to.',
                       style:
-                          Aurora.body2.copyWith(color: Aurora.textDisabled),
+                          Matcha.body2.copyWith(color: Matcha.textDisabled),
                     ),
                   ],
                 ),
               Positioned(
-                right: Aurora.s4,
-                bottom: Aurora.s4,
+                right: Matcha.s4,
+                bottom: Matcha.s4,
                 child: _AddResourceFab(
                   onPressed: () => _showConnectSheet(context),
                 ),
@@ -105,19 +105,19 @@ class _EmptyInlets extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: Aurora.s6),
+        padding: const EdgeInsets.symmetric(horizontal: Matcha.s6),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Mascot(mood: MascotMood.thirsty, size: 150),
-            const SizedBox(height: Aurora.s3),
-            Text('Nothing feeds your garden yet', style: Aurora.h2),
-            const SizedBox(height: Aurora.s2),
+            const SizedBox(height: Matcha.s3),
+            Text('Nothing feeds your garden yet', style: Matcha.h2),
+            const SizedBox(height: Matcha.s2),
             const Text(
               'Connect the tools that hold your life — Bonsai reads them '
               'to water your goals with real context.',
               textAlign: TextAlign.center,
-              style: Aurora.body2,
+              style: Matcha.body2,
             ),
           ],
         ),
@@ -137,24 +137,24 @@ class _AddResourceFab extends StatelessWidget {
       onTap: onPressed,
       child: Container(
         height: 52,
-        padding: const EdgeInsets.symmetric(horizontal: Aurora.s5),
+        padding: const EdgeInsets.symmetric(horizontal: Matcha.s5),
         decoration: BoxDecoration(
-          color: Aurora.secondary,
-          border: Border.all(color: Aurora.ink, width: 2),
-          borderRadius: BorderRadius.circular(Aurora.rFull),
-          boxShadow: Aurora.elevPop,
+          color: Matcha.secondary,
+          border: Border.all(color: Matcha.ink, width: 2),
+          borderRadius: BorderRadius.circular(Matcha.rFull),
+          boxShadow: Matcha.elevPop,
         ),
         child: const Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.add, color: Aurora.onSecondary),
+            Icon(Icons.add, color: Matcha.onSecondary),
             SizedBox(width: 6),
             Text('resource',
                 style: TextStyle(
                   fontFamily: 'Baloo 2',
                   fontSize: 16,
                   fontWeight: FontWeight.w800,
-                  color: Aurora.onSecondary,
+                  color: Matcha.onSecondary,
                 )),
           ],
         ),
@@ -203,8 +203,8 @@ class _ConnectSheetState extends State<_ConnectSheet> {
     final connected = AppPrefs.instance.connectedResources.value;
     return Container(
       decoration: const BoxDecoration(
-        color: Aurora.paper,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(Aurora.rLg)),
+        color: Matcha.paper,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(Matcha.rLg)),
       ),
       padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
       child: Column(
@@ -215,17 +215,17 @@ class _ConnectSheetState extends State<_ConnectSheet> {
             width: 36,
             height: 4,
             decoration: BoxDecoration(
-              color: Aurora.paper3,
-              borderRadius: BorderRadius.circular(Aurora.rFull),
+              color: Matcha.paper3,
+              borderRadius: BorderRadius.circular(Matcha.rFull),
             ),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 6),
             child: Row(children: [
-              Text('Connect a resource', style: Aurora.h2),
+              Text('Connect a resource', style: Matcha.h2),
             ]),
           ),
-          const Divider(height: 1, color: Aurora.divider),
+          const Divider(height: 1, color: Matcha.divider),
           if (_linking != null)
             _LinkingView(connector: _linking!, done: _done)
           else ...[
@@ -237,7 +237,7 @@ class _ConnectSheetState extends State<_ConnectSheet> {
                     ? () => _connect(c)
                     : null,
               ),
-            const SizedBox(height: Aurora.s3),
+            const SizedBox(height: Matcha.s3),
           ],
         ],
       ),
@@ -259,41 +259,41 @@ class _SheetOption extends StatelessWidget {
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(
-            horizontal: Aurora.s4, vertical: Aurora.s3),
+            horizontal: Matcha.s4, vertical: Matcha.s3),
         child: Row(
           children: [
             Icon(connector.icon,
                 size: 26,
-                color: enabled ? Aurora.primaryLight : Aurora.textDisabled),
-            const SizedBox(width: Aurora.s3),
+                color: enabled ? Matcha.primaryLight : Matcha.textDisabled),
+            const SizedBox(width: Matcha.s3),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(connector.name,
-                      style: Aurora.title.copyWith(
+                      style: Matcha.title.copyWith(
                           color: enabled
-                              ? Aurora.textPrimary
-                              : Aurora.textSecondary)),
-                  Text(connector.detail, style: Aurora.body2),
+                              ? Matcha.textPrimary
+                              : Matcha.textSecondary)),
+                  Text(connector.detail, style: Matcha.body2),
                 ],
               ),
             ),
             if (connected)
               const Icon(Icons.check_circle,
-                  size: 20, color: Aurora.stDone)
+                  size: 20, color: Matcha.stDone)
             else if (!connector.available)
               Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: Aurora.paper3,
-                  borderRadius: BorderRadius.circular(Aurora.rFull),
+                  color: Matcha.paper3,
+                  borderRadius: BorderRadius.circular(Matcha.rFull),
                 ),
-                child: Text('Coming soon', style: Aurora.label),
+                child: Text('Coming soon', style: Matcha.label),
               )
             else
-              const Icon(Icons.chevron_right, color: Aurora.textDisabled),
+              const Icon(Icons.chevron_right, color: Matcha.textDisabled),
           ],
         ),
       ),
@@ -311,32 +311,32 @@ class _LinkingView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(
-          Aurora.s6, Aurora.s6, Aurora.s6, Aurora.s6 + Aurora.s4),
+          Matcha.s6, Matcha.s6, Matcha.s6, Matcha.s6 + Matcha.s4),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           if (done)
-            const Icon(Icons.check_circle, size: 56, color: Aurora.stDone)
+            const Icon(Icons.check_circle, size: 56, color: Matcha.stDone)
           else
             const SizedBox(
               width: 48,
               height: 48,
               child: CircularProgressIndicator(
-                  strokeWidth: 4, color: Aurora.primary),
+                  strokeWidth: 4, color: Matcha.primary),
             ),
-          const SizedBox(height: Aurora.s4),
+          const SizedBox(height: Matcha.s4),
           Text(
             done
                 ? '${connector.name} connected'
                 : 'Linking ${connector.name}…',
-            style: Aurora.title,
+            style: Matcha.title,
           ),
-          const SizedBox(height: Aurora.s1),
+          const SizedBox(height: Matcha.s1),
           Text(
             done
                 ? 'Your goals can drink from it now.'
                 : 'Reading what it holds — a moment.',
-            style: Aurora.body2,
+            style: Matcha.body2,
           ),
         ],
       ),
@@ -354,39 +354,39 @@ class _ConnectorCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: Aurora.s3),
-      padding: const EdgeInsets.all(Aurora.s4),
+      margin: const EdgeInsets.only(bottom: Matcha.s3),
+      padding: const EdgeInsets.all(Matcha.s4),
       decoration: BoxDecoration(
-        color: Aurora.paper2,
-        border: Border.all(color: live ? Aurora.ink : Aurora.border, width: 2),
-        borderRadius: BorderRadius.circular(Aurora.rMd),
-        boxShadow: live ? Aurora.elevPopSm : null,
+        color: Matcha.paper2,
+        border: Border.all(color: live ? Matcha.ink : Matcha.border, width: 2),
+        borderRadius: BorderRadius.circular(Matcha.rMd),
+        boxShadow: live ? Matcha.elevPopSm : null,
       ),
       child: Row(
         children: [
           Icon(connector.icon,
               size: 28,
-              color: live ? Aurora.primaryLight : Aurora.textDisabled),
-          const SizedBox(width: Aurora.s3),
+              color: live ? Matcha.primaryLight : Matcha.textDisabled),
+          const SizedBox(width: Matcha.s3),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(connector.name, style: Aurora.title),
-                Text(connector.detail, style: Aurora.body2),
+                Text(connector.name, style: Matcha.title),
+                Text(connector.detail, style: Matcha.body2),
               ],
             ),
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
-              color: live ? Aurora.primaryContainer : Aurora.paper3,
-              borderRadius: BorderRadius.circular(Aurora.rFull),
+              color: live ? Matcha.primaryContainer : Matcha.paper3,
+              borderRadius: BorderRadius.circular(Matcha.rFull),
             ),
             child: Text(
               live ? 'Connected' : 'Coming soon',
-              style: Aurora.label.copyWith(
-                color: live ? Aurora.primaryLight : Aurora.textSecondary,
+              style: Matcha.label.copyWith(
+                color: live ? Matcha.primaryLight : Matcha.textSecondary,
               ),
             ),
           ),

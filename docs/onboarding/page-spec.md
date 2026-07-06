@@ -2,7 +2,7 @@
 
 Status: PLANNED (2026-07-05)
 Upstream references: `docs/onboarding-flow-design.md` (product design, APPROVED) + the user's hand-drawn flow sketches (2026-07-05, confirmed screen by screen). Implementation roadmap in `docs/onboarding/migration-roadmap.md`; task checklist in `docs/onboarding/todo.md`.
-Visuals: **Aurora design system** (`design-system/`, Fresh Matcha). All colors/spacing/radii in this doc reference token names only, never raw values; the mascot always uses `design-system/lottie/` assets or their SVG poses, **never emoji**.
+Visuals: **Fresh Matcha design system** (`design-system/`, Fresh Matcha). All colors/spacing/radii in this doc reference token names only, never raw values; the mascot always uses `design-system/lottie/` assets or their SVG poses, **never emoji**.
 
 General rules:
 - Touch targets >= 48dp; body-text contrast >= 4.5:1 (mathematically verified at the token layer; components must not pick their own colors)
@@ -113,7 +113,7 @@ Sketch 4: title area = goal name (`Projet Dashboard`, red note "could be Projet 
 | Block | Content | Token |
 |---|---|---|
 | Top bar | Back button + goal title (title type size) + **robot icon** (always present, 48dp) | `surface` |
-| Body | **rfw renders the bridge-generated dashboard DSL** (frozen component pool `bonsai.*`) | the component pool carries Aurora tokens itself |
+| Body | **rfw renders the bridge-generated dashboard DSL** (frozen component pool `bonsai.*`) | the component pool carries Matcha tokens itself |
 | Bottom | The shell's 5-tab bar (fully visible for the first time at reveal) | — |
 | coach mark | One-time overlay: `Bottom tabs are your PARA structure — tap + anytime to plant another.`; tap anywhere to dismiss; sets `coachMarkSeen` | scrim + `surface-2` card |
 

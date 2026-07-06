@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../ds/aurora_tokens.dart';
+import '../ds/matcha_tokens.dart';
 import 'screen_store.dart';
 
 /// The robot's chat: a half-height bottom sheet scoped to the DSL screen on
@@ -111,8 +111,8 @@ class _AgentSheetState extends State<_AgentSheet> {
       child: Container(
         height: MediaQuery.of(context).size.height * 0.46,
         decoration: const BoxDecoration(
-          color: Aurora.paper,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(Aurora.rLg)),
+          color: Matcha.paper,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(Matcha.rLg)),
         ),
         child: Column(
           children: [
@@ -121,8 +121,8 @@ class _AgentSheetState extends State<_AgentSheet> {
               width: 36,
               height: 4,
               decoration: BoxDecoration(
-                color: Aurora.paper3,
-                borderRadius: BorderRadius.circular(Aurora.rFull),
+                color: Matcha.paper3,
+                borderRadius: BorderRadius.circular(Matcha.rFull),
               ),
             ),
             Padding(
@@ -131,12 +131,12 @@ class _AgentSheetState extends State<_AgentSheet> {
                 children: [
                   const CircleAvatar(
                     radius: 14,
-                    backgroundColor: Aurora.accentTint,
+                    backgroundColor: Matcha.accentTint,
                     child: Icon(Icons.smart_toy_outlined,
-                        size: 17, color: Aurora.primaryLight),
+                        size: 17, color: Matcha.primaryLight),
                   ),
                   const SizedBox(width: 8),
-                  const Text('Bonsai Gardener', style: Aurora.title),
+                  const Text('Bonsai Gardener', style: Matcha.title),
                   const SizedBox(width: 8),
                   // Long goal slugs must ellipsize, never overflow the row.
                   Expanded(
@@ -146,21 +146,21 @@ class _AgentSheetState extends State<_AgentSheet> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                          color: Aurora.accentTint,
-                          borderRadius: BorderRadius.circular(Aurora.rFull),
+                          color: Matcha.accentTint,
+                          borderRadius: BorderRadius.circular(Matcha.rFull),
                         ),
                         child: Text('Editing: $scope',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: Aurora.label
-                                .copyWith(color: Aurora.primaryLight)),
+                            style: Matcha.label
+                                .copyWith(color: Matcha.primaryLight)),
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-            const Divider(height: 1, color: Aurora.divider),
+            const Divider(height: 1, color: Matcha.divider),
             Expanded(
               child: ListView(
                 controller: _scroll,
@@ -183,9 +183,9 @@ class _AgentSheetState extends State<_AgentSheet> {
                         padding: const EdgeInsets.only(right: 8),
                         child: ActionChip(
                           label: Text(q,
-                              style: Aurora.body2.copyWith(color: Aurora.primaryLight)),
-                          backgroundColor: Aurora.paper2,
-                          side: const BorderSide(color: Aurora.outline),
+                              style: Matcha.body2.copyWith(color: Matcha.primaryLight)),
+                          backgroundColor: Matcha.paper2,
+                          side: const BorderSide(color: Matcha.outline),
                           onPressed: () => _send(q),
                         ),
                       ),
@@ -199,7 +199,7 @@ class _AgentSheetState extends State<_AgentSheet> {
                   Expanded(
                     child: TextField(
                       controller: _input,
-                      style: Aurora.body,
+                      style: Matcha.body,
                       enabled: scr != null && !_busy,
                       onSubmitted: _send,
                       decoration: InputDecoration(
@@ -207,18 +207,18 @@ class _AgentSheetState extends State<_AgentSheet> {
                             ? 'Open a goal first'
                             : 'Ask me to change this screen…',
                         hintStyle:
-                            const TextStyle(color: Aurora.textDisabled, fontSize: 14),
+                            const TextStyle(color: Matcha.textDisabled, fontSize: 14),
                         filled: true,
-                        fillColor: Aurora.bg,
+                        fillColor: Matcha.bg,
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 14, vertical: 10),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(Aurora.rFull),
-                          borderSide: const BorderSide(color: Aurora.outline),
+                          borderRadius: BorderRadius.circular(Matcha.rFull),
+                          borderSide: const BorderSide(color: Matcha.outline),
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(Aurora.rFull),
-                          borderSide: const BorderSide(color: Aurora.outline),
+                          borderRadius: BorderRadius.circular(Matcha.rFull),
+                          borderSide: const BorderSide(color: Matcha.outline),
                         ),
                       ),
                     ),
@@ -228,8 +228,8 @@ class _AgentSheetState extends State<_AgentSheet> {
                     onPressed:
                         scr == null || _busy ? null : () => _send(_input.text),
                     style: IconButton.styleFrom(
-                      backgroundColor: Aurora.primary,
-                      foregroundColor: Aurora.onPrimary,
+                      backgroundColor: Matcha.primary,
+                      foregroundColor: Matcha.onPrimary,
                     ),
                     icon: const Icon(Icons.arrow_upward, size: 20),
                   ),
@@ -250,8 +250,8 @@ class _AgentSheetState extends State<_AgentSheet> {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         constraints: const BoxConstraints(maxWidth: 300),
         decoration: BoxDecoration(
-          color: m.mine ? Aurora.primary : Aurora.bg,
-          borderRadius: BorderRadius.circular(Aurora.rMd),
+          color: m.mine ? Matcha.primary : Matcha.bg,
+          borderRadius: BorderRadius.circular(Matcha.rMd),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -259,8 +259,8 @@ class _AgentSheetState extends State<_AgentSheet> {
           children: [
             Text(m.text,
                 style: m.mine
-                    ? Aurora.body.copyWith(color: Aurora.onPrimary)
-                    : Aurora.body),
+                    ? Matcha.body.copyWith(color: Matcha.onPrimary)
+                    : Matcha.body),
             if (m.undoable)
               Padding(
                 padding: const EdgeInsets.only(top: 6),
@@ -284,8 +284,8 @@ class _AgentSheetState extends State<_AgentSheet> {
     return GestureDetector(
       onTap: onTap,
       child: Text(label,
-          style: Aurora.label.copyWith(
-            color: Aurora.primaryLight,
+          style: Matcha.label.copyWith(
+            color: Matcha.primaryLight,
             decoration: TextDecoration.underline,
           )),
     );
@@ -298,8 +298,8 @@ class _AgentSheetState extends State<_AgentSheet> {
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
-          color: Aurora.bg,
-          borderRadius: BorderRadius.circular(Aurora.rMd),
+          color: Matcha.bg,
+          borderRadius: BorderRadius.circular(Matcha.rMd),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -308,10 +308,10 @@ class _AgentSheetState extends State<_AgentSheet> {
               width: 14,
               height: 14,
               child: CircularProgressIndicator(
-                  strokeWidth: 2, color: Aurora.primaryLight),
+                  strokeWidth: 2, color: Matcha.primaryLight),
             ),
             const SizedBox(width: 10),
-            Text('Reshaping the screen…', style: Aurora.body2),
+            Text('Reshaping the screen…', style: Matcha.body2),
           ],
         ),
       ),

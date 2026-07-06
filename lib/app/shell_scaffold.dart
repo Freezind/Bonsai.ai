@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../ds/aurora_tokens.dart';
+import '../ds/matcha_tokens.dart';
 import '../bridge/bridge_client.dart';
 import '../screens/agent_sheet.dart';
 import 'router.dart';
 
 /// App chrome: wordmark + robot on top, the tab shell in the middle, the
-/// Aurora bottom bar STICKY at the true screen bottom (safe-area aware).
+/// Matcha bottom bar STICKY at the true screen bottom (safe-area aware).
 ///
 /// NOTE: the event-loop keep-alive Timer lives at the ROOT widget in
 /// main.dart (not here) — onboarding runs before this shell exists and its
@@ -19,13 +19,13 @@ class ShellScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Aurora.bg,
+      backgroundColor: Matcha.bg,
       body: SafeArea(
         bottom: false,
         child: Column(
           children: [
             _TopBar(shell: shell),
-            const Divider(height: 1, color: Aurora.divider),
+            const Divider(height: 1, color: Matcha.divider),
             Expanded(child: shell),
           ],
         ),
@@ -52,7 +52,7 @@ class _TopBar extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('Bonsai', style: Aurora.h2.copyWith(color: Aurora.primaryLight)),
+                Text('Bonsai', style: Matcha.h2.copyWith(color: Matcha.primaryLight)),
                 ValueListenableBuilder<String?>(
                   valueListenable: BridgeClient.instance.status,
                   builder: (context, status, _) => ValueListenableBuilder<int>(
@@ -68,7 +68,7 @@ class _TopBar extends StatelessWidget {
                         ].join('  ·  '),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(fontSize: 11, color: Aurora.textSecondary),
+                        style: const TextStyle(fontSize: 11, color: Matcha.textSecondary),
                       );
                     },
                   ),
@@ -80,8 +80,8 @@ class _TopBar extends StatelessWidget {
             tooltip: 'Bonsai Gardener',
             onPressed: () => showAgentSheet(context),
             style: IconButton.styleFrom(
-              backgroundColor: Aurora.accentTint,
-              foregroundColor: Aurora.primaryLight,
+              backgroundColor: Matcha.accentTint,
+              foregroundColor: Matcha.primaryLight,
             ),
             icon: const Icon(Icons.smart_toy_outlined),
           ),
@@ -101,9 +101,9 @@ class _BonsaiNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        color: Aurora.paper,
-        border: Border(top: BorderSide(color: Aurora.divider)),
-        borderRadius: BorderRadius.vertical(top: Radius.circular(Aurora.rLg)),
+        color: Matcha.paper,
+        border: Border(top: BorderSide(color: Matcha.divider)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(Matcha.rLg)),
       ),
       child: SafeArea(
         top: false,
@@ -124,8 +124,8 @@ class _BonsaiNavBar extends StatelessWidget {
                           tab.icon,
                           size: 23,
                           color: shell.currentIndex == tab.index
-                              ? Aurora.primaryLight
-                              : Aurora.textDisabled,
+                              ? Matcha.primaryLight
+                              : Matcha.textDisabled,
                         ),
                         const SizedBox(height: 2),
                         Text(
@@ -135,8 +135,8 @@ class _BonsaiNavBar extends StatelessWidget {
                             fontSize: 10,
                             fontWeight: FontWeight.w700,
                             color: shell.currentIndex == tab.index
-                                ? Aurora.primaryLight
-                                : Aurora.textDisabled,
+                                ? Matcha.primaryLight
+                                : Matcha.textDisabled,
                           ),
                         ),
                       ],

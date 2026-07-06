@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../ds/aurora_tokens.dart';
+import '../../../ds/matcha_tokens.dart';
 import '../../seed_flow_state.dart';
 import 'mascot.dart';
 
@@ -16,28 +16,28 @@ class ChatBubble extends StatelessWidget {
     final bubble = Container(
       constraints: const BoxConstraints(maxWidth: 280),
       padding: const EdgeInsets.symmetric(
-          horizontal: Aurora.s4, vertical: Aurora.s3),
+          horizontal: Matcha.s4, vertical: Matcha.s3),
       decoration: BoxDecoration(
-        color: fromUser ? Aurora.primaryContainer : Aurora.paper2,
-        border: fromUser ? null : Border.all(color: Aurora.border, width: 1.5),
+        color: fromUser ? Matcha.primaryContainer : Matcha.paper2,
+        border: fromUser ? null : Border.all(color: Matcha.border, width: 1.5),
         borderRadius: BorderRadius.only(
-          topLeft: const Radius.circular(Aurora.rLg),
-          topRight: const Radius.circular(Aurora.rLg),
-          bottomLeft: Radius.circular(fromUser ? Aurora.rLg : Aurora.s1),
-          bottomRight: Radius.circular(fromUser ? Aurora.s1 : Aurora.rLg),
+          topLeft: const Radius.circular(Matcha.rLg),
+          topRight: const Radius.circular(Matcha.rLg),
+          bottomLeft: Radius.circular(fromUser ? Matcha.rLg : Matcha.s1),
+          bottomRight: Radius.circular(fromUser ? Matcha.s1 : Matcha.rLg),
         ),
       ),
       child: Text(
         message.text,
-        style: Aurora.body.copyWith(
-          color: fromUser ? Aurora.onPrimaryContainer : Aurora.textPrimary,
+        style: Matcha.body.copyWith(
+          color: fromUser ? Matcha.onPrimaryContainer : Matcha.textPrimary,
         ),
       ),
     );
 
     return Padding(
       padding: const EdgeInsets.symmetric(
-          horizontal: Aurora.s4, vertical: Aurora.s2),
+          horizontal: Matcha.s4, vertical: Matcha.s2),
       child: Row(
         mainAxisAlignment:
             fromUser ? MainAxisAlignment.end : MainAxisAlignment.start,
@@ -45,7 +45,7 @@ class ChatBubble extends StatelessWidget {
         children: [
           if (!fromUser) ...[
             const Mascot(size: 32),
-            const SizedBox(width: Aurora.s2),
+            const SizedBox(width: Matcha.s2),
           ],
           Flexible(child: bubble),
         ],
@@ -79,19 +79,19 @@ class _TypingIndicatorState extends State<TypingIndicator>
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-          horizontal: Aurora.s4, vertical: Aurora.s2),
+          horizontal: Matcha.s4, vertical: Matcha.s2),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           const Mascot(size: 32),
-          const SizedBox(width: Aurora.s2),
+          const SizedBox(width: Matcha.s2),
           Container(
             padding: const EdgeInsets.symmetric(
-                horizontal: Aurora.s4, vertical: Aurora.s3),
+                horizontal: Matcha.s4, vertical: Matcha.s3),
             decoration: BoxDecoration(
-              color: Aurora.paper2,
-              border: Border.all(color: Aurora.border, width: 1.5),
-              borderRadius: BorderRadius.circular(Aurora.rLg),
+              color: Matcha.paper2,
+              border: Border.all(color: Matcha.border, width: 1.5),
+              borderRadius: BorderRadius.circular(Matcha.rLg),
             ),
             child: AnimatedBuilder(
               animation: _c,
@@ -118,7 +118,7 @@ class _TypingIndicatorState extends State<TypingIndicator>
       width: 7,
       height: 7,
       decoration: BoxDecoration(
-        color: active ? Aurora.primary : Aurora.textDisabled,
+        color: active ? Matcha.primary : Matcha.textDisabled,
         shape: BoxShape.circle,
       ),
     );

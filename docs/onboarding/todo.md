@@ -10,7 +10,7 @@ Maps to Phase 0–6 of `docs/onboarding/migration-roadmap.md`; screen details ar
 - [x] Checkpoint: `flutter run` shows an empty MaterialApp; `flutter analyze` is clean
 
 ## Phase 1 · Tokens + 5-tab skeleton
-- [x] `lib/ds/aurora_tokens.dart`: class Aurora, Fresh Matcha values + mascot palette + elev-pop constants + type scale (Baloo 2 / Nunito)
+- [x] `lib/ds/matcha_tokens.dart`: class Matcha, Fresh Matcha values + mascot palette + elev-pop constants + type scale (Baloo 2 / Nunito)
 - [x] `lib/app/router.dart`: StatefulShellRoute.indexedStack, 5 branches (Home/Projects/Areas/Resources/Archive), AppTab / DepthObserver / kMaxDepth=3
 - [x] `lib/app/shell_scaffold.dart` + `lib/app/tab_root_page.dart` (native empty pages + empty states; `+ seed` button placeholder)
 - [x] `lib/main.dart`: BonsaiApp; root keep-alive Timer (2s, must live outside the shell)

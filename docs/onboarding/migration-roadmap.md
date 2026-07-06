@@ -2,7 +2,7 @@
 
 Status: PLANNED (2026-07-05)
 Scope: implementation roadmap for the onboarding flow ("plant a seed") + the 5-tab app skeleton. Product design follows `docs/onboarding-flow-design.md` (APPROVED); screen details are in `docs/onboarding/page-spec.md`; the task checklist is in `docs/onboarding/todo.md`.
-Visual reference: **Aurora design system** (`design-system/`, Fresh Matcha theme) + mascot Lottie (`design-system/lottie/bonsai-*.json`).
+Visual reference: **Fresh Matcha design system** (`design-system/`, Fresh Matcha theme) + mascot Lottie (`design-system/lottie/bonsai-*.json`).
 
 ## Guiding principles
 
@@ -25,7 +25,7 @@ lib/
     shell_scaffold.dart          # shell chrome (top bar wordmark, robot icon, bottom tab bar)
     tab_root_page.dart           # native empty tab root (empty state + "+ seed" button + goal card list)
   ds/
-    aurora_tokens.dart           # Aurora design system tokens (Fresh Matcha values + mascot palette)
+    matcha_tokens.dart           # Fresh Matcha design system tokens (Fresh Matcha values + mascot palette)
   bridge/
     bridge_client.dart           # bridge HTTP client (fully wrapped in Isolate.run), with nextQuestion()/conclude() onboarding methods
   state/
@@ -131,12 +131,12 @@ Opening → AwaitingAnswer(0) → AskingFollowUp(1) → AwaitingAnswer(1)
 Making the placeholder native (rather than an rfw template) is intentional — the template layer is not needed at all this phase.
 
 ### D-A6 Identifier conventions
-- rfw component namespace: `bonsai.*` (capability lock kept in sync across three places: `lib/rfw_pool/local_widgets.dart` + `bridge/system_prompt.txt` + `lib/ds/aurora_tokens.dart`)
+- rfw component namespace: `bonsai.*` (capability lock kept in sync across three places: `lib/rfw_pool/local_widgets.dart` + `bridge/system_prompt.txt` + `lib/ds/matcha_tokens.dart`)
 - App class: `BonsaiApp`; bridge env vars: `BONSAI_CONTEXT` / `BONSAI_CACHE`
 - Persisted files: `bonsai_state.json` (prefs + goal registry), `dsl_cache.json` (DSL cache)
 
 ### D-A7 Tokens and assets
-- `lib/ds/aurora_tokens.dart`, `class Aurora`, values = Fresh Matcha (`design-system/styles.css`): primary `#2C8248`, secondary `#2F7BB4`, accent `#F4B63C`, bg `#F6F4E9`, ink `#26302A`, etc.; the mascot palette (mLeaf `#3FA34D`, mPot `#E8703A`, mInk `#33302B`...) matches the values baked into the Lottie files.
+- `lib/ds/matcha_tokens.dart`, `class Matcha`, values = Fresh Matcha (`design-system/styles.css`): primary `#2C8248`, secondary `#2F7BB4`, accent `#F4B63C`, bg `#F6F4E9`, ink `#26302A`, etc.; the mascot palette (mLeaf `#3FA34D`, mPot `#E8703A`, mInk `#33302B`...) matches the values baked into the Lottie files.
 - Signature elev-pop: `BoxShadow(offset: Offset(3,3), blurRadius: 0, color: ink)`.
 - **Bundle fonts as TTF** (Baloo 2 display + Nunito body); no google_fonts runtime fetching (hotspot networking at the demo venue is unreliable). Patrick Hand is not needed this phase.
 - Lottie: `design-system/lottie/bonsai-{idle,cheer,thirsty,sleep}.json` → `assets/lottie/`, loaded with the `lottie` package.
@@ -146,7 +146,7 @@ Making the placeholder native (rather than an rfw template) is intentional — t
 | Phase | Content | Checkpoint (app runnable) | Risk |
 |---|---|---|---|
 | **0 Scaffold** | flutter create (Flutter 3.44.4 / Dart ^3.9); deps: `go_router ^16` `rfw ^1.1.3` `http` `path_provider` `lottie` (zero new state-management deps); Lottie + font assets into assets; analysis_options | `flutter run` shows an empty MaterialApp | Version drift; iOS signing |
-| **1 Tokens + skeleton** | `aurora_tokens.dart` (Fresh Matcha values); `app/router.dart`: StatefulShellRoute with 5 branches, tab root = native empty page + `+ seed`; AppTab / DepthObserver / kMaxDepth mechanisms as usual; keep-alive Timer at the root of main.dart; `BonsaiApp` | 5 tabs render in Fresh Matcha, switching works, depth observer in place | Low; go_router 16 API alignment |
+| **1 Tokens + skeleton** | `matcha_tokens.dart` (Fresh Matcha values); `app/router.dart`: StatefulShellRoute with 5 branches, tab root = native empty page + `+ seed`; AppTab / DepthObserver / kMaxDepth mechanisms as usual; keep-alive Timer at the root of main.dart; `BonsaiApp` | 5 tabs render in Fresh Matcha, switching works, depth observer in place | Low; go_router 16 API alignment |
 | **2 Bridge + ping** | `bridge/serve.py` + `system_prompt.txt` in place (env vars `BONSAI_*`, empty cache.json, namespace `bonsai.*` declared); `bridge_client.dart` (fully wrapped in Isolate.run + 3 retries + `--dart-define=BRIDGE_URL`); temporary status line shows the ping result | Empty-intent ping from a real device returns 400 | LAN reachability from the device; claude CLI login on the Mac |
 | **3 Onboarding static** | Build all three S1/S2/S3 page UIs (**scripted questions only**, no bridge); `app_prefs.dart` + redirect gating; the flow ends at a stub page for now; copy carousel; mascot Lottie states | The full flow works offline; killing the process and restarting skips splash | All visual, no logic risk |
 | **4 Conversation wiring** | serve.py `converse`/`conclude` modes + TURN_CACHE; `bridge_client.nextQuestion()`/`.conclude()`; controller switches between live/scripted per D-A5 | Real-time AI follow-ups on device; killing the bridge mid-conversation degrades seamlessly to script | Prompt tuning (question quality/latency); JSON extraction edge cases |

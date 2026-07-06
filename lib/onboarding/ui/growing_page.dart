@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../ds/aurora_tokens.dart';
+import '../../ds/matcha_tokens.dart';
 import '../../goals/goal.dart';
 import '../../screens/screen_store.dart';
 import 'widgets/mascot.dart';
@@ -71,25 +71,25 @@ class _GrowingPageState extends State<GrowingPage> {
     return PopScope(
       canPop: false,
       child: Scaffold(
-        backgroundColor: Aurora.bg,
-        body: AuroraBackground(
+        backgroundColor: Matcha.bg,
+        body: MatchaBackground(
           child: SafeArea(
             child: Column(
               children: [
                 const Spacer(flex: 3),
                 const Mascot(size: 220),
-                const SizedBox(height: Aurora.s5),
+                const SizedBox(height: Matcha.s5),
                 Text(widget.goal.title,
                     textAlign: TextAlign.center,
-                    style: Aurora.h2.copyWith(color: Aurora.primaryLight)),
-                const SizedBox(height: Aurora.s5),
+                    style: Matcha.h2.copyWith(color: Matcha.primaryLight)),
+                const SizedBox(height: Matcha.s5),
                 AnimatedSwitcher(
                   duration: const Duration(milliseconds: 400),
                   child: Text(
                     GrowingPage.microcopy[_line],
                     key: ValueKey(_line),
                     textAlign: TextAlign.center,
-                    style: Aurora.body2,
+                    style: Matcha.body2,
                   ),
                 ),
                 const Spacer(flex: 4),

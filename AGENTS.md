@@ -18,7 +18,7 @@ Three parts:
 
 - `lib/` — Flutter app (Dart SDK ^3.9, Flutter 3.44.4, see `.tool-versions`)
 - `bridge/` — local Python bridge running on the Mac (`serve.py`, no third-party dependencies) that generates rfw text DSL via headless `claude -p`; no API key needed, it uses the local claude login. DSL transpilation relies on Flutter's official **rfw** (Remote Flutter Widgets): the device transpiles the structural text into a real native widget tree in real time — so the app is **fully native**, with no WebView/embedding layer, and the model never touches executable code
-- `design-system/` — pure HTML/CSS living style guide (the **Fresh Matcha** design system: milky-cream paper background + spring green × sky blue, ink outlines + hard shadows for a picture-book paper-cut feel, Baloo 2 × Nunito rounded type, hand-drawn bonsai mascot with five growth stages); not part of the build. The Dart-side token layer is `lib/ds/aurora_tokens.dart` (the class name keeps `Aurora` for API stability; the values are Fresh Matcha)
+- `design-system/` — pure HTML/CSS living style guide (the **Fresh Matcha** design system: milky-cream paper background + spring green × sky blue, ink outlines + hard shadows for a picture-book paper-cut feel, Baloo 2 × Nunito rounded type, hand-drawn bonsai mascot with five growth stages); not part of the build. The Dart-side token layer is `lib/ds/matcha_tokens.dart` (`class Matcha`, values mirrored from `design-system/styles.css`)
 
 ## Commands
 
@@ -46,7 +46,7 @@ Venue/campus Wi-Fi often has client isolation (the phone can never reach the Mac
 
 **Data flow**: intent text → `BridgeClient` (`lib/bridge/bridge_client.dart`) POSTs to the bridge `/generate` → the bridge prepends `bridge/system_prompt.txt` and calls `claude -p` → returns rfw text DSL → `applyDsl` (`lib/rfw_pool/pool_runtime.dart`) parses and renders it. If DSL parsing fails, keep the previous screen (graceful degradation) — never show a blank screen.
 
-**Capability lock philosophy**: the model can only compose whitelisted components. The component pool must stay in sync across three places — `lib/rfw_pool/local_widgets.dart` (Dart implementations), `bridge/system_prompt.txt` (tells the model which components exist), and `lib/ds/aurora_tokens.dart` (design tokens). When changing the component pool, change all three together.
+**Capability lock philosophy**: the model can only compose whitelisted components. The component pool must stay in sync across three places — `lib/rfw_pool/local_widgets.dart` (Dart implementations), `bridge/system_prompt.txt` (tells the model which components exist), and `lib/ds/matcha_tokens.dart` (design tokens). When changing the component pool, change all three together.
 
 **Navigation model (a closed, finite app)**: `lib/app/router.dart` uses GoRouter's `StatefulShellRoute` — the 5 bottom tabs are siblings (depth 0); only pushed child pages accumulate depth, and switching tabs resets to the root. `kMaxDepth = 3`: a depth-3 screen is a closed leaf (interactive, but cannot navigate deeper). The depth cap is enforced on-device, so any deeper links smuggled into the DSL are ignored. Tab roots are currently native Dart pages; the demo's goal detail pages are fixed build-time rfw templates (`lib/rfw_pool/demo_dashboards.dart`, 0 tokens). warm.py subtree pre-generation belongs to main-app development and has not been migrated in yet.
 
